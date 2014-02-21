@@ -120,7 +120,7 @@ namespace M3uToNetPaleyerXml
         {
             foreach (System.Net.IPAddress ip in System.Net.Dns.GetHostByName(System.Net.Dns.GetHostName()).AddressList)
             {
-                if (ip.ToString().Contains("192.168.0."))
+                if (ip.ToString().Contains("192.168.1."))
                     return ip.ToString();
             }
 
