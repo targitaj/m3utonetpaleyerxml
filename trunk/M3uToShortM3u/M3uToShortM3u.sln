@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M3uToShortM3u", "M3uToShortM3u\M3uToShortM3u.csproj", "{0E6FBEC6-71B0-44A8-9055-1C250E3612F1}"
 EndProject
 Global
