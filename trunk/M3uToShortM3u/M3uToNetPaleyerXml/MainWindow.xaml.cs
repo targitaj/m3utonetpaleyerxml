@@ -103,7 +103,7 @@ namespace M3uToNetPaleyerXml
 
         private void DownloadFile()
         {
-            string remoteUri = ConfigurationManager.AppSettings["SourceUrl"];
+            string remoteUri = string.Format(ConfigurationManager.AppSettings["SourceUrl"], GetIp());
             using (WebClient myWebClient = new WebClient())
             {
                 try
@@ -117,9 +117,21 @@ namespace M3uToNetPaleyerXml
             }
         }
 
+        private string GetIp()
+        {
+            foreach (System.Net.IPAddress ip in System.Net.Dns.GetHostByName(System.Net.Dns.GetHostName()).AddressList)
+            {
+                if (ip.ToString().Contains("192.168.0."))
+                    return ip.ToString();
+            }
+
+            throw new Exception("TV Progrram BY dron Ne nasla IP adress");
+        }
+
         private void Convert(string source, string target)
         {
-            var res = @"#EXTM3U";
+            var res = @"#EXTM3U
+";
 
             Encoding enc;
             using (var reader = new StreamReader(source))
@@ -151,11 +163,9 @@ namespace M3uToNetPaleyerXml
 
                 var url = sourceStr.Substring(indx + 1, lastIndx - indx - 2);
 
-                res += string.Format(@"
-        <item>
-            <enclosure url=""{0}"" type=""video/mpeg"" />
-            <title>{1}</title>
-		</item>", url, c);
+                res += string.Format(@"#EXTINF:-1, {0}
+{1}
+", c.Name, url);
             }
 
             File.WriteAllText(target, res, new UTF8Encoding());
@@ -204,16 +214,19 @@ namespace M3uToNetPaleyerXml
 
         private void Save()
         {
-            BinaryFormatter formatter = new BinaryFormatter();
-            using (FileStream writer = File.Create(FILE_CHANNELS))
+            if (!App.IsSilentMode)
             {
-                try
+                BinaryFormatter formatter = new BinaryFormatter();
+                using (FileStream writer = File.Create(FILE_CHANNELS))
                 {
-                    formatter.Serialize(writer, lbSelectedChannels.DataContext);
-                }
-                finally
-                {
-                    writer.Close();
+                    try
+                    {
+                        formatter.Serialize(writer, lbSelectedChannels.DataContext);
+                    }
+                    finally
+                    {
+                        writer.Close();
+                    }
                 }
             }
 
@@ -224,8 +237,6 @@ namespace M3uToNetPaleyerXml
         private void BtnRemove_OnClick(object sender, RoutedEventArgs e)
         {
             var selChannles = (ObservableCollection<Channel>)lbSelectedChannels.DataContext;
-            var allChannles = (ObservableCollection<Channel>)lbAllChannels.DataContext;
-
             var sel = new ObservableCollection<Channel>(selChannles.Where(s => s.IsSelected));
 
             foreach (var channel in sel)
