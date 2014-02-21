@@ -1,13 +1,31 @@
 ﻿<Window x:Class="M3uToNetPaleyerXml.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="350" Width="900" Closing="MainWindow_OnClosing">
     <Grid>
-        <Button Name="btnSource" Content="Source" HorizontalAlignment="Left" Margin="423,196,0,0" VerticalAlignment="Top" Width="75" Click="btnSource_Click" />
-        <TextBox Name="tbxSource" HorizontalAlignment="Left" Height="23" Margin="26,193,0,0" TextWrapping="Wrap" Text="C:\Users\dron1\Desktop\111.m3u" VerticalAlignment="Top" Width="382"/>
-        <Button x:Name="btnTarget" Content="Target" HorizontalAlignment="Left" Margin="423,224,0,0" VerticalAlignment="Top" Width="75" Click="btnTarget_Click" />
-        <TextBox Name="tbxTarget" HorizontalAlignment="Left" Height="23" Margin="26,221,0,0" TextWrapping="Wrap" Text="C:\Users\dron1\Desktop\111.xml" VerticalAlignment="Top" Width="382"/>
-        <Button Name="btnConvert" Content="Convert" HorizontalAlignment="Left" Margin="26,273,0,0" VerticalAlignment="Top" Width="75" Click="btnConvert_Click"/>
-        <TextBox Name="tbxChannels"  HorizontalAlignment="Left" Height="141" Margin="26,29,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="472"/>
+        <Button Name="btnAdd" Content="Добавить ->" HorizontalAlignment="Left" Margin="448,118,0,0" VerticalAlignment="Top" Width="75" Click="btnConvert_Click"/>
+        <Button Name="btnRemove" Content="&lt;- Убрать" HorizontalAlignment="Left" Margin="448,147,0,0" VerticalAlignment="Top" Width="75" Click="BtnRemove_OnClick"/>
+        <ListBox HorizontalAlignment="Left" Height="206" Margin="27,72,0,0" VerticalAlignment="Top" Width="400" Name="lbAllChannels" ItemsSource="{Binding}" >
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox IsChecked="{Binding Path=IsSelected, Mode=TwoWay}"/>
+                        <TextBlock Text="{Binding Path=Name}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <ListBox HorizontalAlignment="Left" Height="255" Margin="541,23,0,0" VerticalAlignment="Top" Width="306" Name="lbSelectedChannels" ItemsSource="{Binding}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox IsChecked="{Binding Path=IsSelected, Mode=TwoWay}"/>
+                        <TextBlock Text="{Binding Path=Name}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <TextBox Name="tbSearch" HorizontalAlignment="Left" Height="23" Margin="76,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="344" TextChanged="TextBoxBase_OnTextChanged"/> 
+        <Label Content="Поиск" HorizontalAlignment="Left" Margin="27,20,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>

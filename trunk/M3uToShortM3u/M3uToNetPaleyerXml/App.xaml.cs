@@ -6,12 +6,23 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace M3uToNetPaleyerXml
+namespace M3uToShortM3u
 {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
     {
+        public static bool IsSilentMode = false;
+        void App_Startup(object sender, StartupEventArgs e)
+        {
+            for (int i = 0; i != e.Args.Length; ++i)
+            {
+                if (e.Args[i] == "/SilentMode")
+                {
+                    IsSilentMode = true;
+                }
+            }
+        }
     }
 }
