@@ -35,14 +35,13 @@ namespace M3uToNetPaleyerXml
             InitializeComponent();
 
             DownloadFile();
-            ReadAllChannels(ConfigurationManager.AppSettings["FileName"]);
 
             if (App.IsSilentMode)
             {
                 Close();
             }
 
-            _allChannels = ReadAllChannels(ConfigurationManager.AppSettings["FileName"]);
+            _allChannels = ReadAllChannels(ConfigurationManager.AppSettings["FileName"] + "tmp");
             lbAllChannels.DataContext = _allChannels;
             lbSelectedChannels.DataContext = ReadChannels();
         }
@@ -107,7 +106,7 @@ namespace M3uToNetPaleyerXml
             {
                 try
                 {
-                    myWebClient.DownloadFile(remoteUri, ConfigurationManager.AppSettings["FileName"]);
+                    myWebClient.DownloadFile(remoteUri, ConfigurationManager.AppSettings["FileName"] + "tmp");
                 }
                 catch
                 {
@@ -118,13 +117,67 @@ namespace M3uToNetPaleyerXml
 
         private string GetIp()
         {
-            foreach (System.Net.IPAddress ip in System.Net.Dns.GetHostByName(System.Net.Dns.GetHostName()).AddressList)
+            foreach (IPAddress ip in Dns.GetHostByName(Dns.GetHostName()).AddressList)
             {
-                if (ip.ToString().Contains("192.168.1."))
+                if (ip.ToString().Contains(ConfigurationManager.AppSettings["localIPStart"]))
                     return ip.ToString();
             }
 
             throw new Exception("TV Progrram BY dron Ne nasla IP adress");
+        }
+
+        private void ConvertToXML(string source, string target)
+        {
+            var res = @"<?xml verion=""1.0"" encoding=""utf-8""?>
+<rss version=""2.0"">
+	<channel>
+		<title>КАНАЛЫ</title>";
+
+            Encoding enc;
+            using (var reader = new StreamReader(source))
+            {
+                // Make sure you read from the file or it won't be able
+                // to guess the encoding
+                var file = reader.ReadToEnd();
+                enc = reader.CurrentEncoding;
+            }
+            string sourceStr = File.ReadAllText(source, new UTF8Encoding());// ReadFileAsUtf8(source);
+
+            var channelList = ReadChannels();
+
+            foreach (var c in channelList)
+            {
+                var indx = sourceStr.IndexOf(c.Name);
+
+                while (sourceStr[indx] != '\n')
+                {
+                    indx++;
+                }
+
+                var lastIndx = indx + 1;
+
+                while (sourceStr[lastIndx] != '\n')
+                {
+                    lastIndx++;
+                }
+
+                var url = sourceStr.Substring(indx + 1, lastIndx - indx - 2);
+
+                res += string.Format(@"
+        <item>
+            <enclosure url=""{0}"" type=""video/mpeg"" />
+            <title>{1}</title>
+		</item>", url, c.Name);
+            }
+
+
+
+            res += @"
+    </channel>
+</rss>";
+
+
+            File.WriteAllText(target, res, new UTF8Encoding());
         }
 
         private void Convert(string source, string target)
@@ -229,8 +282,16 @@ namespace M3uToNetPaleyerXml
                 }
             }
 
-            Convert(ConfigurationManager.AppSettings["FileName"],
+            if (bool.Parse(ConfigurationManager.AppSettings["IsNetPalyer"]))
+            {
+                ConvertToXML(ConfigurationManager.AppSettings["FileName"] + "tmp",
                     ConfigurationManager.AppSettings["TargetDir"] + "\\" + ConfigurationManager.AppSettings["FileName"]);
+            }
+            else
+            {
+                Convert(ConfigurationManager.AppSettings["FileName"] + "tmp",
+                    ConfigurationManager.AppSettings["TargetDir"] + "\\" + ConfigurationManager.AppSettings["FileName"]);
+            }
         }
 
         private void BtnRemove_OnClick(object sender, RoutedEventArgs e)
