@@ -124,7 +124,12 @@ namespace M3uToNetPaleyerXml
                 Environment.Exit(0);
             }
 
-            string remoteUri = string.Format(ConfigurationManager.AppSettings["SourceUrl"], GetIp());
+            string remoteUri = ConfigurationManager.AppSettings["SourceUrl"];
+            if (remoteUri.Contains("{0}"))
+            {
+                remoteUri = string.Format(remoteUri, GetIp());
+            }
+
             using (WebClient myWebClient = new WebClient())
             {
                 try
@@ -146,7 +151,10 @@ namespace M3uToNetPaleyerXml
                     return ip.ToString();
             }
 
-            throw new Exception("TV Progrram BY dron Ne nasla IP adress");
+            MessageBox.Show(string.Format("Нет айпи начинающегося с {0}", ConfigurationManager.AppSettings["localIPStart"]));
+            Environment.Exit(0);
+
+            return "";
         }
 
         private void ConvertToXML(string source, string target)
