@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TVProxyM3uConverter", "M3uToShortM3u\TVProxyM3uConverter.csproj", "{0E6FBEC6-71B0-44A8-9055-1C250E3612F1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSProxyM3uConverter", "TSProxyM3uConverter\TSProxyM3uConverter.csproj", "{0E6FBEC6-71B0-44A8-9055-1C250E3612F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
