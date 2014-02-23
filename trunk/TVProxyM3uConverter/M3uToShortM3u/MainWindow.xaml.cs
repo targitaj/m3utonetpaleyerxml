@@ -34,6 +34,16 @@ namespace M3uToNetPaleyerXml
         {
             InitializeComponent();
 
+            if (!App.IsSilentMode)
+            {
+                if (!Directory.Exists(ConfigurationManager.AppSettings["TargetDir"]))
+                {
+                    MessageBox.Show(string.Format("Директория {0} не существет", ConfigurationManager.AppSettings["TargetDir"]));
+                }
+
+
+            }
+
             DownloadFile();
 
             if (App.IsSilentMode)
@@ -99,8 +109,21 @@ namespace M3uToNetPaleyerXml
             return res;
         }
 
+        int counter = 0;
         private void DownloadFile()
         {
+            counter++;
+
+            if (counter>10)
+            {
+                if (!App.IsSilentMode)
+                {
+                    MessageBox.Show("Не могу подключится к серверу TS-Proxy");
+                }
+
+                Environment.Exit(0);
+            }
+
             string remoteUri = string.Format(ConfigurationManager.AppSettings["SourceUrl"], GetIp());
             using (WebClient myWebClient = new WebClient())
             {
