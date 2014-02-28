@@ -3,9 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Конвертируй с удовольствием" Height="350" Width="900" Closing="MainWindow_OnClosing" Icon="Dailyoverview-Tv-Television-08.ico" >
     <Grid>
-        <Button Name="btnAdd" Content="Добавить ->" HorizontalAlignment="Left" Margin="448,118,0,0" VerticalAlignment="Top" Width="75" Click="btnConvert_Click"/>
-        <Button Name="btnRemove" Content="&lt;- Убрать" HorizontalAlignment="Left" Margin="448,147,0,0" VerticalAlignment="Top" Width="75" Click="BtnRemove_OnClick"/>
-        <ListBox HorizontalAlignment="Left" Height="206" Margin="27,72,0,0" VerticalAlignment="Top" Width="400" Name="lbAllChannels" ItemsSource="{Binding}" >
+        <Button Name="btnAdd" Content="Добавить ->" HorizontalAlignment="Left" Margin="448,143,0,0" VerticalAlignment="Top" Width="75" Click="btnConvert_Click"/>
+        <Button Name="btnRemove" Content="&lt;- Убрать" HorizontalAlignment="Left" Margin="448,172,0,0" VerticalAlignment="Top" Width="75" Click="BtnRemove_OnClick"/>
+        <ListBox HorizontalAlignment="Left" Height="206" Margin="27,97,0,0" VerticalAlignment="Top" Width="400" Name="lbAllChannels" ItemsSource="{Binding}" >
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -15,7 +15,7 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <ListBox HorizontalAlignment="Left" Height="255" Margin="541,23,0,0" VerticalAlignment="Top" Width="306" Name="lbSelectedChannels" ItemsSource="{Binding}">
+        <ListBox HorizontalAlignment="Left" Height="255" Margin="541,48,0,0" VerticalAlignment="Top" Width="306" Name="lbSelectedChannels" ItemsSource="{Binding}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -25,7 +25,8 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <TextBox Name="tbSearch" HorizontalAlignment="Left" Height="23" Margin="76,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="344" TextChanged="TextBoxBase_OnTextChanged"/> 
-        <Label Content="Поиск" HorizontalAlignment="Left" Margin="27,20,0,0" VerticalAlignment="Top"/>
+        <TextBox Name="tbSearch" HorizontalAlignment="Left" Height="23" Margin="76,48,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="344" TextChanged="TextBoxBase_OnTextChanged"/>
+        <Label Content="Поиск" HorizontalAlignment="Left" Margin="27,45,0,0" VerticalAlignment="Top"/>
+        <Button Content="Обо мне" HorizontalAlignment="Left" Margin="772,13,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
     </Grid>
 </Window>

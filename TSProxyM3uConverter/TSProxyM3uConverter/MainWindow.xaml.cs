@@ -128,8 +128,12 @@ namespace M3uToNetPaleyerXml
                 {
                     stream.ReadTimeout = 10000;
                     offset = stream.Read(bytes, 0, length);
-                    fileStream.Write(bytes, 0, offset);
-                    
+
+                    if (Config.WriteVideoFileMonitorStatus)
+                    {
+                        fileStream.Write(bytes, 0, offset);
+                    }
+
                     if (closeTime <= DateTime.Now)
                     {
                         fileStream.Flush();
@@ -515,6 +519,12 @@ namespace M3uToNetPaleyerXml
         private void TextBoxBase_OnTextChanged(object sender, TextChangedEventArgs e)
         {
             lbAllChannels.DataContext = new ObservableCollection<Channel>(_allChannels.Where(a => a.Name.ToLower().Contains(tbSearch.Text.ToLower())));
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            About a = new About();
+            a.ShowDialog();
         }
     }
 }
