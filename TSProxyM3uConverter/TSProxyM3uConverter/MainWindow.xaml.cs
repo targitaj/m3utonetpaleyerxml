@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -29,7 +31,7 @@ namespace M3uToNetPaleyerXml
     {
         private string FILE_CHANNELS = "channels.dat";
 
-        private ObservableCollection<Channel> _allChannels;
+        private readonly ObservableCollection<Channel> _allChannels;
         public MainWindow()
         {
             InitializeComponent();
@@ -39,21 +41,124 @@ namespace M3uToNetPaleyerXml
                 if (!Directory.Exists(ConfigurationManager.AppSettings["TargetDir"]))
                 {
                     MessageBox.Show(string.Format("Директория {0} не существет", ConfigurationManager.AppSettings["TargetDir"]));
+
+                    Environment.Exit(0);
                 }
-
-
             }
 
             DownloadFile();
 
             if (App.IsSilentMode)
             {
-                Close();
+                if (Config.MonitorStatus)
+                {
+                    this.ShowInTaskbar = false;
+                    this.WindowState = WindowState.Minimized;
+                    this.Visibility = Visibility.Hidden;
+                    Thread th = new Thread(MonitorStatusRun);
+                    th.Start();
+                }
+                else
+                {
+                    Close();
+                }
             }
+            else
+            {
+                _allChannels = ReadAllChannels(ConfigurationManager.AppSettings["FileName"] + "tmp");
+                lbAllChannels.DataContext = _allChannels;
+                lbSelectedChannels.DataContext = ReadChannels();
+            }
+        }
+        Random random = new Random();
 
-            _allChannels = ReadAllChannels(ConfigurationManager.AppSettings["FileName"] + "tmp");
-            lbAllChannels.DataContext = _allChannels;
-            lbSelectedChannels.DataContext = ReadChannels();
+        private void MonitorStatusRun()
+        {
+            while (true)
+            {
+                MonitorStatus();
+            }
+        }
+
+        private void MonitorStatus()
+        {
+            Stream stream = null;
+
+            try
+            {
+                var channel = GetChannel();
+
+                WebRequest req = WebRequest.Create(channel);
+                req.Timeout = 5000;
+                WebResponse response = req.GetResponse();
+
+                stream = response.GetResponseStream();
+                SaveStreamToFile("VideoFileMonitorStatus.avi", stream);
+                tryCount = 0;
+            }
+            catch
+            {
+                RestartProcesses();
+            }
+            finally
+            {
+                if (stream != null)
+                {
+                    stream.Close();
+                    stream.Dispose();
+                }
+            }
+        }
+
+        public void SaveStreamToFile(string fileFullPath, Stream stream)
+        {
+            File.Delete(fileFullPath);
+            FileStream fileStream = null;
+
+            try
+            {
+                fileStream = File.Create(fileFullPath);
+
+                int length = 10000000;
+                var bytes = new byte[length];
+                int offset;
+                DateTime endTime = DateTime.Now.AddMinutes(5);
+                DateTime closeTime = DateTime.Now.AddSeconds(1);
+                do
+                {
+                    stream.ReadTimeout = 10000;
+                    offset = stream.Read(bytes, 0, length);
+                    fileStream.Write(bytes, 0, offset);
+                    
+                    if (closeTime <= DateTime.Now)
+                    {
+                        fileStream.Flush();
+                        closeTime = DateTime.Now.AddSeconds(1);
+                        fileStream.Close();
+                        fileStream.Dispose();
+
+                        fileStream = File.Open(fileFullPath, FileMode.Append);
+                    }
+                    tryCount = 0;
+                } while (endTime >= DateTime.Now);
+            }
+            finally
+            {
+                if (fileStream != null)
+                {
+                    fileStream.Close();
+                    fileStream.Dispose();
+                }
+            }
+        }
+
+        private string GetChannel()
+        {
+            var ch = ReadChannels();
+
+            var r = random.Next(0, ch.Count - 1);
+
+            return GetChannelURL(ch[r], GetSource(Config.SourceFile));
         }
 
         private ObservableCollection<Channel> ReadChannels()
@@ -109,19 +214,73 @@ namespace M3uToNetPaleyerXml
             return res;
         }
 
-        int counter = 0;
+
+        private int tryCount = 0;
+        private void RestartProcesses()
+        {
+            tryCount++;
+
+            if (tryCount <= 3)
+                return;
+            
+            KillProcess(Config.PathToTTVProxy);
+            KillProcess(Config.PathToAce);
+            
+            Process proc = Process.Start(Config.PathToAce);
+            Process.Start(Config.PathToTTVProxy);
+
+            Thread.Sleep(15000);
+
+            File.AppendAllText("log.txt", "Свал был в " + DateTime.Now + Environment.NewLine);
+
+            tryCount = 0;
+        }
+
+        private void KillProcess(string procName)
+        {
+            try
+            {
+                Process[] runningProcesses = Process.GetProcesses();
+                foreach (Process process in runningProcesses)
+                {
+                    if (process.MainModule.FileName == procName)
+                    {
+                        process.Kill();
+                    }
+                }
+            }
+            catch { }
+        }
+
+        private DateTime appStarTime = DateTime.Now.AddSeconds(30);
+        private int downloadTryCount = 0;
+
         private void DownloadFile()
         {
-            counter++;
-
-            if (counter>10)
+            if (appStarTime <= DateTime.Now)
             {
                 if (!App.IsSilentMode)
                 {
                     MessageBox.Show("Не могу подключится к серверу TS-Proxy");
                 }
+                else
+                {
+                    if (!Config.MonitorStatus)
+                    {
+                        Environment.Exit(0);
+                    }
+                    else
+                    {
+                        if (downloadTryCount > 20)
+                        {
+                            MessageBox.Show("20 раз программа пыталась подключится к ТС прокси, не вышло, программа завершила работу");
 
-                Environment.Exit(0);
+                            Environment.Exit(0);
+                        }
+
+                        downloadTryCount++;
+                    }
+                }
             }
 
             string remoteUri = ConfigurationManager.AppSettings["SourceUrl"];
@@ -130,14 +289,16 @@ namespace M3uToNetPaleyerXml
                 remoteUri = string.Format(remoteUri, GetIp());
             }
 
-            using (WebClient myWebClient = new WebClient())
+            using (MyWebClient myWebClient = new MyWebClient())
             {
                 try
                 {
-                    myWebClient.DownloadFile(remoteUri, ConfigurationManager.AppSettings["FileName"] + "tmp");
+                    myWebClient.DownloadFile(remoteUri, Config.SourceFile);
+                    tryCount = 0;
                 }
                 catch
                 {
+                    RestartProcesses();
                     DownloadFile();
                 }
             }
@@ -164,35 +325,13 @@ namespace M3uToNetPaleyerXml
 	<channel>
 		<title>КАНАЛЫ</title>";
 
-            Encoding enc;
-            using (var reader = new StreamReader(source))
-            {
-                // Make sure you read from the file or it won't be able
-                // to guess the encoding
-                var file = reader.ReadToEnd();
-                enc = reader.CurrentEncoding;
-            }
-            string sourceStr = File.ReadAllText(source, new UTF8Encoding());// ReadFileAsUtf8(source);
+            string sourceStr = GetSource(source);
 
             var channelList = ReadChannels();
 
             foreach (var c in channelList)
             {
-                var indx = sourceStr.IndexOf(c.Name);
-
-                while (sourceStr[indx] != '\n')
-                {
-                    indx++;
-                }
-
-                var lastIndx = indx + 1;
-
-                while (sourceStr[lastIndx] != '\n')
-                {
-                    lastIndx++;
-                }
-
-                var url = sourceStr.Substring(indx + 1, lastIndx - indx - 2);
+                var url = GetChannelURL(c, sourceStr);
 
                 res += string.Format(@"
         <item>
@@ -209,6 +348,39 @@ namespace M3uToNetPaleyerXml
 
 
             File.WriteAllText(target, res, new UTF8Encoding());
+        }
+
+        private string GetSource(string source)
+        {
+            Encoding enc;
+            using (var reader = new StreamReader(source))
+            {
+                // Make sure you read from the file or it won't be able
+                // to guess the encoding
+                var file = reader.ReadToEnd();
+                enc = reader.CurrentEncoding;
+            }
+
+            return File.ReadAllText(source, new UTF8Encoding());
+        }
+
+        private string GetChannelURL(Channel channel, string sourceStr)
+        {
+            var indx = sourceStr.IndexOf(channel.Name);
+
+            while (sourceStr[indx] != '\n')
+            {
+                indx++;
+            }
+
+            var lastIndx = indx + 1;
+
+            while (sourceStr[lastIndx] != '\n')
+            {
+                lastIndx++;
+            }
+
+             return sourceStr.Substring(indx + 1, lastIndx - indx - 2);
         }
 
         private void Convert(string source, string target)
@@ -315,13 +487,11 @@ namespace M3uToNetPaleyerXml
 
             if (bool.Parse(ConfigurationManager.AppSettings["IsNetPalyer"]))
             {
-                ConvertToXML(ConfigurationManager.AppSettings["FileName"] + "tmp",
-                    ConfigurationManager.AppSettings["TargetDir"] + "\\" + ConfigurationManager.AppSettings["FileName"]);
+                ConvertToXML(Config.SourceFile, ConfigurationManager.AppSettings["TargetDir"] + "\\" + ConfigurationManager.AppSettings["FileName"]);
             }
             else
             {
-                Convert(ConfigurationManager.AppSettings["FileName"] + "tmp",
-                    ConfigurationManager.AppSettings["TargetDir"] + "\\" + ConfigurationManager.AppSettings["FileName"]);
+                Convert(Config.SourceFile, ConfigurationManager.AppSettings["TargetDir"] + "\\" + ConfigurationManager.AppSettings["FileName"]);
             }
         }
 
