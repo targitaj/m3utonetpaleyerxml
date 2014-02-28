@@ -12,7 +12,7 @@ namespace M3uToShortM3u
     /// </summary>
     public partial class App : Application
     {
-        public static bool IsSilentMode = false;
+        public static bool IsSilentMode = Config.IsSilent;
         void App_Startup(object sender, StartupEventArgs e)
         {
             for (int i = 0; i != e.Args.Length; ++i)
