@@ -1,11 +1,28 @@
 ﻿<Window x:Class="M3uToNetPaleyerXml.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Конвертируй с удовольствием" Height="350" Width="900" Closing="MainWindow_OnClosing" Icon="Dailyoverview-Tv-Television-08.ico" >
+        Title="Конвертируй с удовольствием" Height="350" Width="900" Closing="MainWindow_OnClosing" Icon="Dailyoverview-Tv-Television-08.ico" Name="wMain">
     <Grid>
-        <Button Name="btnAdd" Content="Добавить ->" HorizontalAlignment="Left" Margin="448,143,0,0" VerticalAlignment="Top" Width="75" Click="btnConvert_Click"/>
-        <Button Name="btnRemove" Content="&lt;- Убрать" HorizontalAlignment="Left" Margin="448,172,0,0" VerticalAlignment="Top" Width="75" Click="BtnRemove_OnClick"/>
-        <ListBox HorizontalAlignment="Left" Height="206" Margin="27,97,0,0" VerticalAlignment="Top" Width="400" Name="lbAllChannels" ItemsSource="{Binding}" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="90"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+       <Label Content="Поиск" VerticalAlignment="Center"/>
+       <TextBox Name="tbSearch" VerticalAlignment="Center" TextWrapping="Wrap" Margin="50,0,10,0" TextChanged="TextBoxBase_OnTextChanged" />
+
+        <StackPanel Grid.Column="1" Grid.Row="1" VerticalAlignment="Center">
+            <Button Name="btnAdd" Margin="5" Content="Добавить ->"  Width="75" Click="btnConvert_Click"/>
+            <Button Name="btnRemove" Content="&lt;- Убрать" Width="75" Click="BtnRemove_OnClick"/>
+        </StackPanel>
+
+
+        <ListBox Name="lbAllChannels" ItemsSource="{Binding}" Grid.Row="1" Margin="10">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -15,7 +32,7 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <ListBox HorizontalAlignment="Left" Height="255" Margin="541,48,0,0" VerticalAlignment="Top" Width="306" Name="lbSelectedChannels" ItemsSource="{Binding}">
+        <ListBox  Name="lbSelectedChannels" ItemsSource="{Binding}" Grid.Row="1" Grid.Column="2" Margin="10">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -25,8 +42,6 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <TextBox Name="tbSearch" HorizontalAlignment="Left" Height="23" Margin="76,48,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="344" TextChanged="TextBoxBase_OnTextChanged"/>
-        <Label Content="Поиск" HorizontalAlignment="Left" Margin="27,45,0,0" VerticalAlignment="Top"/>
-        <Button Content="Обо мне" HorizontalAlignment="Left" Margin="772,13,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+        <Button Content="Обо мне" Width="75" Click="Button_Click" Grid.Column="2" VerticalAlignment="Center"/>
     </Grid>
 </Window>
