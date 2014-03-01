@@ -1,7 +1,7 @@
 ﻿<Window x:Class="M3uToNetPaleyerXml.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Конвертируй с удовольствием" Height="350" Width="900" Closing="MainWindow_OnClosing" Icon="Dailyoverview-Tv-Television-08.ico" Name="wMain">
+        Title="Конвертируй с удовольствием" Height="350" Width="900" Closing="MainWindow_OnClosing" Icon="Dailyoverview-Tv-Television-08 Windows.ico" Name="wMain">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"></RowDefinition>

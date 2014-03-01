@@ -165,6 +165,9 @@
   <ItemGroup>
     <Resource Include="I.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Dailyoverview-Tv-Television-08 Windows.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>taskkill /F /IM TSProxyM3uConverter.exe
