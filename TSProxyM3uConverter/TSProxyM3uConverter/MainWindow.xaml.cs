@@ -37,8 +37,6 @@ namespace M3uToNetPaleyerXml
         {
             InitializeComponent();
 
-
-
             if (!App.IsSilentMode)
             {
                 if (!Directory.Exists(ConfigurationManager.AppSettings["TargetDir"]))
@@ -177,7 +175,26 @@ namespace M3uToNetPaleyerXml
 
             var r = random.Next(0, ch.Count - 1);
 
-            return GetChannelURL(ch[r], GetSource(Config.SourceFile));
+            string url = GetChannelURL(ch[r], GetSource(Config.SourceFile));
+
+            if (url == null)
+            {
+                RemoveChannel(ch[r]);
+                return GetChannel();
+            }
+
+            return url;
+        }
+
+        private void RemoveChannel(Channel ch)
+        {
+            var chls = ReadChannels();
+
+            chls.Remove(ch);
+
+            SerializeChannels(chls);
+
+            lbSelectedChannels.DataContext = chls;
         }
 
         private WindowsState ReadState()
@@ -367,11 +384,18 @@ namespace M3uToNetPaleyerXml
             {
                 var url = GetChannelURL(c, sourceStr);
 
-                res += string.Format(@"
+                if (url != null)
+                {
+                    res += string.Format(@"
         <item>
             <enclosure url=""{0}"" type=""video/mpeg"" />
             <title>{1}</title>
 		</item>", url, c.Name);
+                }
+                else
+                {
+                    RemoveChannel(c);
+                }
             }
 
 
@@ -401,6 +425,9 @@ namespace M3uToNetPaleyerXml
         private string GetChannelURL(Channel channel, string sourceStr)
         {
             var indx = sourceStr.IndexOf(channel.Name);
+
+            if (indx == -1)
+                return null;
 
             while (sourceStr[indx] != '\n')
             {
@@ -436,25 +463,19 @@ namespace M3uToNetPaleyerXml
 
             foreach (var c in channelList)
             {
-                var indx = sourceStr.IndexOf(c.Name);
+                var url = GetChannelURL(c, sourceStr);
 
-                while (sourceStr[indx] != '\n')
+                if (url != null)
                 {
-                    indx++;
-                }
-
-                var lastIndx = indx + 1;
-
-                while (sourceStr[lastIndx] != '\n')
-                {
-                    lastIndx++;
-                }
-
-                var url = sourceStr.Substring(indx + 1, lastIndx - indx - 2);
-
-                res += string.Format(@"#EXTINF:-1, {0}
+                    res += string.Format(@"#EXTINF:-1, {0}
 {1}
 ", c.Name, url);
+                }
+                else
+                {
+                    RemoveChannel(c);
+                }
+                
             }
 
             File.WriteAllText(target, res, new UTF8Encoding());
@@ -501,22 +522,29 @@ namespace M3uToNetPaleyerXml
             Save();
         }
 
+        private void SerializeChannels(ObservableCollection<Channel> channels)
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            using (FileStream writer = File.Create(FILE_CHANNELS))
+            {
+                try
+                {
+                    formatter.Serialize(writer, channels);
+                }
+                finally
+                {
+                    writer.Close();
+                }
+            }
+        }
+
         private void Save()
         {
             if (!App.IsSilentMode)
             {
                 BinaryFormatter formatter = new BinaryFormatter();
-                using (FileStream writer = File.Create(FILE_CHANNELS))
-                {
-                    try
-                    {
-                        formatter.Serialize(writer, lbSelectedChannels.DataContext);
-                    }
-                    finally
-                    {
-                        writer.Close();
-                    }
-                }
+
+                SerializeChannels(lbSelectedChannels.DataContext as ObservableCollection<Channel>);
 
                 using (FileStream writer = File.Create(FILE_WINDOWS_STATE))
                 {
