@@ -30,11 +30,14 @@ namespace M3uToNetPaleyerXml
     public partial class MainWindow : Window
     {
         private string FILE_CHANNELS = "channels.dat";
+        private string FILE_WINDOWS_STATE = "winsts.dat";
 
         private readonly ObservableCollection<Channel> _allChannels;
         public MainWindow()
         {
             InitializeComponent();
+
+
 
             if (!App.IsSilentMode)
             {
@@ -68,6 +71,18 @@ namespace M3uToNetPaleyerXml
                 _allChannels = ReadAllChannels(ConfigurationManager.AppSettings["FileName"] + "tmp");
                 lbAllChannels.DataContext = _allChannels;
                 lbSelectedChannels.DataContext = ReadChannels();
+
+                var st = ReadState();
+
+                if (st.WindowHeight.HasValue)
+                {
+                    wMain.Height = st.WindowHeight.Value;
+                }
+
+                if (st.WindowWidth.HasValue)
+                {
+                    wMain.Width = st.WindowWidth.Value;
+                }
             }
         }
         Random random = new Random();
@@ -165,6 +180,28 @@ namespace M3uToNetPaleyerXml
             return GetChannelURL(ch[r], GetSource(Config.SourceFile));
         }
 
+        private WindowsState ReadState()
+        {
+            var formatter = new BinaryFormatter();
+            FileStream fs = null;
+            var state = new WindowsState();
+            try
+            {
+                fs = File.Open(FILE_WINDOWS_STATE, FileMode.Open);
+                state = (WindowsState)formatter.Deserialize(fs);
+            }
+            catch
+            {
+            }
+            finally
+            {
+                if (fs != null)
+                    fs.Close();
+            }
+
+            return state;
+        }
+
         private ObservableCollection<Channel> ReadChannels()
         {
             var formatter = new BinaryFormatter();
@@ -242,18 +279,20 @@ namespace M3uToNetPaleyerXml
 
         private void KillProcess(string procName)
         {
-            try
-            {
                 Process[] runningProcesses = Process.GetProcesses();
                 foreach (Process process in runningProcesses)
                 {
-                    if (process.MainModule.FileName == procName)
+                    try
                     {
-                        process.Kill();
+                        if (process.MainModule.FileName == procName)
+                        {
+                            process.Kill();
+                        }
+                    }
+                    catch
+                    {
                     }
                 }
-            }
-            catch { }
         }
 
         private DateTime appStarTime = DateTime.Now.AddSeconds(30);
@@ -263,27 +302,18 @@ namespace M3uToNetPaleyerXml
         {
             if (appStarTime <= DateTime.Now)
             {
-                if (!App.IsSilentMode)
+                if (App.IsSilentMode && !Config.MonitorStatus)
                 {
-                    MessageBox.Show("Не могу подключится к серверу TS-Proxy");
+                    Environment.Exit(0);
                 }
-                else
+
+                downloadTryCount++;
+
+                if (downloadTryCount > 20)
                 {
-                    if (!Config.MonitorStatus)
-                    {
-                        Environment.Exit(0);
-                    }
-                    else
-                    {
-                        if (downloadTryCount > 20)
-                        {
-                            MessageBox.Show("20 раз программа пыталась подключится к ТС прокси, не вышло, программа завершила работу");
+                    MessageBox.Show("20 раз программа пыталась подключится к ТС прокси, не вышло, программа завершила работу");
 
-                            Environment.Exit(0);
-                        }
-
-                        downloadTryCount++;
-                    }
+                    Environment.Exit(0);
                 }
             }
 
@@ -481,6 +511,24 @@ namespace M3uToNetPaleyerXml
                     try
                     {
                         formatter.Serialize(writer, lbSelectedChannels.DataContext);
+                    }
+                    finally
+                    {
+                        writer.Close();
+                    }
+                }
+
+                using (FileStream writer = File.Create(FILE_WINDOWS_STATE))
+                {
+                    try
+                    {
+                        WindowsState ws = new WindowsState()
+                        {
+                            WindowHeight = wMain.ActualHeight,
+                            WindowWidth = wMain.ActualWidth
+                        };
+
+                        formatter.Serialize(writer, ws);
                     }
                     finally
                     {
