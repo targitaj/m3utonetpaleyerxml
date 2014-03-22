@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
@@ -19,6 +20,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using M3uToShortM3u;
 using Microsoft.Win32;
 
@@ -36,6 +38,9 @@ namespace M3uToNetPaleyerXml
         public MainWindow()
         {
             InitializeComponent();
+
+            Thread thVersion = new Thread(GetVersion);
+            thVersion.Start();
 
             if (!App.IsSilentMode)
             {
@@ -84,6 +89,32 @@ namespace M3uToNetPaleyerXml
             }
         }
         Random random = new Random();
+
+        private void GetVersion()
+        {
+            using (MyWebClient myWebClient = new MyWebClient())
+            {
+                try
+                {
+                    myWebClient.DownloadFile("http://andrey.mosalsky.com/version.txt", "version.dt");
+
+                    var version = File.ReadAllText("version.dt");
+
+                    if (version != Assembly.GetExecutingAssembly().GetName().Version.ToString())
+                    {
+                        Dispatcher.Invoke((Action) (() =>
+                        {
+                            wMain.Title += " !!!!!Вышло обновление!!!!!";
+                            btnAbout.Content = ((string) btnAbout.Content) + "!!!!!Вышло обновление!!!!!";
+                            btnAbout.Background = Brushes.LightCoral;
+                        }));
+                    }
+                }
+                catch
+                {
+                }
+            }
+        }
 
         private void MonitorStatusRun()
         {
@@ -171,30 +202,48 @@ namespace M3uToNetPaleyerXml
 
         private string GetChannel()
         {
-            var ch = ReadChannels();
+            string url;
 
-            var r = random.Next(0, ch.Count - 1);
-
-            string url = GetChannelURL(ch[r], GetSource(Config.SourceFile));
-
-            if (url == null)
+            if (string.IsNullOrEmpty(Config.MonitorStatusChannel))
             {
-                RemoveChannel(ch[r]);
-                return GetChannel();
+                var ch = ReadChannels();
+
+                var r = random.Next(0, ch.Count - 1);
+
+                url = GetChannelURL(ch[r], GetSource(Config.SourceFile));
+
+                if (url == null)
+                {
+                    RemoveChannel(ch[r], ch);
+                    return GetChannel();
+                }
+            }
+            else
+            {
+                url = GetChannelURL(new Channel() { Name = Config.MonitorStatusChannel }, GetSource(Config.SourceFile));
             }
 
             return url;
         }
 
-        private void RemoveChannel(Channel ch)
+        private void RemoveChannel(Channel remove, ObservableCollection<Channel> list)
         {
-            var chls = ReadChannels();
+            RemoveChannel(new List<Channel>() {remove}, list);
+        }
 
-            chls.Remove(ch);
+        private void RemoveChannel(List<Channel> remove, ObservableCollection<Channel> list)
+        {
+            if (remove.Count == 0)
+                return;
 
-            SerializeChannels(chls);
+            foreach (var channel in remove)
+            {
+                list.Remove(channel);
+            }
 
-            lbSelectedChannels.DataContext = chls;
+            SerializeChannels(list);
+
+            lbSelectedChannels.DataContext = list;
         }
 
         private WindowsState ReadState()
@@ -379,6 +428,7 @@ namespace M3uToNetPaleyerXml
             string sourceStr = GetSource(source);
 
             var channelList = ReadChannels();
+            var toRemove = new List<Channel>();
 
             foreach (var c in channelList)
             {
@@ -394,11 +444,12 @@ namespace M3uToNetPaleyerXml
                 }
                 else
                 {
-                    RemoveChannel(c);
+                    toRemove.Add(c);
+                    
                 }
             }
 
-
+            RemoveChannel(toRemove, channelList);
 
             res += @"
     </channel>
@@ -460,6 +511,7 @@ namespace M3uToNetPaleyerXml
             string sourceStr = File.ReadAllText(source, new UTF8Encoding());
 
             var channelList = ReadChannels();
+            var remove = new List<Channel>();
 
             foreach (var c in channelList)
             {
@@ -473,10 +525,13 @@ namespace M3uToNetPaleyerXml
                 }
                 else
                 {
-                    RemoveChannel(c);
+                    remove.Add(c);
+                    
                 }
                 
             }
+
+            RemoveChannel(remove, channelList);
 
             File.WriteAllText(target, res, new UTF8Encoding());
         }
@@ -601,6 +656,78 @@ namespace M3uToNetPaleyerXml
         {
             About a = new About();
             a.ShowDialog();
+        }
+
+        private void MyListUp_OnClick(object sender, RoutedEventArgs e)
+        {
+            var selChannles = (ObservableCollection<Channel>)lbSelectedChannels.DataContext;
+            var selItem = (Channel)lbSelectedChannels.SelectedItem;
+
+            int idx = selChannles.IndexOf(selItem);
+
+            if (idx == 0 || idx == -1)
+            {
+                return;
+            }
+
+            selChannles.Remove(selItem);
+            selChannles.Insert(idx - 1, selItem);
+
+            lbSelectedChannels.SelectedItem = selItem;
+
+            Save();
+        }
+
+        private void MyListDown_OnClick(object sender, RoutedEventArgs e)
+        {
+            var selChannles = (ObservableCollection<Channel>)lbSelectedChannels.DataContext;
+            var selItem = (Channel) lbSelectedChannels.SelectedItem;
+
+            int idx = selChannles.IndexOf(selItem);
+
+            if (idx == selChannles.Count - 1 || idx == -1)
+            {
+                return;
+            }
+            
+            selChannles.Remove(selItem);
+            selChannles.Insert(idx+1, selItem);
+
+            lbSelectedChannels.SelectedItem = selItem;
+
+            Save();
+        }
+
+        private void BtnSelectAllAllChannels_OnClick(object sender, RoutedEventArgs e)
+        {
+            foreach (var sel in ((ObservableCollection<Channel>)lbAllChannels.DataContext))
+            {
+                sel.IsSelected = true;
+            }
+        }
+
+        private void BtnDeselectAllAllChannels_OnClick(object sender, RoutedEventArgs e)
+        {
+            foreach (var sel in ((ObservableCollection<Channel>)lbAllChannels.DataContext))
+            {
+                sel.IsSelected = false;
+            }
+        }
+
+        private void BtnDeselectAllSelectedChannels_OnClick(object sender, RoutedEventArgs e)
+        {
+            foreach (var sel in ((ObservableCollection<Channel>)lbSelectedChannels.DataContext))
+            {
+                sel.IsSelected = false;
+            }
+        }
+
+        private void BtnSelectAllSelectedChannels_OnClick(object sender, RoutedEventArgs e)
+        {
+            foreach (var sel in ((ObservableCollection<Channel>)lbSelectedChannels.DataContext))
+            {
+                sel.IsSelected = true;
+            }
         }
     }
 }

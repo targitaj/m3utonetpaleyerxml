@@ -20,9 +20,18 @@
             <Button Name="btnAdd" Margin="5" Content="Добавить ->"  Width="75" Click="btnConvert_Click"/>
             <Button Name="btnRemove" Content="&lt;- Убрать" Width="75" Click="BtnRemove_OnClick"/>
         </StackPanel>
-
-
-        <ListBox Name="lbAllChannels" ItemsSource="{Binding}" Grid.Row="1" Margin="10">
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
+                <Button Content="Выделть все" Name="btnSelectAllAllChannels" Click="BtnSelectAllAllChannels_OnClick"></Button>
+                <Button Content="Снять выделение" Margin="10 0 0 0" Name="btnDeselectAllAllChannels" Click="BtnDeselectAllAllChannels_OnClick"></Button>
+            </StackPanel>
+            
+        <ListBox Name="lbAllChannels" ItemsSource="{Binding}" Margin="10" Grid.Row="1" >
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -32,7 +41,18 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <ListBox  Name="lbSelectedChannels" ItemsSource="{Binding}" Grid.Row="1" Grid.Column="2" Margin="10">
+        </Grid>    
+            
+        <Grid Grid.Row="1" Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+        <ListBox  Name="lbSelectedChannels" ItemsSource="{Binding}"  Margin="10" Grid.Row="1">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -42,6 +62,16 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <Button Content="Обо мне" Width="75" Click="Button_Click" Grid.Column="2" VerticalAlignment="Center"/>
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
+                <Button Content="Выделть все" Name="btnSelectAllSelectedChannels" Click="BtnSelectAllSelectedChannels_OnClick"></Button>
+                <Button Content="Снять выделение" Margin="10 0 0 0" Name="btnDeselectAllSelectedChannels" Click="BtnDeselectAllSelectedChannels_OnClick"></Button>
+            </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.RowSpan="2">
+                <Button Content="▲" Width="30" Name="myListUp" Click="MyListUp_OnClick"></Button>
+                <Button Content="▼" Width="30" Margin="0 5 0 0" Name="myListDown" Click="MyListDown_OnClick"></Button>
+            </StackPanel>
+            
+        </Grid>
+        <Button Content="Обо мне" HorizontalAlignment="Center" Click="Button_Click" Grid.Column="2" VerticalAlignment="Center" Name="btnAbout"/>
     </Grid>
 </Window>

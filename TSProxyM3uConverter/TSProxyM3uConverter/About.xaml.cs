@@ -22,5 +22,15 @@ namespace M3uToShortM3u
         {
             InitializeComponent();
         }
+
+        private void TextBlock_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            
+        }
+
+        private void Hyperlink_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://andrey.mosalsky.com");
+        }
     }
 }
