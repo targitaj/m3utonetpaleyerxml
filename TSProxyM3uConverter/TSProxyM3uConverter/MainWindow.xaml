@@ -22,16 +22,22 @@
         </StackPanel>
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition Height="60"></RowDefinition>
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
             
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
-                <Button Content="Выделть все" Name="btnSelectAllAllChannels" Click="BtnSelectAllAllChannels_OnClick"></Button>
-                <Button Content="Снять выделение" Margin="10 0 0 0" Name="btnDeselectAllAllChannels" Click="BtnDeselectAllAllChannels_OnClick"></Button>
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Выбрать все" Name="btnSelectAllAllChannels" Click="BtnSelectAllAllChannels_OnClick"></Button>
+                    <Button Content="Снять выбор" Margin="10 0 0 0" Name="btnDeselectAllAllChannels" Click="BtnDeselectAllAllChannels_OnClick"></Button>
+                </StackPanel>
+                <StackPanel Margin="0 10 0 0" Orientation="Horizontal">
+                    <Button Content="Снять выбор с выделенных" Margin="0 0 0 0" Name="btnUncheckSelected" Click="BtnUncheckSelected_OnClick"></Button>
+                    <Button Content="Выбрать выделенные" Margin="10 0 0 0" Name="btnCheckSelected" Click="BtnCheckSelected_OnClick"></Button>
+                </StackPanel>
             </StackPanel>
             
-        <ListBox Name="lbAllChannels" ItemsSource="{Binding}" Margin="10" Grid.Row="1" >
+        <ListBox Name="lbAllChannels" ItemsSource="{Binding}" Margin="10" Grid.Row="1" SelectionMode="Multiple">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -45,14 +51,14 @@
             
         <Grid Grid.Row="1" Grid.Column="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition Height="60"></RowDefinition>
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition Width="40"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-        <ListBox  Name="lbSelectedChannels" ItemsSource="{Binding}"  Margin="10" Grid.Row="1">
+        <ListBox  Name="lbSelectedChannels" ItemsSource="{Binding}"  Margin="10" Grid.Row="1" SelectionMode="Multiple" >
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -62,9 +68,15 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
-                <Button Content="Выделть все" Name="btnSelectAllSelectedChannels" Click="BtnSelectAllSelectedChannels_OnClick"></Button>
-                <Button Content="Снять выделение" Margin="10 0 0 0" Name="btnDeselectAllSelectedChannels" Click="BtnDeselectAllSelectedChannels_OnClick"></Button>
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                <Button Content="Выбрать все" Name="btnSelectAllSelectedChannels" Click="BtnSelectAllSelectedChannels_OnClick"></Button>
+                <Button Content="Снять выбор" Margin="10 0 0 0" Name="btnDeselectAllSelectedChannels" Click="BtnDeselectAllSelectedChannels_OnClick"></Button>
+                </StackPanel>
+                <StackPanel Margin="0 10 0 0" Orientation="Horizontal">
+                    <Button Content="Снять выбор с выделенных" Margin="0 0 0 0" Name="btnUncheckAllSelected" Click="BtnUncheckAllSelected_OnClick"></Button>
+                    <Button Content="Выбрать выделенные" Margin="10 0 0 0" Name="btnCheckAllSelected" Click="BtnCheckAllSelected_OnClick"></Button>
+                </StackPanel>
             </StackPanel>
         <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.RowSpan="2">
                 <Button Content="▲" Width="30" Name="myListUp" Click="MyListUp_OnClick"></Button>

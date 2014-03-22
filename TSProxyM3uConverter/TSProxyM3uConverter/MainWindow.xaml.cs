@@ -329,7 +329,9 @@ namespace M3uToNetPaleyerXml
 
             if (tryCount <= 3)
                 return;
-            
+
+            tryCount = 0;
+
             KillProcess(Config.PathToTTVProxy);
             KillProcess(Config.PathToAce);
             
@@ -339,8 +341,6 @@ namespace M3uToNetPaleyerXml
             Thread.Sleep(15000);
 
             File.AppendAllText("log.txt", "Свал был в " + DateTime.Now + Environment.NewLine);
-
-            tryCount = 0;
         }
 
         private void KillProcess(string procName)
@@ -350,14 +350,20 @@ namespace M3uToNetPaleyerXml
                 {
                     try
                     {
-                        if (process.MainModule.FileName == procName)
+                        var mModule = process.MainModule;
+                        try
                         {
-                            process.Kill();
+                            if (mModule.FileName == procName)
+                            {
+                                process.Kill();
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            File.AppendAllText("log.txt", e + Environment.NewLine);
                         }
                     }
-                    catch
-                    {
-                    }
+                    catch { }
                 }
         }
 
@@ -601,21 +607,40 @@ namespace M3uToNetPaleyerXml
 
                 SerializeChannels(lbSelectedChannels.DataContext as ObservableCollection<Channel>);
 
-                using (FileStream writer = File.Create(FILE_WINDOWS_STATE))
-                {
-                    try
-                    {
-                        WindowsState ws = new WindowsState()
-                        {
-                            WindowHeight = wMain.ActualHeight,
-                            WindowWidth = wMain.ActualWidth
-                        };
+                var restoreFile = FILE_WINDOWS_STATE + "rest";
 
-                        formatter.Serialize(writer, ws);
-                    }
-                    finally
+                if (File.Exists(FILE_WINDOWS_STATE))
+                {
+                    File.Copy(FILE_WINDOWS_STATE, restoreFile, true);
+                }
+                
+                FileStream writer = null;
+                try
+                {
+                    writer = File.Create(FILE_WINDOWS_STATE);
+
+                    WindowsState ws = new WindowsState()
+                    {
+                        WindowHeight = wMain.ActualHeight,
+                        WindowWidth = wMain.ActualWidth
+                    };
+
+                    formatter.Serialize(writer, ws);
+                }
+                catch (Exception e)
+                {
+                    File.AppendAllText("log.txt", e.ToString());
+                }
+                finally
+                {
+                    if (writer != null)
                     {
                         writer.Close();
+                        writer.Dispose();
+                    }
+                    if (File.Exists(restoreFile))
+                    {
+                        File.Copy(restoreFile, FILE_WINDOWS_STATE, true);
                     }
                 }
             }
@@ -728,6 +753,48 @@ namespace M3uToNetPaleyerXml
             {
                 sel.IsSelected = true;
             }
+
+            
+        }
+
+        private void BtnUncheckSelected_OnClick(object sender, RoutedEventArgs e)
+        {
+            foreach (Channel item in lbAllChannels.SelectedItems)
+            {
+                item.IsSelected = false;
+            }
+
+            lbAllChannels.UnselectAll();
+        }
+
+        private void BtnUncheckAllSelected_OnClick(object sender, RoutedEventArgs e)
+        {
+            foreach (Channel item in lbSelectedChannels.SelectedItems)
+            {
+                item.IsSelected = false;
+            }
+
+            lbSelectedChannels.UnselectAll();
+        }
+
+        private void BtnCheckAllSelected_OnClick(object sender, RoutedEventArgs e)
+        {
+            foreach (Channel item in lbSelectedChannels.SelectedItems)
+            {
+                item.IsSelected = true;
+            }
+
+            lbSelectedChannels.UnselectAll();
+        }
+
+        private void BtnCheckSelected_OnClick(object sender, RoutedEventArgs e)
+        {
+            foreach (Channel item in lbAllChannels.SelectedItems)
+            {
+                item.IsSelected = true;
+            }
+
+            lbAllChannels.UnselectAll();
         }
     }
 }
