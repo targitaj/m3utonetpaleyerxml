@@ -47,5 +47,10 @@ namespace M3uToShortM3u
         {
             get { return bool.Parse(ConfigurationManager.AppSettings["WriteVideoFileMonitorStatus"]); }
         }
+
+        public static string MonitorStatusChannel
+        {
+            get { return ConfigurationManager.AppSettings["MonitorStatusChannel"]; }
+        }
     }
 }

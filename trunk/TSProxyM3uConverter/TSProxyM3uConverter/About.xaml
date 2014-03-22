@@ -1,9 +1,12 @@
 ﻿<Window x:Class="M3uToShortM3u.About"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="About" Height="400" Width="300">
+        Title="About" Height="319.328" Width="232.773">
     <Canvas>
-        <TextBlock Text="mosala@gmail.com" Canvas.Top="80" Canvas.Left="80"></TextBlock>
-        <Image Source="I.jpg" Height="200" Canvas.Left="50" Canvas.Top="118"></Image>
+        <TextBlock Canvas.Left="43.007" Canvas.Top="6.831" Background="Transparent" MouseUp="TextBlock_MouseUp" >
+            <Hyperlink NavigateUri="http://andrey.mosalsky.com" Click="Hyperlink_Click">http://andrey.mosalsky.com</Hyperlink>
+            </TextBlock>
+            <TextBlock Text="mosala@gmail.com" Canvas.Top="31.791" Canvas.Left="43.007"></TextBlock>
+        <Image Source="I.jpg" Height="200" Canvas.Left="13.007" Canvas.Top="69.84"></Image>
     </Canvas>
 </Window>
