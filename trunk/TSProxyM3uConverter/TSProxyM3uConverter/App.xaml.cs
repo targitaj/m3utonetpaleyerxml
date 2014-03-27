@@ -15,6 +15,7 @@ namespace M3uToShortM3u
     public partial class App : Application
     {
         public static bool IsSilentMode = Config.IsSilent;
+        private Hardcodet.Wpf.TaskbarNotification.TaskbarIcon notifyIcon = null;
         void App_Startup(object sender, StartupEventArgs e)
         {
             for (int i = 0; i != e.Args.Length; ++i)
@@ -24,6 +25,20 @@ namespace M3uToShortM3u
                     IsSilentMode = true;
                 }
             }
+
+            if (IsSilentMode)
+            {
+                notifyIcon = (Hardcodet.Wpf.TaskbarNotification.TaskbarIcon) FindResource("NotifyIcon");
+            }
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            if (notifyIcon != null)
+            {
+                notifyIcon.Dispose(); //the icon would clean up automatically, but this is cleaner
+            }
+            base.OnExit(e);
         }
 
         private void App_OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)

@@ -102,10 +102,10 @@ namespace M3uToNetPaleyerXml
 
                     if (version != Assembly.GetExecutingAssembly().GetName().Version.ToString())
                     {
-                        Dispatcher.Invoke((Action) (() =>
+                        Dispatcher.Invoke((Action)(() =>
                         {
                             wMain.Title += " !!!!!Вышло обновление!!!!!";
-                            btnAbout.Content = ((string) btnAbout.Content) + "!!!!!Вышло обновление!!!!!";
+                            btnAbout.Content = ((string)btnAbout.Content) + "!!!!!Вышло обновление!!!!!";
                             btnAbout.Background = Brushes.LightCoral;
                         }));
                     }
@@ -140,9 +140,9 @@ namespace M3uToNetPaleyerXml
                 SaveStreamToFile("VideoFileMonitorStatus.avi", stream);
                 tryCount = 0;
             }
-            catch
+            catch (Exception e)
             {
-                RestartProcesses();
+                RestartProcesses(e);
             }
             finally
             {
@@ -228,7 +228,7 @@ namespace M3uToNetPaleyerXml
 
         private void RemoveChannel(Channel remove, ObservableCollection<Channel> list)
         {
-            RemoveChannel(new List<Channel>() {remove}, list);
+            RemoveChannel(new List<Channel>() { remove }, list);
         }
 
         private void RemoveChannel(List<Channel> remove, ObservableCollection<Channel> list)
@@ -276,7 +276,7 @@ namespace M3uToNetPaleyerXml
             try
             {
                 fs = File.Open(FILE_CHANNELS, FileMode.Open);
-                channels = (ObservableCollection<Channel>) formatter.Deserialize(fs);
+                channels = (ObservableCollection<Channel>)formatter.Deserialize(fs);
             }
             catch
             {
@@ -323,7 +323,7 @@ namespace M3uToNetPaleyerXml
 
 
         private int tryCount = 0;
-        private void RestartProcesses()
+        private void RestartProcesses(Exception e)
         {
             tryCount++;
 
@@ -334,37 +334,38 @@ namespace M3uToNetPaleyerXml
 
             KillProcess(Config.PathToTTVProxy);
             KillProcess(Config.PathToAce);
-            
+
             Process proc = Process.Start(Config.PathToAce);
             Process.Start(Config.PathToTTVProxy);
 
             Thread.Sleep(15000);
 
             File.AppendAllText("log.txt", "Свал был в " + DateTime.Now + Environment.NewLine);
+            File.AppendAllText("log.txt", "" + e + Environment.NewLine);
         }
 
         private void KillProcess(string procName)
         {
-                Process[] runningProcesses = Process.GetProcesses();
-                foreach (Process process in runningProcesses)
+            Process[] runningProcesses = Process.GetProcesses();
+            foreach (Process process in runningProcesses)
+            {
+                try
                 {
+                    var mModule = process.MainModule;
                     try
                     {
-                        var mModule = process.MainModule;
-                        try
+                        if (mModule.FileName == procName)
                         {
-                            if (mModule.FileName == procName)
-                            {
-                                process.Kill();
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            File.AppendAllText("log.txt", e + Environment.NewLine);
+                            process.Kill();
                         }
                     }
-                    catch { }
+                    catch (Exception e)
+                    {
+                        File.AppendAllText("log.txt", e + Environment.NewLine);
+                    }
                 }
+                catch { }
+            }
         }
 
         private DateTime appStarTime = DateTime.Now.AddSeconds(30);
@@ -402,9 +403,9 @@ namespace M3uToNetPaleyerXml
                     myWebClient.DownloadFile(remoteUri, Config.SourceFile);
                     tryCount = 0;
                 }
-                catch
+                catch (Exception e)
                 {
-                    RestartProcesses();
+                    RestartProcesses(e);
                     DownloadFile();
                 }
             }
@@ -451,7 +452,7 @@ namespace M3uToNetPaleyerXml
                 else
                 {
                     toRemove.Add(c);
-                    
+
                 }
             }
 
@@ -498,7 +499,7 @@ namespace M3uToNetPaleyerXml
                 lastIndx++;
             }
 
-             return sourceStr.Substring(indx + 1, lastIndx - indx - 2);
+            return sourceStr.Substring(indx + 1, lastIndx - indx - 2);
         }
 
         private void Convert(string source, string target)
@@ -532,9 +533,9 @@ namespace M3uToNetPaleyerXml
                 else
                 {
                     remove.Add(c);
-                    
+
                 }
-                
+
             }
 
             RemoveChannel(remove, channelList);
@@ -544,12 +545,12 @@ namespace M3uToNetPaleyerXml
 
         private void btnConvert_Click(object sender, RoutedEventArgs e)
         {
-            var selChannles = (ObservableCollection<Channel>) lbSelectedChannels.DataContext;
-            var allChannles = (ObservableCollection<Channel>) lbAllChannels.DataContext;
+            var selChannles = (ObservableCollection<Channel>)lbSelectedChannels.DataContext;
+            var allChannles = (ObservableCollection<Channel>)lbAllChannels.DataContext;
 
             foreach (var allCh in allChannles)
             {
-                if (allCh.IsSelected && !selChannles.Any(s=>s.Name == allCh.Name))
+                if (allCh.IsSelected && !selChannles.Any(s => s.Name == allCh.Name))
                     selChannles.Add(allCh.Clone());
             }
 
@@ -586,17 +587,37 @@ namespace M3uToNetPaleyerXml
         private void SerializeChannels(ObservableCollection<Channel> channels)
         {
             BinaryFormatter formatter = new BinaryFormatter();
-            using (FileStream writer = File.Create(FILE_CHANNELS))
+
+            var restoreFile = FILE_CHANNELS + "rest";
+
+            if (File.Exists(FILE_CHANNELS))
             {
-                try
+                File.Copy(FILE_CHANNELS, restoreFile, true);
+            }
+
+            FileStream writer = null;
+
+            try
+            {
+                writer = File.Create(FILE_CHANNELS);
+                formatter.Serialize(writer, channels);
+            }
+            catch (Exception e)
+            {
+                File.AppendAllText("log.txt", e.ToString());
+                if (File.Exists(restoreFile))
                 {
-                    formatter.Serialize(writer, channels);
-                }
-                finally
-                {
-                    writer.Close();
+                   File.Copy(restoreFile, FILE_CHANNELS, true);
                 }
             }
+                finally
+                {
+                    if (writer != null)
+                    {
+                        writer.Close();
+                        writer.Dispose();
+                    }
+                }
         }
 
         private void Save()
@@ -613,7 +634,7 @@ namespace M3uToNetPaleyerXml
                 {
                     File.Copy(FILE_WINDOWS_STATE, restoreFile, true);
                 }
-                
+
                 FileStream writer = null;
                 try
                 {
@@ -630,6 +651,10 @@ namespace M3uToNetPaleyerXml
                 catch (Exception e)
                 {
                     File.AppendAllText("log.txt", e.ToString());
+                    if (File.Exists(restoreFile))
+                    {
+                        File.Copy(restoreFile, FILE_WINDOWS_STATE, true);
+                    }
                 }
                 finally
                 {
@@ -637,10 +662,6 @@ namespace M3uToNetPaleyerXml
                     {
                         writer.Close();
                         writer.Dispose();
-                    }
-                    if (File.Exists(restoreFile))
-                    {
-                        File.Copy(restoreFile, FILE_WINDOWS_STATE, true);
                     }
                 }
             }
@@ -706,7 +727,7 @@ namespace M3uToNetPaleyerXml
         private void MyListDown_OnClick(object sender, RoutedEventArgs e)
         {
             var selChannles = (ObservableCollection<Channel>)lbSelectedChannels.DataContext;
-            var selItem = (Channel) lbSelectedChannels.SelectedItem;
+            var selItem = (Channel)lbSelectedChannels.SelectedItem;
 
             int idx = selChannles.IndexOf(selItem);
 
@@ -714,9 +735,9 @@ namespace M3uToNetPaleyerXml
             {
                 return;
             }
-            
+
             selChannles.Remove(selItem);
-            selChannles.Insert(idx+1, selItem);
+            selChannles.Insert(idx + 1, selItem);
 
             lbSelectedChannels.SelectedItem = selItem;
 
@@ -754,7 +775,7 @@ namespace M3uToNetPaleyerXml
                 sel.IsSelected = true;
             }
 
-            
+
         }
 
         private void BtnUncheckSelected_OnClick(object sender, RoutedEventArgs e)
