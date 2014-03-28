@@ -78,7 +78,7 @@ namespace Deleter
                         new System.Windows.Threading.DispatcherOperationCallback(delegate
                         {
 
-                            tbLog.Text = "ERROR " + Environment.NewLine;
+                            //tbLog.Text = "ERROR " + Environment.NewLine;
                             
                             return null;
                         }), null);
@@ -108,7 +108,7 @@ namespace Deleter
                                 new System.Windows.Threading.DispatcherOperationCallback(delegate
                                 {
 
-                                    tbLog.Text = "ERROR " + Environment.NewLine;
+                                    //tbLog.Text = "ERROR " + Environment.NewLine;
                                     
                                     return null;
                                 }), null);
@@ -137,7 +137,7 @@ namespace Deleter
                         new System.Windows.Threading.DispatcherOperationCallback(delegate
                         {
 
-                            tbLog.Text = "ERROR " + directoryInfo.FullName + Environment.NewLine;
+                            //tbLog.Text = "ERROR " + directoryInfo.FullName + Environment.NewLine;
                             
                             return null;
                         }), null);
