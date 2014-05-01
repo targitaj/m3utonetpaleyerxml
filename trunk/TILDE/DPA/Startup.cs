@@ -1,8 +1,8 @@
 ﻿using Microsoft.Owin;
 using Owin;
 
-[assembly: OwinStartupAttribute(typeof(DPA.Startup))]
-namespace DPA
+[assembly: OwinStartupAttribute(typeof(TILDE.Startup))]
+namespace TILDE
 {
     public partial class Startup
     {

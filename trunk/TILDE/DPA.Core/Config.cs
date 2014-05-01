@@ -2,20 +2,20 @@
 using System.Configuration;
 using System.Linq;
 
-namespace DPA.Core
+namespace TILDE.Core
 {
 
     public static class Config
     {
         #region Connection strings
 
-        public static string DpaConnectionString
+        public static string TILDEConnectionString
         {
             get
             {
-                if (ConfigurationManager.ConnectionStrings["DpaConnectionString"] != null)
-                    return ConfigurationManager.ConnectionStrings["DpaConnectionString"].ConnectionString;
-                throw new Exception("Dpa connection string is not exist in configs");
+                if (ConfigurationManager.ConnectionStrings["TILDEConnectionString"] != null)
+                    return ConfigurationManager.ConnectionStrings["TILDEConnectionString"].ConnectionString;
+                throw new Exception("TILDE connection string is not exist in configs");
             }
         }
         

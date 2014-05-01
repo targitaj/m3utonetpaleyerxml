@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Optimization;
 
-namespace DPA
+namespace TILDE
 {
     public class BundleConfig
     {

@@ -6,14 +6,14 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using DPA.Db;
-using DPA.Services;
+using TILDE.Db;
+using TILDE.Services;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
-using DPA.Models;
+using TILDE.Models;
 
-namespace DPA.Controllers
+namespace TILDE.Controllers
 {
     [Authorize]
     public class AccountController : Controller
@@ -29,7 +29,7 @@ namespace DPA.Controllers
         {
             var model = new SearchViewModel();
 
-            model.Persons = _accountService.SearchPerson("", "").Select(s => new RegisterViewModel() { PersonName = s.PersonName, PersonalCodeNmr = s.PersonalCodeNmr }).ToList();
+            //model.Persons = _accountService.SearchPerson("", "").Select(s => new RegisterViewModel() { PersonName = s.PersonName, PersonalCodeNmr = s.PersonalCodeNmr }).ToList();
             //model.PersonName = "asd";
             return View(model);
         }
@@ -38,7 +38,7 @@ namespace DPA.Controllers
         [AllowAnonymous]
         public JsonResult Search(SearchViewModel model)
         {
-            model.Persons = _accountService.SearchPerson(model.PersonName, model.PersonalCodeNmr).Select(s => new RegisterViewModel() { PersonName = s.PersonName, PersonalCodeNmr = s.PersonalCodeNmr }).ToList();
+            //model.Persons = _accountService.SearchPerson(model.PersonName, model.PersonalCodeNmr).Select(s => new RegisterViewModel() { PersonName = s.PersonName, PersonalCodeNmr = s.PersonalCodeNmr }).ToList();
 
             return Json(model);
         }
@@ -59,12 +59,12 @@ namespace DPA.Controllers
         {
             if (ModelState.IsValid)
             {
-                _accountService.AddDepartment(new Department()
-                {
-                    Address = model.Address,
-                    ParentId = model.ParentDepartmentId,
-                    Name = model.Name
-                });
+                //_accountService.AddDepartment(new Department()
+                //{
+                //    Address = model.Address,
+                //    ParentId = model.ParentDepartmentId,
+                //    Name = model.Name
+                //});
             }
 
             PrepareDepartmentViewModel(model);
@@ -75,12 +75,12 @@ namespace DPA.Controllers
 
         private void PrepareDepartmentViewModel(DepartmentViewModel model)
         {
-            model.
-                Departments =
-                _accountService.Departments.Select(
-                    s =>
-                        new SelectListItem() { Text = s.Name, Value = s.Id.ToString(CultureInfo.InvariantCulture) })
-                    .ToList();
+            //model.
+            //    Departments =
+            //    _accountService.Departments.Select(
+            //        s =>
+            //            new SelectListItem() { Text = s.Name, Value = s.Id.ToString(CultureInfo.InvariantCulture) })
+            //        .ToList();
 
             model.Departments.Insert(0, new SelectListItem() { Text = "-", Value = "" });
         }
@@ -106,18 +106,18 @@ namespace DPA.Controllers
         {
             if (ModelState.IsValid)
             {
-                _accountService.AddPerson(new Person()
-                {
-                    Address = model.Address,
-                    IncomeTaxRate = model.IncomeTaxRate,
-                    IsIncompleteInformation = model.IsIncompleteInformation,
-                    IsInsolvent = model.IsInsolvent,
-                    IsLRResident = model.IsLRResident,
-                    LegalStatusId = model.LegalStatusId,
-                    PersonName = model.PersonName,
-                    ReceiveNewsletter = model.ReceiveNewsletter,
-                    PersonalCodeNmr = model.PersonalCodeNmr
-                });
+                //_accountService.AddPerson(new Person()
+                //{
+                //    Address = model.Address,
+                //    IncomeTaxRate = model.IncomeTaxRate,
+                //    IsIncompleteInformation = model.IsIncompleteInformation,
+                //    IsInsolvent = model.IsInsolvent,
+                //    IsLRResident = model.IsLRResident,
+                //    LegalStatusId = model.LegalStatusId,
+                //    PersonName = model.PersonName,
+                //    ReceiveNewsletter = model.ReceiveNewsletter,
+                //    PersonalCodeNmr = model.PersonalCodeNmr
+                //});
             }
 
             PrepareRegisterViewModel(model);
@@ -128,12 +128,12 @@ namespace DPA.Controllers
 
         private void PrepareRegisterViewModel(RegisterViewModel model)
         {
-            model.
-                LegalStatuses =
-                _accountService.LegalStatuses.Select(
-                    s =>
-                        new SelectListItem() { Text = s.Description, Value = s.Id.ToString(CultureInfo.InvariantCulture) })
-                    .ToList();
+            //model.
+            //    LegalStatuses =
+            //    _accountService.LegalStatuses.Select(
+            //        s =>
+            //            new SelectListItem() { Text = s.Description, Value = s.Id.ToString(CultureInfo.InvariantCulture) })
+            //        .ToList();
         }
 
     }

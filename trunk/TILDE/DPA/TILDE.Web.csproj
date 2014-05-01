@@ -223,17 +223,19 @@
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="packages.config" />
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DPA.Db\DPA.Db.csproj">
+    <ProjectReference Include="..\DPA.Db\TILDE.Db.csproj">
       <Project>{405428f0-e19e-46cf-8c52-2d7ccf528d28}</Project>
-      <Name>DPA.Db</Name>
+      <Name>TILDE.Db</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DPA.Services\DPA.Services.csproj">
+    <ProjectReference Include="..\DPA.Services\TILDE.Services.csproj">
       <Project>{ad478aca-c68d-400f-afd9-296d16911ca1}</Project>
-      <Name>DPA.Services</Name>
+      <Name>TILDE.Services</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
