@@ -1,0 +1,81 @@
+﻿@model DPA.Models.SearchViewModel
+@{
+    ViewBag.Title = "Register";
+}
+
+<h2>@ViewBag.Title.</h2>
+
+@using (Html.BeginForm("Search", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <h4>Personas pamatinformācijas reģistrēšana</h4>
+    <hr />
+    <div class="form-group">
+        @Html.LabelFor(m => m.PersonName, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.PersonName, new Dictionary<string, object> { { "class", "form-control" }, { "data-bind", "value: Model.PersonName" } })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.PersonalCodeNmr, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.PersonalCodeNmr, new Dictionary<string, object> { { "class", "form-control" }, { "data-bind", "value: Model.PersonalCodeNmr" } })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input id="btnSearch" type="submit" class="btn btn-default" value="Meklet" data-bind="click: create" />
+        </div>
+    </div>
+}
+
+<table>
+    <thead>
+        <tr>
+            <th>Person Name</th>
+            <th>Personal Code Nmr</th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach: Model.Persons">
+        <tr>
+            <td><span data-bind="text: PersonName"></span></td>
+            <td><span data-bind="text: PersonalCodeNmr"></span></td>
+        </tr>
+    </tbody>
+</table>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+    
+        function ProductViewModel() {
+
+            self.Model = ko.mapping.fromJS(@Html.Raw(Json.Encode(Model)));
+
+            //Add New Item
+            self.create = function() {
+                $.ajax({
+                    url: '',
+                    cache: false,
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    data: ko.toJSON(Model),
+                    success: function (data) {
+                        self.Model.Persons.removeAll();
+                        data.Persons.forEach(function(entry) {
+                            self.Model.Persons.push({ PersonName: entry.PersonName, PersonalCodeNmr: entry.PersonalCodeNmr });
+                        });
+                    }
+                }).fail(
+                    function(xhr, textStatus, err) {
+                        alert(err);
+                    });
+            };
+
+        }
+        var viewModel = new ProductViewModel();
+        ko.applyBindings(viewModel);
+    </script>
+    
+}
