@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace DPA.Models
+namespace TILDE.Models
 {
     public class AddressViewModel
     {

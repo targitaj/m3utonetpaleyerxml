@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DPA.Models
+namespace TILDE.Models
 {
     using System.Collections.Generic;
     using System.Web.Mvc;
