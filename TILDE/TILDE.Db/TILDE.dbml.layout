@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="TILDE">
+  <DataContextMoniker Name="/TILDEDataContext" />
+  <nestedChildShapes>
+    <classShape Id="8ca47b0d-458f-4790-84b5-676316cf7756" absoluteBounds="3.5, 0.875, 2, 1.5785953776041666">
+      <DataClassMoniker Name="/TILDEDataContext/Debt" />
+      <nestedChildShapes>
+        <elementListCompartment Id="8030199b-b906-48d1-be56-a7b25f74128c" absoluteBounds="3.515, 1.335, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="8c1a2638-ce7a-49ab-a89d-10dee4bb5219" absoluteBounds="0.75, 1.125, 2, 1.1939925130208338">
+      <DataClassMoniker Name="/TILDEDataContext/User" />
+      <nestedChildShapes>
+        <elementListCompartment Id="2bb74dac-d9d2-4935-8eeb-5b18f693b8fe" absoluteBounds="0.765, 1.585, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(2.75 : 1.72199625651042); (3.5 : 1.72199625651042)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/TILDEDataContext/User/User_Debt" />
+      <nodes>
+        <classShapeMoniker Id="8c1a2638-ce7a-49ab-a89d-10dee4bb5219" />
+        <classShapeMoniker Id="8ca47b0d-458f-4790-84b5-676316cf7756" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(2.75 : 1.36099812825521); (3.5 : 1.36099812825521)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/TILDEDataContext/User/User_Debt1" />
+      <nodes>
+        <classShapeMoniker Id="8c1a2638-ce7a-49ab-a89d-10dee4bb5219" />
+        <classShapeMoniker Id="8ca47b0d-458f-4790-84b5-676316cf7756" />
+      </nodes>
+    </associationConnector>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>

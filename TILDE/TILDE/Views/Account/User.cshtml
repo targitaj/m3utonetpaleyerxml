@@ -1,0 +1,68 @@
+﻿@model TILDE.Models.UserModel
+
+
+@using (Html.BeginForm("User", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <h4>User Info</h4>
+    <hr />
+    <div class="form-group">
+        <div class="form-group">
+            @Html.LabelFor(m => m.Users, new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.DropDownListFor(model => model.UserId, Model.Users, new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="row">
+            @Html.LabelFor(m => m.IsBalancePositive, new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @(Model.IsBalancePositive ? Html.Raw("Yes") : Html.Raw("No"))
+            </div>
+        </div>
+        
+        <div class="row">
+            @Html.LabelFor(m => m.LargestBorrowerUserName, new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Model.LargestBorrowerUserName
+            </div>
+        </div>
+        
+        <div class="row">
+            @Html.LabelFor(m => m.LargestBorrowerAmount, new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Model.LargestBorrowerAmount
+            </div>
+        </div>
+        
+        <div class="row">
+            @Html.LabelFor(m => m.LargestCreditorUserName, new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Model.LargestCreditorUserName
+            </div>
+        </div>
+        
+        <div class="row">
+            @Html.LabelFor(m => m.LargestCreditorAmount, new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Model.LargestCreditorAmount
+            </div>
+        </div>
+        
+        <div class="row">
+            @Html.LabelFor(m => m.BorrowingAverageAmount, new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Model.BorrowingAverageAmount
+            </div>
+        </div>
+        
+    </div>
+    
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input id="btnSearch" type="submit" class="btn btn-default" value="Show" />
+        </div>
+    </div>
+}

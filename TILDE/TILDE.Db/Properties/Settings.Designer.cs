@@ -33,5 +33,15 @@ namespace TILDE.Db.Properties {
                 return ((string)(this["TILDEConnectionString"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=localhost;Initial Catalog=TILDE;Integrated Security=True")]
+        public string TILDEConnectionString1 {
+            get {
+                return ((string)(this["TILDEConnectionString1"]));
+            }
+        }
     }
 }
