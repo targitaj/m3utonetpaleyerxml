@@ -16,17 +16,7 @@ namespace TILDE
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Account", action = "Register", id = UrlParameter.Optional });
-
-            routes.MapRoute(
-                name: "Department",
-                url: "{controller}/{action}",
-                defaults: new { controller = "Account", action = "Department", id = UrlParameter.Optional });
-
-            routes.MapRoute(
-                name: "Search",
-                url: "{controller}/{action}",
-                defaults: new { controller = "Account", action = "Search", id = UrlParameter.Optional });
+                defaults: new { controller = "Account", action = "User", id = UrlParameter.Optional });
         }
     }
 }

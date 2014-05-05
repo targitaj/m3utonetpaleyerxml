@@ -6,12 +6,14 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 using TILDE.Db;
 using TILDE.Services;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
 using TILDE.Models;
+using System.Data.Linq;
 
 namespace TILDE.Controllers
 {
@@ -19,122 +21,57 @@ namespace TILDE.Controllers
     public class AccountController : Controller
     {
         private AccountService _accountService = new AccountService();
-
-        public AccountController()
-        {
-        }
-
+        
         [AllowAnonymous]
-        public ActionResult Search()
+        public ActionResult User()
         {
-            var model = new SearchViewModel();
-
-            //model.Persons = _accountService.SearchPerson("", "").Select(s => new RegisterViewModel() { PersonName = s.PersonName, PersonalCodeNmr = s.PersonalCodeNmr }).ToList();
-            //model.PersonName = "asd";
-            return View(model);
+            return View(PrepareModel(new UserModel()));
         }
 
         [HttpPost]
         [AllowAnonymous]
-        public JsonResult Search(SearchViewModel model)
+        public ActionResult User(UserModel model)
         {
-            //model.Persons = _accountService.SearchPerson(model.PersonName, model.PersonalCodeNmr).Select(s => new RegisterViewModel() { PersonName = s.PersonName, PersonalCodeNmr = s.PersonalCodeNmr }).ToList();
-
-            return Json(model);
+            return View(PrepareModel(model));
         }
 
-        [AllowAnonymous]
-        public ActionResult Department()
+        private UserModel PrepareModel(UserModel model)
         {
-            var model = new DepartmentViewModel();
+            var users = _accountService.Users;
 
-            PrepareDepartmentViewModel(model);
+            model.Users =
+                users.Select(s => new SelectListItem() { Text = s.UserName, Value = s.Id.ToString() }).ToList();
 
-            return View(model);
-        }
-
-        [HttpPost]
-        [AllowAnonymous]
-        public async Task<ActionResult> Department(DepartmentViewModel model)
-        {
-            if (ModelState.IsValid)
+            if (!model.UserId.HasValue && model.Users.Count != 0)
             {
-                //_accountService.AddDepartment(new Department()
-                //{
-                //    Address = model.Address,
-                //    ParentId = model.ParentDepartmentId,
-                //    Name = model.Name
-                //});
+                model.UserId = int.Parse(model.Users.First().Value);
             }
 
-            PrepareDepartmentViewModel(model);
+            User user = null;
 
-            // If we got this far, something failed, redisplay form
-            return View(model);
-        }
-
-        private void PrepareDepartmentViewModel(DepartmentViewModel model)
-        {
-            //model.
-            //    Departments =
-            //    _accountService.Departments.Select(
-            //        s =>
-            //            new SelectListItem() { Text = s.Name, Value = s.Id.ToString(CultureInfo.InvariantCulture) })
-            //        .ToList();
-
-            model.Departments.Insert(0, new SelectListItem() { Text = "-", Value = "" });
-        }
-
-        //
-        // GET: /Account/Register
-        [AllowAnonymous]
-        public ActionResult Register()
-        {
-            var model = new RegisterViewModel();
-
-            PrepareRegisterViewModel(model);
-
-            return View(model);
-        }
-
-        //
-        // POST: /Account/Register
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
-        {
-            if (ModelState.IsValid)
+            if (model.UserId.HasValue)
             {
-                //_accountService.AddPerson(new Person()
-                //{
-                //    Address = model.Address,
-                //    IncomeTaxRate = model.IncomeTaxRate,
-                //    IsIncompleteInformation = model.IsIncompleteInformation,
-                //    IsInsolvent = model.IsInsolvent,
-                //    IsLRResident = model.IsLRResident,
-                //    LegalStatusId = model.LegalStatusId,
-                //    PersonName = model.PersonName,
-                //    ReceiveNewsletter = model.ReceiveNewsletter,
-                //    PersonalCodeNmr = model.PersonalCodeNmr
-                //});
-            }
+                var largestBorrower = _accountService.GetLargestBorrowerByUserId(model.UserId.Value);
 
-            PrepareRegisterViewModel(model);
+                if (largestBorrower != null)
+                {
+                    model.LargestBorrowerAmount = largestBorrower.Total;
+                    model.LargestBorrowerUserName = largestBorrower.User.UserName;
+                }
+
+                var largestCreditor = _accountService.GetLargestCreditorByUserId(model.UserId.Value);
+
+                if (largestCreditor != null)
+                {
+                    model.LargestCreditorAmount = largestCreditor.Total;
+                    model.LargestCreditorUserName = largestCreditor.User.UserName;
+                }
+
+                model.IsBalancePositive = model.LargestCreditorAmount <= model.LargestBorrowerAmount;
+                model.BorrowingAverageAmount = _accountService.GetAvarageBorrowingByUserId(model.UserId.Value);
+            }
             
-            // If we got this far, something failed, redisplay form
-            return View(model);
+            return model;
         }
-
-        private void PrepareRegisterViewModel(RegisterViewModel model)
-        {
-            //model.
-            //    LegalStatuses =
-            //    _accountService.LegalStatuses.Select(
-            //        s =>
-            //            new SelectListItem() { Text = s.Description, Value = s.Id.ToString(CultureInfo.InvariantCulture) })
-            //        .ToList();
-        }
-
     }
 }
