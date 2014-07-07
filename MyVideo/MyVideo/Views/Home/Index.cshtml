@@ -1,0 +1,42 @@
+﻿@using MyVideo.Models
+@model MyVideo.Models.FolderModel
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<script>
+    function submitForm(link) {
+        $('#source').val($(link).attr('data'));
+
+        $('#getStream').submit();
+        return false;
+    }
+</script>
+
+@using(Html.BeginForm("GetStream", "Home" , FormMethod.Post, new { id = "getStream" }))
+{
+
+<br/>
+<a href="@Url.Action("GetStream")" onclick="return submitForm(this);" data="@Model.ParentFolder">Nazad</a>
+    <br />
+    <div>
+        Minuti:
+        @Html.TextBox("offset", "0", new {style = "width:50px;"})
+        Bitrejt:
+        @Html.TextBox("bitrate", "200", new { style = "width:50px;" })
+        Tip:
+        @Html.TextBox("fileFormat", "flv", new { style = "width:50px;" })
+            </div>
+<br />
+foreach (var file in Model.Folder)
+{
+    <div><a href="@Url.Action("GetStream", "Home")" onclick="return submitForm(this);" data="@file.Key">@file.Value</a>
+    @if (!file.Key.Contains("~") && File.Exists(file.Key))
+    {
+        <a href="@Url.Content(new FileInfo(file.Key).Name.Replace(new FileInfo(file.Key).Extension, ".flv"))">FLV</a>
+    }
+    </div>
+    
+}
+    @Html.Hidden("source", " ")
+}
