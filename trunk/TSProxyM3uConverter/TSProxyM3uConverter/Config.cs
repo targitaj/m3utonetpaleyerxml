@@ -52,5 +52,10 @@ namespace M3uToShortM3u
         {
             get { return ConfigurationManager.AppSettings["MonitorStatusChannel"]; }
         }
+
+        public static string FTPServer
+        {
+            get { return ConfigurationManager.AppSettings["FTPServer"]; }
+        }
     }
 }
