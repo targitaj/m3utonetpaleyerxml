@@ -666,13 +666,35 @@ namespace M3uToNetPaleyerXml
                 }
             }
 
+            var targetFile = ConfigurationManager.AppSettings["TargetDir"] + "\\" +
+                             ConfigurationManager.AppSettings["FileName"];
+
             if (bool.Parse(ConfigurationManager.AppSettings["IsNetPalyer"]))
             {
-                ConvertToXML(Config.SourceFile, ConfigurationManager.AppSettings["TargetDir"] + "\\" + ConfigurationManager.AppSettings["FileName"]);
+                ConvertToXML(Config.SourceFile, targetFile);
             }
             else
             {
-                Convert(Config.SourceFile, ConfigurationManager.AppSettings["TargetDir"] + "\\" + ConfigurationManager.AppSettings["FileName"]);
+                Convert(Config.SourceFile, targetFile);
+            }
+
+            if (!string.IsNullOrEmpty(Config.FTPServer))
+            {
+                var request = (FtpWebRequest)WebRequest.Create(Config.FTPServer + "//" + ConfigurationManager.AppSettings["FileName"]);
+                request.Method = WebRequestMethods.Ftp.UploadFile;
+
+                var sourceStream = new StreamReader(targetFile);
+
+                byte[] fileContents = Encoding.UTF8.GetBytes(sourceStream.ReadToEnd());
+                sourceStream.Close();
+                request.ContentLength = fileContents.Length;
+
+                Stream requestStream = request.GetRequestStream();
+                requestStream.Write(fileContents, 0, fileContents.Length);
+                requestStream.Close();
+
+                var response = (FtpWebResponse)request.GetResponse();
+                response.Close();
             }
         }
 
