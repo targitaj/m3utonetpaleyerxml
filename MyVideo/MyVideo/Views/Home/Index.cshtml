@@ -1,7 +1,24 @@
 ﻿@using MyVideo.Models
+@using MyVideo;
 @model MyVideo.Models.FolderModel
 @{
     ViewBag.Title = "Home Page";
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.JWPlayerSource))
+{
+    <script type="text/javascript" src="~/jwplayer.js"></script>
+    <script type="text/javascript">jwplayer.key = "XqHvJ+ZjkpUdxSPZa/GAU0+JcSRmG1a8Zr0menqkcyJdaSU3Bl3EMQ==";</script>
+
+    <div id="myElement">Loading the player...</div>
+
+<script type="text/javascript">
+    jwplayer("myElement").setup({
+        file: "@Url.Content("~/" + Model.JWPlayerSource, true)"
+    });
+</script>
+    
+    return;
 }
 
 <script>
@@ -13,7 +30,7 @@
     }
 </script>
 
-@using(Html.BeginForm("GetStream", "Home" , FormMethod.Post, new { id = "getStream" }))
+@using (Html.BeginForm("GetStream", "Home", FormMethod.Post, new { id = "getStream" }))
 {
 
 <br/>
@@ -21,22 +38,25 @@
     <br />
     <div>
         Minuti:
-        @Html.TextBox("offset", "0", new {style = "width:50px;"})
+        @Html.TextBox("offset", "0", new { style = "width:50px;" })
         Bitrejt:
         @Html.TextBox("bitrate", "200", new { style = "width:50px;" })
         Tip:
         @Html.TextBox("fileFormat", "flv", new { style = "width:50px;" })
+        Встроеный плеер:
+        @Html.CheckBox("isEmbed")
             </div>
 <br />
-foreach (var file in Model.Folder)
-{
+    foreach (var file in Model.Folder)
+    {
     <div><a href="@Url.Action("GetStream", "Home")" onclick="return submitForm(this);" data="@file.Key">@file.Value</a>
     @if (!file.Key.Contains("~") && File.Exists(file.Key))
     {
         <a href="@Url.Content(new FileInfo(file.Key).Name.Replace(new FileInfo(file.Key).Extension, ".flv"))">FLV</a>
+        @Html.Hidden("isMobile", @Request.Browser.IsMobileDevice)
     }
     </div>
     
-}
+    }
     @Html.Hidden("source", " ")
 }
