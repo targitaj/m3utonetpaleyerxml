@@ -40,19 +40,26 @@ namespace MyVideo.Controllers
             }
             else
             {
-                var di = new DirectoryInfo(source);
-
-                foreach (var dir in di.GetDirectories())
+                if (System.IO.File.Exists(Server.MapPath("~") + source))
                 {
-                    model.Folder.Add(dir.FullName, dir.Name);
+                    model.JWPlayerSource = source;
                 }
-
-                foreach (var file in di.GetFiles())
+                else
                 {
-                    model.Folder.Add(file.FullName, file.Name);
-                }
+                    var di = new DirectoryInfo(source);
 
-                model.ParentFolder = di.Parent.FullName;
+                    foreach (var dir in di.GetDirectories())
+                    {
+                        model.Folder.Add(dir.FullName, dir.Name);
+                    }
+
+                    foreach (var file in di.GetFiles())
+                    {
+                        model.Folder.Add(file.FullName, file.Name);
+                    }
+
+                    model.ParentFolder = di.Parent.FullName;
+                }
             }
 
             return View(model);
@@ -60,7 +67,7 @@ namespace MyVideo.Controllers
 
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult GetStream(string source, string offset, string fileFormat, string bitrate)
+        public ActionResult GetStream(string source, string offset, string fileFormat, string bitrate, bool isEmbed)
         {
             
 
@@ -99,7 +106,7 @@ namespace MyVideo.Controllers
                         processes.Remove(source);
                     }
                 }
-
+                Server.ScriptTimeout = 90000;
                 Thread.Sleep(1000);
 
                 processes.Add(source, myproc);
@@ -107,6 +114,16 @@ namespace MyVideo.Controllers
                 var fi = new FileInfo(source);
                 string outputFile;
                 string line;
+
+                if (isEmbed)
+                {
+                    if (!Request.Browser.IsMobileDevice)
+                        fileFormat = "flv";
+                    else
+                    {
+                        fileFormat = "ts";
+                    }
+                }
 
                 if (fileFormat == "flv")
                 {
@@ -119,7 +136,7 @@ namespace MyVideo.Controllers
                 {
                     outputFile = fi.Name.Replace(fi.Extension, "") + "." + fileFormat;
                     line = string.Format(
-                        @"-i ""{0}"" -ss {2} -b {3}k -f mpegts ""{1}""",
+                        @"-i ""{0}"" -ss {2} -b {3}k -v 0 -f mpegts ""{1}""",
                         source, Server.MapPath("~") + outputFile, offset, bitrate);
                 }
 
@@ -150,7 +167,14 @@ namespace MyVideo.Controllers
                     Thread.Sleep(2000);
                 }
 
-                Response.Redirect(Url.Content(@"..\\" + outputFile), true);
+                if (isEmbed)
+                {
+                    return RedirectToAction("Index", new RouteValueDictionary() { { "source", outputFile } });
+                }
+                else
+                {
+                    Response.Redirect(Url.Content(@"..\\" + outputFile), true);
+                }
             }
 
             return RedirectToAction("Index");
