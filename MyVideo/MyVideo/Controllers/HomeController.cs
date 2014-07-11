@@ -121,7 +121,7 @@ namespace MyVideo.Controllers
                         fileFormat = "flv";
                     else
                     {
-                        fileFormat = "ts";
+                        fileFormat = "mp4";
                     }
                 }
 
@@ -130,6 +130,13 @@ namespace MyVideo.Controllers
                     outputFile = fi.Name.Replace(fi.Extension, "") + ".flv";
                     line = string.Format(
                         @"-i ""{0}"" -ss {2} -async 1 -b {3}k -ar 44100 -ac 2 -v 0 -f flv -vcodec libx264 ""{1}""",
+                        source, Server.MapPath("~") + outputFile, offset, bitrate);
+                }
+                else if (fileFormat == "mp4")
+                {
+                    outputFile = fi.Name.Replace(fi.Extension, "") + "." + fileFormat;
+                    line = string.Format(
+                        @"-i ""{0}"" -ss {2} -b {3}k -v 0 -vcodec libx264 ""{1}""",
                         source, Server.MapPath("~") + outputFile, offset, bitrate);
                 }
                 else
