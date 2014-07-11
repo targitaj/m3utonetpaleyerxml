@@ -53,7 +53,14 @@
     <div><a href="@Url.Action("GetStream", "Home")" onclick="return submitForm(this);" data="@file.Key">@file.Value</a>
     @if (!file.Key.Contains("~") && File.Exists(file.Key))
     {
-        <a href="@Url.Content(new FileInfo(file.Key).Name.Replace(new FileInfo(file.Key).Extension, ".flv"))">FLV</a>
+        var fi = new FileInfo(file.Key);
+        var flv = fi.Name.Replace(fi.Extension, ".flv");
+        if (File.Exists(Server.MapPath("~") + flv))
+        {
+            <a href="@Url.Content(flv)">FLV</a>
+            @(string.Format("{0:0.00}", ((double)(new FileInfo(Server.MapPath("~") + flv).Length) / (8 * 1024 * 1024))))
+            @Html.Raw("MB")
+        }
         @Html.Hidden("isMobile", @Request.Browser.IsMobileDevice)
     }
     </div>
