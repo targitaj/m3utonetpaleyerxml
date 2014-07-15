@@ -129,7 +129,7 @@ namespace MyVideo.Controllers
                 {
                     outputFile = fi.Name.Replace(fi.Extension, "") + ".flv";
                     line = string.Format(
-                        @"-i ""{0}"" -ss {2} -async 1 -b {3}k -ar 44100 -ac 2 -v 0 -f flv -vcodec libx264 ""{1}""",
+                        @"-i ""{0}"" -ss {2} -async 1 -c:a libfdk_aac -vbr 3 -b {3}k -vf ""scale=400:trunc(ow/a/2)*2"" -ac 1 -v 0 -f flv -vcodec libx264 ""{1}""",
                         source, Server.MapPath("~") + outputFile, offset, bitrate);
                 }
                 else if (fileFormat == "mp4")
