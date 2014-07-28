@@ -67,7 +67,7 @@ namespace MyVideo.Controllers
 
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult GetStream(string source, string offset, string fileFormat, string bitrate, bool isEmbed)
+        public ActionResult GetStream(string source, string offset, string fileFormat, string bitrate, bool isEmbed, int soundNumber)
         {
             
 
@@ -129,8 +129,8 @@ namespace MyVideo.Controllers
                 {
                     outputFile = fi.Name.Replace(fi.Extension, "") + ".flv";
                     line = string.Format(
-                        @"-i ""{0}"" -ss {2} -async 1 -c:a libfdk_aac -vbr 3 -b {3}k -vf ""scale=400:trunc(ow/a/2)*2"" -ac 1 -v 0 -f flv -vcodec libx264 ""{1}""",
-                        source, Server.MapPath("~") + outputFile, offset, bitrate);
+                        @"-i ""{0}"" -ss {2} -async 1 -c:a libfdk_aac -vbr 3 -b {3}k -vf ""scale=400:trunc(ow/a/2)*2"" -map 0:0  -map 0:{4} -v 0 -f flv -vcodec libx264 ""{1}""",
+                        source, Server.MapPath("~") + outputFile, offset, bitrate, soundNumber);
                 }
                 else if (fileFormat == "mp4")
                 {
