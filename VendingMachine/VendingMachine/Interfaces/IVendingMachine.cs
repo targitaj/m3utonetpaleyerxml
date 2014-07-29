@@ -28,6 +28,6 @@
 
         /// <summary>Buys product from list of product.</summary>
         /// <param name="productNumber">Product number in vending machine product list.</param>>
-        Product Buy(int productNumber);
+        Product? Buy(int productNumber);
     }
 }

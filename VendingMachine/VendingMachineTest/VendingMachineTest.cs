@@ -202,7 +202,7 @@
             var backMoney = vendingMachine.InsertCoin(money);
             
             Assert.AreNotEqual(money, backMoney);
-            Assert.AreEqual(money, new Money());
+            Assert.AreEqual(backMoney, new Money());
             Assert.IsTrue(correctCoinInsertedOccurs);
         }
 
@@ -214,12 +214,11 @@
         /// Buying product with no enought money, message occurs
         /// </summary>
         [TestMethod]
-        public void BuyProductWithNotEnoughtMoneyNotEnoughtMoneyMessageShows()
+        public void BuyProductWithNotEnoughtMoneyNotEnoughtMoneyMessageShowsWithNoProduct()
         {
             var money = new Money() { Cents = 5 };
             vendingMachine.InsertCoin(money);
 
-            var product = vendingMachine.Buy(products.First().ProductNumber);
             var notEnoughtMoneyToBuySelectedProductOccurs = false;
 
             vendingMachine.MessageChanged += delegate(object sender, MessageEnum e)
@@ -229,6 +228,8 @@
                     notEnoughtMoneyToBuySelectedProductOccurs = true;
                 }
             };
+
+            var product = vendingMachine.Buy(products.First().ProductNumber);
             
             Assert.IsTrue(notEnoughtMoneyToBuySelectedProductOccurs);
             Assert.IsNull(product);
@@ -240,22 +241,161 @@
         [TestMethod]
         public void BuyProductWithEnoughtMoneyAndNoChangeReturningProduct()
         {
-            var money = products.First().Price;
-            vendingMachine.InsertCoin(money);
+            vendingMachine.InsertCoin(new Money() { Cents = 20 });
+            vendingMachine.InsertCoin(new Money() { Cents = 10 });
+            vendingMachine.InsertCoin(new Money() { Euros = 1 });
 
-            var product = vendingMachine.Buy(products.First().ProductNumber);
-            var productBuiedWithNoChangeOccurs = false;
+            var productBuyedWithNoChangeOccurs = false;
 
             vendingMachine.MessageChanged += delegate(object sender, MessageEnum e)
             {
                 if (e == MessageEnum.ProductBuyedWithNoChange)
                 {
-                    productBuiedWithNoChangeOccurs = true;
+                    productBuyedWithNoChangeOccurs = true;
                 }
             };
+
+            var product = vendingMachine.Buy(products.First().ProductNumber);
             
-            Assert.IsTrue(productBuiedWithNoChangeOccurs);
+            Assert.IsTrue(productBuyedWithNoChangeOccurs);
             Assert.IsNotNull(product);
+        }
+
+        /// <summary>
+        /// Buying product with enough money with change(money back)
+        /// </summary>
+        [TestMethod]
+        public void BuyProductWithEnoughtMoneyAndWithChangeReturningProductAndMoneyOneProductMinus()
+        {
+            vendingMachine.InsertCoin(new Money(){Euros = 2});
+
+            var productBuyedWithChangeOccurs = false;
+
+            vendingMachine.MessageChanged += delegate(object sender, MessageEnum e)
+            {
+                if (e == MessageEnum.ProductBuyedWithChange)
+                {
+                    productBuyedWithChangeOccurs = true;
+                }
+            };
+
+            var prod = products.First();
+            var product = vendingMachine.Buy(prod.ProductNumber);
+
+            Assert.AreEqual(vendingMachine.Amount, new Money());
+            Assert.IsTrue(productBuyedWithChangeOccurs);
+            Assert.IsNotNull(product);
+            Assert.AreEqual(prod.Available, products.First().Available + 1);
+        }
+
+        /// <summary>
+        /// Buying product with enough money with change(money back)
+        /// </summary>
+        [TestMethod]
+        public void BuyProductWithEnoughtMoneyButThereIsNoSuchProductSelectCorrectProductOccurs()
+        {
+            vendingMachine.InsertCoin(new Money() { Euros = 2 });
+
+            var selectCorrectProductOccurs = false;
+
+            vendingMachine.MessageChanged += delegate(object sender, MessageEnum e)
+            {
+                if (e == MessageEnum.SelectCorrectProduct)
+                {
+                    selectCorrectProductOccurs = true;
+                }
+            };
+
+            var product = vendingMachine.Buy(-1);
+
+            Assert.IsTrue(selectCorrectProductOccurs);
+            Assert.IsNull(product);
+        }
+
+        /// <summary>
+        /// Buying product with enough money with change(money back)
+        /// </summary>
+        [TestMethod]
+        public void BuyProductWithEnoughtMoneyButProductFinishedSelectCorrectProductOccurs()
+        {
+            vendingMachine.InsertCoin(new Money() { Euros = 2 });
+
+            var selectCorrectProduct = false;
+
+            vendingMachine.MessageChanged += delegate(object sender, MessageEnum e)
+            {
+                if (e == MessageEnum.SelectCorrectProduct)
+                {
+                    selectCorrectProduct = true;
+                }
+            };
+
+            var product = vendingMachine.Buy(-1);
+
+            Assert.IsTrue(selectCorrectProduct);
+            Assert.IsNull(product);
+        }
+
+        #endregion
+
+        #region Returning money test
+
+        /// <summary>
+        /// Buying product with enough money with change(money back)
+        /// </summary>
+        [TestMethod]
+        public void ReturnMoneyExecutedWhenNoMoneyInsertedReturnNoMoney()
+        {
+            var noMoneyToReturnOccurs = false;
+
+            vendingMachine.MessageChanged += delegate(object sender, MessageEnum e)
+            {
+                if (e == MessageEnum.NoMoneyToReturn)
+                {
+                    noMoneyToReturnOccurs = true;
+                }
+            };
+
+            var money = vendingMachine.ReturnMoney();
+            
+            Assert.IsTrue(noMoneyToReturnOccurs);
+            Assert.AreEqual(money, new Money());
+        }
+
+        /// <summary>
+        /// Buying product with enough money with change(money back)
+        /// </summary>
+        [TestMethod]
+        public void ReturnMoneyExecutedSomeMoneyInsertedReturnMoney()
+        {
+            vendingMachine.InsertCoin(new Money()
+            {
+                Euros = 2
+            });
+
+            vendingMachine.InsertCoin(new Money()
+            {
+                Euros = 1,
+            });
+
+            vendingMachine.InsertCoin(new Money()
+            {
+                Cents = 5,
+            });
+
+            var takeReturnedMoneyOcuurs = false;
+
+            vendingMachine.MessageChanged += delegate(object sender, MessageEnum e)
+            {
+                if (e == MessageEnum.TakeReturnedMoney)
+                {
+                    takeReturnedMoneyOcuurs = true;
+                }
+            };
+            var money = vendingMachine.ReturnMoney();
+
+            Assert.IsTrue(takeReturnedMoneyOcuurs);
+            Assert.AreEqual(money, new Money() {Euros = 3, Cents = 5});
         }
 
         #endregion

@@ -29,5 +29,20 @@
         /// Product buyed with change
         /// </summary>
         ProductBuyedWithChange,
+
+        /// <summary>
+        /// No money return possible becouse no money insetrted
+        /// </summary>
+        NoMoneyToReturn,
+
+        /// <summary>
+        /// Inserted money returned
+        /// </summary>
+        TakeReturnedMoney,
+
+        /// <summary>
+        /// No such product or it is finished
+        /// </summary>
+        SelectCorrectProduct
     }
 }

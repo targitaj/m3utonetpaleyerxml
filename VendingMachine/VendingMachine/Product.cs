@@ -13,5 +13,21 @@
 
         ///<summary>Gets or sets the product name.</summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Decrement operator overload
+        /// </summary>
+        /// <param name="obj">Object to decrement</param>
+        /// <returns>Decrement result</returns>
+        public Product DecrementAvailable()
+        {
+            return new Product()
+            {
+                ProductNumber = this.ProductNumber,
+                Available = this.Available -1,
+                Name = this.Name,
+                Price = this.Price
+            };
+        }
     }
 }

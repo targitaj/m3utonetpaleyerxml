@@ -23,11 +23,6 @@
         #region Members
 
         /// <summary>
-        /// Store initial products in vending machine
-        /// </summary>
-        private Product[] products;
-
-        /// <summary>
         /// Store information about acceptable coins
         /// </summary>
         private static List<Money> ACCEPTABLE_COINS = new List<Money>()
@@ -91,7 +86,8 @@
                 throw new TypeInitializationException("VendingMachine.Logic.VendingMachine", new Exception("Pruducts must contain one or more elements"));
             }
 
-            this.products = products;
+            this.Amount = new Money();
+            this.Products = products;
 
             string vald = ValidateProducts();
 
@@ -111,7 +107,7 @@
         {
             var res = new Money();
 
-            if (!ACCEPTABLE_COINS.Contains(amount))
+            if (!ACCEPTABLE_COINS.Any(a=>a.Cents == amount.Cents && a.Euros == amount.Euros))
             {
                 if (MessageChanged != null)
                 {
@@ -119,21 +115,101 @@
                     res = amount;
                 }
             }
+            else
+            {
+                this.Amount += amount;
+
+                if (MessageChanged != null)
+                {
+                    MessageChanged(this, MessageEnum.InsertCoinsOrSelectProduct);
+                }
+            }
 
             return res;
         }
 
+        // TODO: Rewrite logic to return ACCEPTABLE_COINS array
         /// <summary>Returns all inserted coins back to user.</summary>
         public Money ReturnMoney()
         {
-            throw new System.NotImplementedException();
+            var res = new Money();
+
+            if (this.Amount == new Money())
+            {
+                if (MessageChanged != null)
+                {
+                    MessageChanged(this, MessageEnum.NoMoneyToReturn);
+                }
+            }
+            else
+            {
+                if (MessageChanged != null)
+                {
+                    MessageChanged(this, MessageEnum.TakeReturnedMoney);
+                }
+
+                res = this.Amount;
+                this.Amount -= this.Amount;
+            }
+
+            return res;
         }
 
         /// <summary>Buys product from list of product.</summary>
         /// <param name="productNumber">Product number in vending machine product list.</param>>
-        public Product Buy(int productNumber)
+        public Product? Buy(int productNumber)
         {
-            throw new System.NotImplementedException();
+            Product? res = null;
+
+            var prod = this.Products.FirstOrDefault(p => p.ProductNumber == productNumber);
+
+            if (prod.Available > 0)
+            {
+                if (prod.Price > this.Amount)
+                {
+                    if (MessageChanged != null)
+                    {
+                        MessageChanged(this, MessageEnum.NotEnoughtMoneyToBuySelectedProduct);
+                    }
+                }
+
+                if (prod.Price == this.Amount)
+                {
+                    res = prod;
+
+                    if (MessageChanged != null)
+                    {
+                        MessageChanged(this, MessageEnum.ProductBuyedWithNoChange);
+                    }
+
+                    this.Amount -= prod.Price;
+                    this.Products[this.Products.ToList().IndexOf(prod)] = prod.DecrementAvailable();
+                }
+
+                if (prod.Price < this.Amount)
+                {
+                    res = prod;
+
+                    if (MessageChanged != null)
+                    {
+                        MessageChanged(this, MessageEnum.ProductBuyedWithChange);
+                    }
+
+                    this.Amount -= prod.Price;
+                    this.Products[this.Products.ToList().IndexOf(prod)] = prod.DecrementAvailable();
+
+                    ReturnMoney();
+                }
+            }
+            else
+            {
+                if (MessageChanged != null)
+                {
+                    MessageChanged(this, MessageEnum.SelectCorrectProduct);
+                }
+            }
+
+            return res;
         }
 
         #endregion
@@ -146,7 +222,7 @@
         /// <returns>Error message or null</returns>
         private string ValidateProducts()
         {
-            foreach (var prod in this.products)
+            foreach (var prod in this.Products)
             {
                 if (prod.Price.Euros < 0 || prod.Price.Cents < 0)
                 {
@@ -169,7 +245,7 @@
                 }
             }
 
-            if (this.products.Any(a => this.products.Count(c => c.ProductNumber == a.ProductNumber) > 1))
+            if (this.Products.Any(a => this.Products.Count(c => c.ProductNumber == a.ProductNumber) > 1))
             {
                 return "Product number must be unique";
             }
