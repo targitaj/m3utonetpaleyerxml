@@ -1,0 +1,12 @@
+﻿@using Uma.Eservices.Models.OLE.Enums
+@model Uma.Eservices.Models.FormCommons.AttachmentBlock
+@using (Html.BeginUmaExpander("Attach proof of health insurance | required", "acordStep4", true))
+{
+    <div class="upload-text">
+        @T("Maximum 4 MB per single attachment.")
+    </div>
+    using (Html.BeginForm(MVC.OLE.Actions.UploadFile(AttachmentTypeEnum.Health, Model.ApplicationId, null), FormMethod.Post, new { data_upload_template_id = "template-upload-3", data_download_template_id = "template-download-3" }))
+    {
+        @Html.UmaAjaxFileUpload(4194304, Url.Action(MVC.OLE.Actions.UploadFile(AttachmentTypeEnum.Health, Model.ApplicationId, null)), MVC.Shared.Views._MultiFileUpload, Model, MVC.OLE.ActionNames.DeleteFile, MVC.OLE.ActionNames.DownloadFile, "template-upload-3", "template-download-3")
+    }
+}

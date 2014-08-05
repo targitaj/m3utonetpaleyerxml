@@ -1,0 +1,24 @@
+﻿@model Uma.Eservices.Models.Sandbox.SpouseModel
+<table>
+    <tr>
+        <td>Spouse Model</td>
+        <td>@Html.UmaPdfLabelFor(o => o.FirstNames)</td>
+    </tr>
+    <tr>
+        <td>Last Name</td>
+        <td>@Html.UmaPdfLabelFor(o => o.LastName)</td>
+    </tr>
+    <tr>
+        <td>First Name</td>
+        <td>@T(Model.FirstNames)</td>
+    </tr>
+    <tr>
+        <td>Text Box Value</td>
+        <td>@T(Model.DateOfBirth.ToString())</td>
+    </tr>
+    <tr>
+        <td>Country state test</td>
+        <td>@T(Model.BirthPlace)</td>
+    </tr>
+</table>
+

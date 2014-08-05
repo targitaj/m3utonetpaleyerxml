@@ -1,0 +1,25 @@
+﻿@model CaptchaMvc.Models.MathBuildInfoModel
+
+<img id="@Model.ImageElementId" src="@Model.ImageUrl" />
+@Html.Hidden(Model.TokenElementId, Model.TokenValue)
+<br />
+@{
+
+    string id;
+    if (!Model.Attributes.TryGetValue("CaptchaId", out id))
+    {
+        id = Guid.NewGuid().ToString("N");
+        Model.Attributes["CaptchaId"] = id;
+    }
+    string functionName;
+    if (!Model.Attributes.TryGetValue("CaptchaFuncName", out functionName))
+    {
+        functionName = string.Format("______{0}________()", Guid.NewGuid().ToString("N"));
+        Model.Attributes["CaptchaFuncName"] = functionName;
+    }
+
+    <a href="#@id" id="@id" onclick="@functionName" style="display: none;">@Model.RefreshButtonText</a>
+}
+@Html.UmaLabel(Model.InputElementId, "Enter result")
+@Html.UmaTextBoxFor(m => m.InputElementId, null, false, Model.InputElementId, "", new { data_val = "true", data_val_required = Model.RequiredMessage})
+@Html.ValidationMessage(Model.InputElementId)

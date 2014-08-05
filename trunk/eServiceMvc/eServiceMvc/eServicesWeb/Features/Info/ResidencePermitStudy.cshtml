@@ -1,0 +1,136 @@
+﻿@model bool
+
+@{
+    ViewBag.Title = "Student";
+}
+
+<section id="ResidencePermitSpecialist">
+    @if (Model == true)
+    {
+        <div class="path-descr">
+            <div><a href="@Url.Action(MVC.Home.Index())">@T("Home")</a></div>
+            <div>@T("New Application")</div>
+            <div><a href="@Url.Action(MVC.Info.ResidencePermit())">@T("Residency Permits")</a></div>
+            <div>@T("Student")</div>
+        </div>
+        @Html.Partial(MVC.Shared.Views._DashboardTabs, 2)
+    }
+    else
+    {
+        <div class="path-descr">
+            <div><a href="@Url.Action(MVC.Home.Index())">@T("Home")</a></div>
+            <div><a href="@Url.Action(MVC.Info.ResidencePermit())">@T("Residency Permits")</a></div>
+            <div>@T("Student")</div>
+        </div>
+    }
+
+    <!--Block-->
+
+    <div class="row">
+        <div class="col-sm-8">
+            <h1 class="padding-left">@T("Student")</h1>
+
+            <!--Left text-->
+            <div class="col-sm-4">
+                <div>
+                    <h4>
+                        @T("The key requirements for a Student residence " +
+                            "permit are formal acceptance into a university, " +
+                            "savings and income, and health insurance.")
+                    </h4>
+                </div>
+                <p>
+                    @T("In order to study in Finland, you must apply for a residence permit if " +
+                        "you plan to study in Finland for longer than 90 days. You can study " +
+                        "for 90 days without a visa or residence permit if you are a citizen of a " +
+                        "visa-free country. You can submit your application electronically. " +
+                        "Since the application forms and appendices do not need to be sent " +
+                        "by post, e-services makes the application process faster.")
+                </p>
+                <h4>
+                    @T("Citizens of the EU/EEA member states")
+                </h4>
+                <p>
+                    @T("If you are a citizen of the EU, Iceland, Liechtenstein, Norway or Switzerland " +
+                        "you will not require a residence permit for Finland. EU registration " +
+                        "can be found on the Finnish Police website.")
+                </p>
+
+            </div>
+
+            @Html.Partial(MVC.Common.Views.ViewNames._MigriBannerTextPic)
+        </div>
+    </div>
+
+    <!--Online application steps for a Specialist-->
+    <div class="row">
+        <div class="col-sm-8">
+            <h2 class="padding-left">@T("Online application steps for a Student")</h2>
+
+            <div class="col-sm-offset-1 col-sm-6">
+                <h4>@T("What you should know and need to fill in the Online Student Application")</h4>
+
+                <div class="column-float">
+                    <p>
+                        @T("The residence permit application is for you if you " +
+                            "are coming to Finland to study at a Finnish " +
+                            "educational institution where you have already " +
+                            "been accepted as a student. The studies must be " +
+                            "undergraduate studies, leading to a degree or " +
+                            "vocational qualification.")
+                    </p>
+                    <p>
+                        @T("Applicable educational institutions include " +
+                            "universities and universities of applied sciences, " +
+                            "vocational education institutions, and in the case " +
+                            "of exchange students, any of the above including " +
+                            "upper secondary schools. In special cases, a " +
+                            "residence permit for study may be issued for " +
+                            "other studies then those described above. " +
+                            "Carefully fill in the application. Incomplete " +
+                            "information will delay the processing of the " +
+                            "application and may lead to its rejection.")
+                    </p>
+                    <p>
+                        @T("Please know that applications may be submitted " +
+                            "to a Finnish diplomatic mission aborad or to a " +
+                            "local police in Finland. A processing fee of €300 " +
+                            "can be paid either online or when the application " +
+                            "is submitted at Embassy or Police station.")
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @Html.Partial(MVC.Common.Views.ViewNames._PrepareDocuments)
+
+    @if (!@User.Identity.IsAuthenticated)
+    {
+        <h4>@("Register or Log in to start with your Specialist Residence Permit application:")</h4>
+        @Html.Partial(MVC.Common.Views.ViewNames._RegisterLogInPanels)
+    }
+
+    @Html.Partial(MVC.Common.Views.ViewNames._FillApplication)
+
+    @Html.Partial(MVC.Common.Views.ViewNames._PayAndSubmit)
+
+    @Html.Partial(MVC.Common.Views.ViewNames._VisitiEmbassyOfPoliceStation)
+
+    @Html.Partial(MVC.Common.Views.ViewNames._ReviewProgress)
+
+    @if (!@User.Identity.IsAuthenticated)
+    {
+        @Html.Partial(MVC.Common.Views.ViewNames._CreateNewAppLoginPanels)
+    }
+    else
+    {
+        <h2></h2>
+        <div class="row  row-padding">
+            <div class="col-sm-4 col-sm-offset-2">
+                @Html.UmaButtonLink(@T("GO TO FORM").ToString(), @Url.Action(MVC.OLE.OPIStep1(0)), UmaButtonType.FormSubmit, new { @class = "btn-full-width-maringLess" })
+            </div>
+        </div>
+    }
+
+</section>

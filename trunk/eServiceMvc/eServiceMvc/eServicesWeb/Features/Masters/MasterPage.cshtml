@@ -1,0 +1,44 @@
+﻿@using Uma.Eservices.Models.Account
+@{
+  Layout = null;
+}<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Finnish Immigration Service e-Service (self-service) portal">
+  <meta name="author" content="Accenture, Migri">
+  @RenderSection("meta", required: false)
+  @Html.Partial(MVC.Shared.Views._favicons)
+    <script type="text/javascript">
+        WebFontConfig = {
+            google: { families: ['Source+Sans+Pro:400,700:latin', 'Montserrat:400,700:latin'] }
+        };
+    </script>
+    @Scripts.Render("~/bundles/fontLoader")
+  <title>eServices@(ViewBag.Title == null ? string.Empty : " : " + ViewBag.Title)</title>
+  @Styles.Render("~/Static/fa")
+  @Styles.Render("~/Static/style/css")
+</head>
+<body>
+    <div class="top-container">
+        @Html.Action(MVC.Home.TopNavigation())
+    </div>
+    <div class="header-shadow"></div>
+    <div class="container">
+        @RenderBody()
+        <div class="footer-line"></div>
+    </div>
+    
+    <div class="footer-container">
+        @Html.Action(MVC.Home.Footer())
+    </div>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/scripts")
+
+    @RenderSection("scripts", required: false)
+    @Html.Action(MVC.Home.ShowWebMessages())
+</body>
+</html>

@@ -1,0 +1,20 @@
+﻿@model Uma.Eservices.Models.OLE.OLEPersonalInformationPage
+@{
+    ViewBag.Title = "Residence permit for Studies application: Step 1";
+    ViewBag.FeatureName = "OLE";
+}
+
+<h2>@T("Tell us who you are and where are you from")</h2>
+@Html.Partial("PdfPartialViews/_PDF_OLE_OPI_Step1_Block1_Person", Model.PersonDataBlock)
+
+<h2>@T("Contact information for processing and deciding on the application")</h2>
+@Html.Partial("PdfPartialViews/_PDF_OLE_OPI_Step1_Block2_Contacts", Model.ContactInformationBlock)
+
+<h2>@T("Please tell us your passport information")</h2>
+@Html.Partial("PdfPartialViews/_PDF_OLE_OPI_Step1_Block3_Passport", Model.PassportInformationBlock)
+
+<h2>@T("Tell us about the duration of your residence in Finland")</h2>
+@Html.Partial("PdfPartialViews/_PDF_OLE_OPI_Step1_Block4_Duration", Model.ResidenceDurationBlock)
+
+<h2>@T("Tell us about your marital status and family")</h2>
+@Html.Partial("PdfPartialViews/_PDF_OLE_OPI_Step1_Block5_Family", Model.FamilyBlock)

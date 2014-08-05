@@ -1,0 +1,74 @@
+﻿@model Uma.Eservices.Models.Sandbox.TestFormModel
+@{
+  ViewBag.Title = "Sanbox/exceptions";
+}
+<div class="row">
+    <div class="col-md-8">
+        <h1>
+            Exception handling tests
+            @Html.UmaButtonLink("Back", Url.RouteUrl("Default", result: MVC.Sandbox.Index()), new FontAwesomeIcon("fa-arrow-circle-o-left"), new { @class = "pull-right" })
+        </h1>
+    </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <table class="table table-striped">
+      <tbody>
+        <tr>
+          <td>
+            @using (Html.BeginForm(MVC.Sandbox.ActionNames.ExceptionTestApp, MVC.Sandbox.Name, FormMethod.Post))
+            {
+              @Html.HiddenFor(m => m.FirstField)
+              @Html.HiddenFor(m => m.RequiredField)
+              @Html.HiddenFor(m => m.ValidationField)
+              @Html.UmaButton("subm", "Application exception", UmaButtonType.FormSubmit, null, new { @class = "pull-right" })
+            }
+          </td>
+          <td>
+            Causes application to throw Application's own exception when POST form with data (model).
+          </td>
+        </tr>
+        <tr>
+          <td>
+            @Html.UmaButtonLink("Framework exception", Url.Action(MVC.Sandbox.ExceptionTestNet(321, "Three Two One")), null, new { @class = "pull-right" })
+          </td>
+          <td>
+            Throws one of standard .Net Framework excepions like it happen in controller/business logic
+          </td>
+        </tr>
+        <tr>
+          <td>
+            @Html.UmaButtonLink("Security exception", Url.Action(MVC.Sandbox.ExceptionTestSec()), null, new { @class = "pull-right" })
+          </td>
+          <td>
+            Throws Security exception which can occur whether someone tries to access restricted resource(s)
+          </td>
+        </tr>
+        <tr>
+          <td>
+            @Html.UmaButtonLink("View binding exception", Url.Action(MVC.Sandbox.ExceptionTestView()), null, new { @class = "pull-right" })
+          </td>
+          <td>
+            Exception which occurs when View Model binding has unrecovable situation (model property null, missing something)
+          </td>
+        </tr>
+        <tr>
+          <td>
+            @Html.UmaButtonLink("Routing exception (404)", Url.Action("Akcjon", "Kontroller"), null, new { @class = "pull-right" })
+          </td>
+          <td>
+            Exception of type "Page not found", this time - controller action is not found
+          </td>
+        </tr>
+        <tr>
+          <td>
+            @Html.UmaButtonLink("Missing parameters", Url.Action(MVC.Sandbox.ActionNames.ExceptionTestParameter, MVC.Sandbox.Name), null, new { @class = "pull-right" })
+          </td>
+          <td>
+            Exception, when required parameters are not supplied
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

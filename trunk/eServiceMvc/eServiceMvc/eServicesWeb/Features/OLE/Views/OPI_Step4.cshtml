@@ -1,0 +1,53 @@
+﻿@model Uma.Eservices.Models.OLE.OLEAttachmentPage
+@{
+    ViewBag.Title = "Residence permit for Studies application: Step 2";
+}
+
+<div class="path-descr">
+    <div><a href="@Url.Action(MVC.Home.Index())">@T("Home")</a></div>
+    <div><a href="@Url.Action(MVC.Info.StudyPermit())">@T("Studying in Finland")</a></div>
+    <div>@T("Student Application Form")</div>
+</div>
+
+@Html.Partial(MVC.Shared.Views._DashboardTabs, 2)
+<h1>@T("Student Application Form")</h1>
+@Html.Partial(MVC.Shared.Views._FormProgress, Model.FormProgress)
+
+<h4>@("Please note")</h4>
+@T(@"The clarifications listed below are required as appendices to this residence permit application. The original certificates and clarifications
+must be presented when submitting the application; if they are not in Finnish, Swedish or English, they must be accompanied by a
+translation into one of these three languages by an authorized translator.")
+
+@using (Html.BeginUmaAcordionPanel("acordStep4"))
+{
+    @Html.EditorFor(m => m.Travel, MVC.OLE.Views.EditorTemplates._OLE_OPI_Step4_Block1_Travel)
+    @Html.EditorFor(m => m.Income, MVC.OLE.Views.EditorTemplates._OLE_OPI_Step4_Block2_Income)
+    @Html.EditorFor(m => m.Health, MVC.OLE.Views.EditorTemplates._OLE_OPI_Step4_Block3_Health)
+    @Html.EditorFor(m => m.Certificate, MVC.OLE.Views.EditorTemplates._OLE_OPI_Step4_Block4_Certificate)
+    @Html.EditorFor(m => m.Registration, MVC.OLE.Views.EditorTemplates._OLE_OPI_Step4_Block5_Registration)
+    @Html.EditorFor(m => m.Degree, MVC.OLE.Views.EditorTemplates._OLE_OPI_Step4_Block6_Degree)
+    @Html.EditorFor(m => m.EmploymentCertificates, MVC.OLE.Views.EditorTemplates._OLE_OPI_Step4_Block7_Employment_Certificates)
+    @Html.EditorFor(m => m.Refusal, MVC.OLE.Views.EditorTemplates._OLE_OPI_Step4_Block8_Refusal)
+    @Html.EditorFor(m => m.Guardian, MVC.OLE.Views.EditorTemplates._OLE_OPI_Step4_Block9_Guardian)
+    @Html.EditorFor(m => m.Supplemental, MVC.OLE.Views.EditorTemplates._OLE_OPI_Step4_Block10_Supplemental)
+}
+
+@using (Html.BeginForm(MVC.OLE.ActionNames.OPIStep4Save, MVC.OLE.Name, FormMethod.Post, new { role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m=>m.ApplicationId)
+    
+    <div class="row formsubmit">
+        <div class="col-sm-8">
+            @Html.UmaButton("Step4Submit", "SAVE & CONTINUE", UmaButtonType.FormSubmit, new { onclick = "return submitAllFileUploadForms();" })
+        </div>
+    </div>
+}
+
+
+
+@section scripts
+{
+    
+    @Scripts.Render("~/bundles/formjs")
+}

@@ -1,0 +1,27 @@
+﻿@model Uma.Eservices.Models.Sandbox.Kan7Model
+
+@{
+	Layout = "~/Features/Shared/_PdfLayout.cshtml";
+}
+<table>
+	<thead>PDF from HTML View</thead>
+	<tr>
+		<td>KAN_7 Title</td>
+		<td>@T(Model.Title)</td>
+	</tr>
+	<tr>
+		<td>TypeOfApplication</td>
+		<td>@T(Model.TypeOfApplication)</td>
+	</tr>
+	<tr>
+		<td>Description</td>
+		<td>@T(Model.Description)</td>
+	</tr>
+</table>
+
+<hr style="background:#F87431; border:0; height:7px" />
+
+@Html.Partial("SpousePdfReport", Model.SpouseModel)
+
+<hr style="background:#F87431; border:0; height:7px" />
+

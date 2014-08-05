@@ -1,0 +1,10 @@
+﻿@model Uma.Eservices.Models.OLE.OLEOPIAdditionalInformationBlock
+
+    <div class="row form-row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.AdditionalInformation)
+                @Html.TextAreaFor(m => m.AdditionalInformation, new { @class = "form-control" })
+            </div>
+        </div>
+    </div>

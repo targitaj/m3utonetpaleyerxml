@@ -1,0 +1,54 @@
+﻿@using Uma.Eservices.Models
+@model Uma.Eservices.Models.Home.WebMessagesModel
+@if (!Model.IsAnyMessage)
+{
+  return;
+}
+<script>
+  $.pnotify.defaults.styling = "fontawesome";
+
+  $(function () {
+    @if (Model.ErrorMessages.Count > 0)
+        {
+            foreach (WebMessage errorMessage in Model.ErrorMessages)
+            {
+                @:$.pnotify({
+                                  @:title: '@errorMessage.MessageTitle',
+                                  @:text: '@errorMessage.MessageDescription',
+                                  @:icon: 'fa fa-exclamation-circle fa-2x',
+                                  @:type: 'error',
+                                  @:animation: 'show',
+                                  @:width: '400px'
+                                  @:});
+                        }
+        }
+    @if (Model.SuccessMessages.Count > 0)
+        {
+            foreach (WebMessage successMessage in Model.SuccessMessages)
+            {
+                @:$.pnotify({
+                                  @:title: '@successMessage.MessageTitle',
+                                  @:text: '@successMessage.MessageDescription',
+                                  @:icon: 'fa fa-check-circle fa-2x',
+                                  @:type: 'success',
+                                  @:animation: 'show',
+                                  @:width: '400px'
+                                  @:});
+                        }
+        }
+    @if (Model.InfoMessages.Count > 0)
+        {
+            foreach (WebMessage infoMessage in Model.InfoMessages)
+            {
+                @:$.pnotify({
+                                  @:title: '@infoMessage.MessageTitle',
+                                  @:text: '@infoMessage.MessageDescription',
+                                  @:icon: 'fa fa-info-circle fa-2x',
+                                  @:type: 'info',
+                            @:animation: 'show',
+                            @:width: '400px'
+                            @:});
+                    }
+        }
+  });
+</script>

@@ -1,0 +1,103 @@
+﻿@model Uma.Eservices.Models.FormCommons.AttachmentBlock
+<div>
+    <div class="files" id="tst">
+        <div class="empty-string">No attachment yet</div>
+    </div>
+    <div class="row fileupload-buttonbar">
+        <div class="col-sm-4">
+            <div class="btn-sm btn add-button btn-primary fileinput-button">
+                <div>
+                    @T("ADD")
+                </div>
+                <input type="file" name="files[]">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="template-upload" type="text/x-tmpl">
+    {% for (var i=0, file; file=o.files[i]; i++) { %}
+
+    <div class="template-upload">
+        <div class="row">
+            <hr class="form-separator-no-margin" />
+            <div class="col-sm-8">
+                <div class="row file-row">
+                    <div class="col-sm-4" />
+                    <div class="form-group file-block">
+                        <div class="delete-image">
+                            <img src='@Url.Content("~/Static/images/remove_icon.png")' class="cancel">
+                        </div>
+                        <div class="name file-name description">
+                            {%=file.name%}
+                        </div>
+                        <div class="upload-with-description-progress-bar">
+                            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                                <div class="progress-bar progress-bar-success" style="width:0%;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            @Html.UmaLabelFor(m => m.DocumentName)
+                            @Html.UmaTextBoxFor(m => m.DocumentName)
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-8">
+                        <div class="form-group">
+                            @Html.UmaLabelFor(m => m.Description)
+                            @Html.TextAreaFor(m => m.Description, new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% } %}
+</script>
+
+<script id="template-download" type="text/x-tmpl">
+    {% for (var i=0, file; file=o.files[i]; i++) { %}
+    <div class="template-download">
+        <hr class="form-separator-no-margin" />
+        <div class="row">
+            <div class="col-sm-8">
+                <div class="row file-row">
+                    <div class="col-sm-4" />
+                    <div class="form-group file-block">
+                        {% if (file.DeleteUrl) { %}
+                        <div class="delete-image">
+                            <img src='@Url.Content("~/Static/images/remove_icon.png")' class="delete" data-url="{%=file.DeleteUrl%}" data-type="{%=file.DeleteType%}">
+                        </div>
+                        {% } %}
+                        {% if (file.Url) { %}
+                        <div class="name file-name">
+                            {%=file.Name%}
+                        </div>
+                        {% } %}
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            @Html.UmaLabelFor(m => m.DocumentName)
+                            @Html.UmaTextBoxFor(m => m.DocumentName, htmlAttributes: new { dynamic_value = "{%=file.DocumentName%}" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-8">
+                        <div class="form-group">
+                            @Html.UmaLabelFor(m => m.Description)
+                            @Html.TextAreaFor(m => m.Description, new { @class = "form-control", dynamic_value = "{%=file.Description%}" })
+                            @Html.HiddenFor(h => h.ServerFileName, new { dynamic_value = "{%=file.SavedFileName%}" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% } %}
+</script>

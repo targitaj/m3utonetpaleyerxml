@@ -1,0 +1,35 @@
+﻿@model Uma.Eservices.Models.Dashboard.SupplementalDocumentModel
+@{
+    ViewBag.Title = "Supplemental Documents";
+}
+
+<div class="path-descr">
+    <div>@T("Home")</div>
+    <div>@T("Supplemental Documents")</div>
+</div>
+@Html.Partial(MVC.Shared.Views._DashboardTabs, 3)
+
+<div class="row form-row">
+    <div class="col-sm-8">
+        @T(@"You can use this section to provide additional information for your application when its status is 'Queing for processing' and “Being Processed).
+We do not reply to enquiries or requests for expediting applications sent through this service. Please see our FAQ for mor information.")
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-4">
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.Application)
+            @Html.UmaDropDownFor(m => m.Application, Model.Applications)
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm(MVC.Dashboard.Actions.SupplementalDocuments(), FormMethod.Post, new { data_upload_template_id = "template-upload-1", data_download_template_id = "template-download-1" }))
+{
+    @*@Html.UmaAjaxFileUpload(4194304, Url.Action(MVC.Dashboard.ActionNames.UploadFile), MVC.Shared.Views._MultiFileUploadWithDescription, Model, "template-upload-1", "template-download-1")*@
+}
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/formjs")
+}

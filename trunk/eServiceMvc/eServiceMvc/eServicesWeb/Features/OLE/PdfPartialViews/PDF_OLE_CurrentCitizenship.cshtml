@@ -1,0 +1,11 @@
+﻿@model Uma.Eservices.Models.OLE.OLECurrentCitizenship
+          
+<tr>
+    <td>
+        @Html.UmaPdfLabelFor(m => m.CurrentCitizenship)
+    </td>
+    <td>
+        @Html.GetState(@Model.CurrentCitizenship)
+    </td>
+</tr>
+ 

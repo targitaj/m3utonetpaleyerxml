@@ -1,0 +1,101 @@
+﻿@model Uma.Eservices.Models.OLE.OLEPersonalDataBlock
+<div class="row form-row">
+    <div class="col-sm-4">
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.PersonName.LastName)
+            @Html.UmaTextBoxFor(m => m.PersonName.LastName)
+            @Html.ValidationMessageFor(m => m.PersonName.LastName)
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.PersonName.FirstName)
+            @Html.UmaTextBoxFor(m => m.PersonName.FirstName)
+            @Html.ValidationMessageFor(m => m.PersonName.FirstName)
+        </div>
+    </div>
+</div>
+
+@Html.UmaDynamicContentFor(m => m.PreviousNames, MVC.OLE.Views.DynamicTemplates._OLE_OPI_Step1_Block1_PersonPersonPreviousNames, "+ Add Previous Name", addFirstEmptyControl: false)
+
+<div class="row form-row">
+    <div class="col-sm-8">
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.Gender)
+        </div>
+        @Html.UmaRadioButtonFor(m => m.Gender)
+        @Html.ValidationMessageFor(m => m.Gender)
+    </div>
+</div>
+
+<div class="row form-row">
+    <div class="col-sm-4">
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.Birthday)
+            @Html.UmaDatePickerFor(m => m.Birthday)
+            @Html.ValidationMessageFor(m => m.Birthday)
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.PersonCode)
+            @Html.UmaTextBoxFor(m => m.PersonCode)
+            @Html.ValidationMessageFor(m => m.PersonCode)
+        </div>
+    </div>
+</div>
+
+<div class="row form-row">
+    <div class="col-sm-4">
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.BirthCountry)
+            @Html.UmaDropDownFor(m => m.BirthCountry, @Html.GetStateList())
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.BirthPlace)
+            @Html.UmaTextBoxFor(m => m.BirthPlace)
+        </div>
+    </div>
+</div>
+
+<div class="row form-row">
+    <div class="col-sm-4">
+        @Html.UmaDynamicContentFor(m => m.CurrentCitizenships, MVC.OLE.Views.DynamicTemplates._OLE_OPI_Step1_Block1_CurrentCitizenship, "+ Add Citizenship", addFirstEmptyControl: true, butonCssClass: "col-sm-8")
+    </div>
+    <div class="col-sm-4">
+        @Html.UmaDynamicContentFor(m => m.PreviousCitizenships, MVC.OLE.Views.DynamicTemplates._OLE_OPI_Step1_Block1_PreviousCitizenship, "+ Add Previous Citizenship", addFirstEmptyControl: false, butonCssClass: "col-sm-8")
+    </div>
+</div>
+
+<div class="row form-row">
+    <div class="col-sm-4">
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.MotherLanguage)
+            @Html.UmaDropDownFor(m => m.MotherLanguage, @Html.GetLanguageList())
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.CommunicationLanguage)
+            @Html.UmaEnumDropDownFor(m => m.CommunicationLanguage)
+        </div>
+    </div>
+</div>
+
+<div class="row form-row">
+    <div class="col-sm-4">
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.Occupation)
+            @Html.UmaTextBoxFor(m => m.Occupation)
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.Education)
+            @Html.UmaDropDownFor(m => m.Education, @Html.GetEducationList())
+        </div>
+    </div>
+</div>
+

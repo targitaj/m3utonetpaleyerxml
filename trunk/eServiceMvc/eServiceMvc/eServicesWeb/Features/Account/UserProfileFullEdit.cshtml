@@ -1,0 +1,90 @@
+﻿@{
+    ViewBag.Title = "User profile";
+}
+@model Uma.Eservices.Models.Account.UserProfileModel
+<div class="row">
+    <div class="path-descr">
+        <div>@T("Home")</div>
+        <div>@T("User profile")</div>
+    </div>
+</div>
+
+    <div class="row">
+    <div class="col-sm-8">
+            <h1>@T("Welcome")!</h1>
+            <h4>@T("Please fill in your account details.")</h4>
+        </div>
+    @*<div class="col-sm-2" style="padding-bottom: 30px;">
+            <p>@T("Customer ID")</p>
+            <h4 style="margin-top: -12px;">@T("Unassigned yet")</h4>
+            <p>@T("This is your customer ID, which ou can share with the customer support sta when contacting them.")</p>
+    </div>*@
+        </div>
+
+@using (Html.BeginForm(MVC.Account.ActionNames.UserProfileFullSave, MVC.Account.Name, FormMethod.Post, new { role = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row form-row">
+        <div class="col-sm-4">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.FirstName)
+                @Html.UmaTextBoxFor(m => m.FirstName)
+                @Html.ValidationMessageFor(m => m.FirstName)
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.LastName)
+                @Html.UmaTextBoxFor(m => m.LastName)
+                @Html.ValidationMessageFor(m => m.LastName)
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-row">
+        <div class="col-sm-4">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.BirthDate)
+                @Html.UmaDatePickerFor(m => m.BirthDate)
+                @Html.ValidationMessageFor(m => m.BirthDate)
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-row">
+        <div class="col-sm-4">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.Email)
+                <p class="form-control-static">@Html.DisplayFor(m => m.Email)</p>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.Mobile)
+                @Html.UmaTextBoxFor(m => m.Mobile)
+                @Html.ValidationMessageFor(m => m.Mobile)
+            </div>
+            @T("If you would like to receive sms notifications of all progress made to your application and updates from online service, please enter your mobile phone number.")
+        </div>
+    </div>
+
+    <div class="row formsubmit">
+        <div class="col-sm-8">
+            @Html.UmaButton("ProfileSubmit", "SAVE & CONTINUE", UmaButtonType.FormSubmit)
+        </div>
+    </div>
+}
+@section scripts
+{
+    @Scripts.Render("~/bundles/formjs")
+    <script>
+    window.onbeforeunload = function() {
+        return "Information in this page is necessary and should be filled!";
+    }
+
+    $('form').submit(function() {
+       window.onbeforeunload = null;
+    });
+</script>
+}

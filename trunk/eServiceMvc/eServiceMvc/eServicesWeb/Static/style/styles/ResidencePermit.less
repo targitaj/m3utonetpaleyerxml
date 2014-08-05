@@ -1,0 +1,266 @@
+﻿/// <reference path="migri-variables.less" />
+/// <reference path="../bootstrap/bootstrap.less" />
+
+.text-BckGround-Border {
+    border-top: solid 6px @migri-main-blue;
+    margin-top: @migri-row-height;
+    margin-bottom: @migri-row-height;
+    background: @migri-accent-green;
+    height: @migri-row-height * 4;
+    font-size: 24px;
+    padding-top: 1%;
+    font-family: "Montserrat";
+}
+
+.text-BckGround-Border-HalfColor {
+    .text-BckGround-Border;
+    background-color: none;
+    background: -webkit-linear-gradient(left, @migri-accent-green, @migri-accent-green 50%, white 50%, white);
+}
+
+.row-padding {
+    margin-top: @migri-row-height;
+    margin-bottom: @migri-row-height;
+}
+
+.padding-left {
+    padding-left: @migri-row-height;
+}
+
+.row-padding-x3 {
+    margin-top: @migri-row-height * 3;
+    margin-bottom: @migri-row-height * 3;
+}
+
+.work-permit-gray-blocks {
+    background-color: @migri-gray;
+    .text-center;
+}
+
+.gray-block {
+    .text-center;
+    padding-top: @migri-row-height *2;
+    padding-bottom: @migri-row-height*2;
+    padding-left: 5px;
+    padding-right: 5px;
+    background-color: @migri-gray;
+}
+
+
+/*Residence permit work specialist*/
+.div-margins > div {
+    margin-top: @migri-row-height;
+    margin-bottom: @migri-row-height;
+}
+
+.h4-margins > h4 {
+    margin-bottom: @migri-row-height * 2;
+}
+
+.div-margins-sn > div {
+    margin-top: @migri-row-height * 2;
+}
+
+.div-gray-base {
+    .text-center;
+    background-color: @migri-gray;
+    /*padding-right: 10px;
+    padding-left: 10px;*/
+}
+
+.div-gray-type-main {
+    .div-gray-base;
+    padding-top: @migri-row-height * 2;
+    padding-bottom: @migri-row-height * 2;
+}
+
+.div-gray-medium {
+    .div-gray-base;
+    margin-top: @migri-row-height;
+    padding-top: @migri-row-height;
+    height: 150px;
+}
+
+.bank-blocks > h3 {
+    .div-gray-medium;
+    padding-top: 13%;
+}
+
+.div-gray-large {
+    .div-gray-base;
+    margin-top: @migri-row-height * 3;
+    padding-top: @migri-row-height * 2;
+    min-height: 340px;
+}
+
+.div-gray-large2 {
+    background-color: @migri-gray;
+    padding-right: 5px;
+    padding-left: 5px;
+    height: 400px;
+}
+
+.column-float {
+    column-count: 2;
+    -webkit-column-count: 2;
+    -moz-column-count: 2;
+}
+
+.p-padding > p {
+    margin-top: @migri-row-height * 2;
+}
+
+@circle-multipl: @migri-row-height * 5;
+
+.circle {
+    width: @circle-multipl;
+    height: @circle-multipl;
+    border-radius: 50%;
+    font-size: @circle-multipl;
+    color: #fff;
+    line-height: @circle-multipl;
+    text-align: center;
+    background: @migri-main-blue;
+    margin-top: @migri-row-height;
+    margin-left: @migri-row-height;
+}
+
+.text-custom-right {
+    text-align: right;
+}
+
+.text-custom-left {
+    text-align: left;
+}
+
+.div-marginless {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+@media (max-width: @screen-desktop) {
+    .bank-blocks > h3 {
+        .div-gray-medium;
+        padding-top: 13%;
+        height: 100px;
+    }
+
+    .actionblock-descr {
+        .actionblock-descr;
+        height: 90px;
+    }
+
+    .row-padding-top {
+        margin-top: @migri-row-height * 2;
+    }
+
+    .div-gray-type-main {
+        padding-top: @migri-row-height;
+        padding-bottom: @migri-row-height;
+    }
+}
+
+@media (max-width: @screen-tablet) {
+    .div-gray-base {
+        .text-center;
+        background-color: @migri-gray;
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+
+    .div-gray {
+        .div-gray-base;
+        min-height: 100px;
+    }
+
+    .div-gray-medium {
+        .div-gray-base;
+        margin-top: @migri-row-height;
+        padding-top: @migri-row-height;
+        height: 100px;
+    }
+
+    .div-gray-large {
+        .div-gray-base;
+        margin-top: @migri-row-height;
+        padding-top: @migri-row-height;
+        min-height: 150px;
+    }
+
+    .bank-blocks > h3 {
+        .div-gray-medium;
+        padding-top: 2%;
+        height: 50px;
+    }
+
+    .div-h2-margin {
+        margin-top: 16px;
+    }
+
+    .text-BckGround-Border {
+        font-size: 22px;
+        height: @migri-row-height * 3;
+        padding-top: 1%;
+    }
+
+    .text-BckGround-Border-HalfColor {
+        .text-BckGround-Border;
+    }
+
+    .actionblock-descr {
+        .actionblock-descr;
+        height: 50px;
+    }
+
+    .text-custom-right {
+        text-align: center;
+    }
+
+    .text-custom-left {
+        text-align: left;
+    }
+
+    .div-margins-sn > div {
+        margin-top: @migri-row-height;
+    }
+
+    .h4-margins > h4 {
+        margin-bottom: @migri-row-height;
+    }
+
+    .migri-banner {
+        height: 300px;
+    }
+}
+
+@media (max-width: @screen-phone) {
+    .text-BckGround-Border {
+        font-size: 18px;
+        height: @migri-row-height * 3;
+        padding-top: 1%;
+    }
+
+    .text-BckGround-Border-HalfColor {
+        .text-BckGround-Border;
+    }
+}
+
+
+/*Circle media styles*/
+@media (min-width: @screen-phone) {
+    .circle {
+        margin-left: 0px;
+    }
+}
+
+@media (min-width: @screen-tablet) {
+    .circle {
+        margin-top: @migri-row-height;
+    }
+}
+
+@media (min-width: @screen-desktop) {
+    .circle {
+        margin-top: @migri-row-height * 2;
+    }
+}
