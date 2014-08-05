@@ -1,0 +1,50 @@
+﻿@model Uma.Eservices.Models.OLE.OLEOPIHealthInsuranceBlock
+
+<table class="width_full">
+    <tr>
+        <td>@Html.UmaPdfLabelFor(m => m.InsuredForAtLeastTwoYears)</td>
+        <td>
+            @if (@Model.InsuredForAtLeastTwoYears.HasValue && @Model.InsuredForAtLeastTwoYears.Value)
+            {
+                @T("Yes, and my health insurance covers pharmaceutical costs up to 30.000 €")
+            }
+           
+        </td>
+    </tr>
+    <tr>
+        <td>@Html.UmaPdfLabelFor(m => m.InsuredForLessThanTwoYears)</td>
+        <td>
+            @if (@Model.InsuredForLessThanTwoYears.HasValue && @Model.InsuredForLessThanTwoYears.Value)
+            {
+               @T("Yes, and my health insurance covers pharmaceutical costs up to 100.000 €")
+            }
+
+        </td>
+    </tr>
+    <tr>
+        <td>@Html.UmaPdfLabelFor(m => m.HaveKelaCard)</td>
+        <td>
+            @if (@Model.HaveKelaCard.HasValue && @Model.HaveKelaCard.Value)
+            {
+                @T("Yes")
+            }
+            else
+            {
+                @T("No")
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>@Html.UmaPdfLabelFor(m => m.HaveEuropeanHealtInsurance)</td>
+        <td>
+            @if (@Model.HaveEuropeanHealtInsurance.HasValue && @Model.HaveEuropeanHealtInsurance.Value)
+            {
+                @T("Yes")
+            }
+            else
+            {
+                @T("No")
+            }
+        </td>
+    </tr>
+</table>

@@ -1,0 +1,60 @@
+﻿@model Uma.Eservices.Models.FormCommons.AttachmentBlock
+
+<div>
+    <div class="files">
+        <div class="empty-string">No attachment yet</div>
+    </div>
+    <div class="row fileupload-buttonbar">
+        <div class="col-sm-8">
+            <div class="btn-sm btn add-button btn-primary fileinput-button">
+                <div>
+                    @T("ADD")
+                </div>
+                <input type="file" name="files[]">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="template-upload" type="text/x-tmpl">
+
+    {% for (var i=0, file; file=o.files[i]; i++) {  %}
+    <div class="row template-upload">
+        <div class="col-sm-8">
+            <div class="delete-image">
+                <img src='@Url.Content("~/Static/images/remove_icon.png")' class="cancel">
+            </div>
+            <div class="name file-name">
+                {%=file.name%}
+            </div>
+            <div class="upload-progress-bar">
+                <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                    <div class="progress-bar progress-bar-success" style="width:0%;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% } %}
+
+</script>
+
+<script id="template-download" type="text/x-tmpl">
+    {% for (var i=0, file; file=o.files[i]; i++) { %}
+    <div class="row template-download">
+        <div class="col-sm-8">
+            {% if (file.DeleteUrl)  { %}
+            <div class="delete-image">
+                <img src='@Url.Content("~/Static/images/remove_icon.png")' class="delete" data-url="{%=file.DeleteUrl%}" data-type="{%=file.DeleteType%}">
+            </div>
+            {% } %}
+            {% if (file.Url) { %}
+            <div class="name file-name">
+                {%=file.Name%}
+                @Html.Hidden("[0].FileName", "test")
+            </div>
+            {% } %}
+        </div>
+    </div>
+    {% } %}
+</script>

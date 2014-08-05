@@ -1,0 +1,63 @@
+﻿@model Uma.Eservices.Models.OLE.OLEChildData
+
+@Html.HiddenFor( o => o.Id)
+
+<h2>1@T(". child")</h2>
+<div class="row form-row">
+    <div class="col-sm-4">
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.PersonName.LastName)
+            @Html.UmaTextBoxFor(m => m.PersonName.LastName)
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.PersonName.FirstName)
+            @Html.UmaTextBoxFor(m => m.PersonName.FirstName)
+        </div>
+    </div>
+</div>
+
+<div class="row form-row">
+    <div class="col-sm-8">
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.Gender)
+        </div>
+        @Html.UmaRadioButtonFor(m => m.Gender)
+    </div>
+</div>
+
+<div class="row form-row">
+    <div class="col-sm-4">
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.Birthday)
+            @Html.UmaDatePickerFor(m => m.Birthday)
+            @Html.ValidationMessageFor(m => m.Birthday)
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.PersonCode)
+            @Html.UmaTextBoxFor(m => m.PersonCode)
+            @Html.ValidationMessageFor(m => m.PersonCode)
+        </div>
+    </div>
+</div>
+
+<div class="row form-row">
+    <div class="col-sm-4">
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.CurrentCitizenship)
+            @Html.UmaDropDownFor(s => s.CurrentCitizenship, @Html.GetStateList())
+        </div>
+    </div>
+</div>
+
+<div class="row form-row">
+    <div class="col-sm-8">
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.MigrationIntentions)
+        </div>
+        @Html.UmaRadioButtonFor(m => m.MigrationIntentions)
+    </div>
+</div>

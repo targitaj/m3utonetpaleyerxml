@@ -1,0 +1,14 @@
+﻿@model Uma.Eservices.Models.OLE.OLEOPIEducationInformationPage
+@{
+    ViewBag.Title = "Residence permit for Studies application: Step 2";
+    ViewBag.FeatureName = "OLE";
+}
+
+<h2>@T("Educational institution where you have been accepted")</h2>
+@Html.Partial("PdfPartialViews/_PDF_OLE_OPI_Step2_Block1_Education", Model.EducationInstitution)
+
+<h2>@T("How long do you plan to stay in Finland")</h2>
+@Html.Partial("PdfPartialViews/_PDF_OLE_OPI_Step2_Block2_Staying", Model.StayingLongerResoning)
+
+<h2>@T("Tell us about your previous educational studies")</h2>
+@Html.Partial("PdfPartialViews/_PDF_OLE_OPI_Step2_Block3_PreviousEducation", Model.PreviousStudiesAndWork)

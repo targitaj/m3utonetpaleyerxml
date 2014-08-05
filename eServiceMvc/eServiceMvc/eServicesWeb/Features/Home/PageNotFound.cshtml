@@ -1,0 +1,10 @@
+﻿@{
+  ViewBag.Title = "Page not found";
+}
+@model HandleErrorInfo
+<div class="jumbotron">
+  <h1>@T("404 - Page not found")</h1>
+  <span class="url404">@Html.Raw(HttpContext.Current.Request.Url.OriginalString)</span>
+    <p>You probably got lost in this. Next time be more carefull!</p>
+  @Html.UmaButtonLink("Sandbox", Url.RouteUrl("Default", result: MVC.Sandbox.Index()))
+</div>

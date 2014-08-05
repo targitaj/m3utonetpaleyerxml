@@ -1,0 +1,44 @@
+﻿/// <reference path="migri-variables.less" />
+/// <reference path="../bootstrap/bootstrap.less" />
+
+.dynamic-controls-remove-button {
+    position: relative;
+    cursor: pointer;
+
+    img {
+        width: @icon-img-width;
+        position: absolute;
+        right: 0;
+        bottom: -@icon-img-width;
+        z-index: 1;
+        margin-right: 15px;
+    }
+}
+
+.dynamic-controls-trigger.form-control {
+    color: white;
+    background-color: @input-color-placeholder;
+    margin-bottom: 54px;
+    text-transform:uppercase;
+}
+
+@media (min-width: @screen-xs-min) {
+    .dynamic-controls-remove-button img {
+        width: @icon-img-xs-width;
+        bottom: -@icon-img-xs-width;
+    }
+}
+
+@media (min-width: @screen-md-min) {
+    .dynamic-controls-remove-button img {
+        width: @icon-img-md-width;
+        bottom: -@icon-img-md-width;
+    }
+}
+
+@media (min-width: @screen-lg-min) {
+    .dynamic-controls-remove-button img {
+        width: @icon-img-lg-width;
+        bottom: -@icon-img-lg-width;
+    }
+}

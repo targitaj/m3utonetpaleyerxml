@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="Uma.DataConnector.UmaMasterDataService" CodeBehind="UmaMasterDataService.svc.cs" Factory="Uma.DataConnector.UmaConnServiceFactory" %>

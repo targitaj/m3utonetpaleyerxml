@@ -1,0 +1,102 @@
+﻿@model Uma.Eservices.Models.OLE.OLEFamilyBlock
+
+    <div class="row form-row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.FamilyStatus)
+            </div>
+            @Html.UmaRadioButtonFor(m => m.FamilyStatus)
+        </div>
+    </div>
+
+    <div id="spouse_block">
+        <h2>@T("Spouse")</h2>
+        <div class="row form-row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    @Html.UmaLabelFor(m => m.PersonName.LastName)
+                    @Html.UmaTextBoxFor(m => m.PersonName.LastName)
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    @Html.UmaLabelFor(m => m.PersonName.FirstName)
+                    @Html.UmaTextBoxFor(m => m.PersonName.FirstName)
+                </div>
+            </div>
+        </div>
+
+        @Html.UmaDynamicContentFor(m => m.PreviousNames, MVC.OLE.Views.DynamicTemplates._OLE_OPI_Step1_Block1_PersonPersonPreviousNames, "+ Add Previous Names", addFirstEmptyControl: false)
+        
+        <div class="row form-row">
+            <div class="col-sm-8">
+                <div class="form-group">
+                    @Html.UmaLabelFor(m => m.Gender)
+                </div>
+                @Html.UmaRadioButtonFor(m => m.Gender)
+            </div>
+        </div>
+
+        <div class="row form-row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    @Html.UmaLabelFor(m => m.Birthday)
+                    @Html.UmaDatePickerFor(m => m.Birthday)
+                    @Html.ValidationMessageFor(m => m.Birthday)
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    @Html.UmaLabelFor(m => m.PersonCode)
+                    @Html.UmaTextBoxFor(m => m.PersonCode)
+                    @Html.ValidationMessageFor(m => m.PersonCode)
+                </div>
+            </div>
+        </div>
+
+        <div class="row form-row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    @Html.UmaLabelFor(m => m.BirthCountry)
+                    @Html.UmaDropDownFor(m => m.BirthCountry, @Html.GetStateList())
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    @Html.UmaLabelFor(m => m.BirthPlace)
+                    @Html.UmaTextBoxFor(m => m.BirthPlace)
+                </div>
+            </div>
+        </div>
+
+        <div class="row form-row">
+            <div class="col-sm-4">
+                @Html.UmaDynamicContentFor(m => m.CurrentCitizenships, MVC.OLE.Views.DynamicTemplates._OLE_OPI_Step1_Block1_CurrentCitizenship, "+ Add Citizenship", addFirstEmptyControl: true, butonCssClass: "col-sm-8")
+            </div>
+        </div>
+
+        <div class="row form-row">
+            <div class="col-sm-8">
+                <div class="form-group">
+                    @Html.UmaLabelFor(m => m.SpouseIntentions)
+                </div>
+                @Html.UmaRadioButtonFor(m => m.SpouseIntentions)
+            </div>
+        </div>
+
+    </div>
+    
+    <div class="row form-row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.HaveChildren)
+            </div>
+            @Html.UmaRadioButtonFor(m => m.HaveChildren, "Yes, I have children", true)
+            @Html.UmaRadioButtonFor(m => m.HaveChildren, "No, I do not have children", false)
+        </div>
+    </div>
+    
+    @T("Please declare all your underaged children regardless of whether you are applying for a Finnish residence permit for them or not. There is a separate application form for children’s residence permits at")
+    &nbsp;<a href="http://www.migri.fi">www.migri.fi</a>
+
+    @Html.UmaDynamicContentFor(m => m.Children, MVC.OLE.Views.DynamicTemplates._OLE_Children, "+ Add Child", addFirstEmptyControl: false)

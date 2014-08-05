@@ -1,0 +1,25 @@
+﻿ <!--Create a new application-->
+<div class="row">
+    <h2>@("Create a new application")</h2>
+    <div class="col-sm-4">
+        <div class="actionblock" onclick="location.href = '@Url.Action(MVC.Account.Register())';">
+            <div class="actionblock-title">
+                <h1>@T("Register")</h1>
+            </div>
+            <div class="actionblock-descr-extra-height">
+                @T("You want to start a new application and create an account")
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="actionblock" onclick="location.href = '@Url.Action(MVC.Account.Login())';">
+            <div class="actionblock-title">
+                <h1>@T("Log in")</h1>
+            </div>
+            <div class="actionblock-descr-extra-height">
+                @T("You have already registered and want to create a new " +
+                           "application or check on the progress of existing applications")
+            </div>
+        </div>
+    </div>
+</div>

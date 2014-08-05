@@ -1,0 +1,137 @@
+﻿@model Uma.Eservices.Models.Sandbox.TestFormModel
+@{
+    ViewBag.Title = "Sandbox Test form";
+}
+<div class="path-descr">
+    <div><a href="@Url.Action(MVC.Home.Index())">@T("Home")</a></div>
+    <div><a href="@Url.Action(MVC.Sandbox.Index())">@T("Sandbox")</a></div>
+    <div>@T("Test form")</div>
+</div>
+
+<h1>@T("Sandbox Test form")</h1>
+@using (Html.BeginForm(MVC.Sandbox.ActionNames.TestFormSave, MVC.Sandbox.Name, FormMethod.Post, new { role = "form" }))
+{
+    using (Html.BeginUmaAcordionPanel("accordionTestForm1"))
+    {
+        using (Html.BeginUmaExpander("First part of form", "accordionTestForm1"))
+        {
+            <div class="row form-row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        @Html.UmaLabelFor(m => m.FirstField)
+                        @Html.UmaTextBoxFor(m => m.FirstField)
+                        @Html.ValidationMessageFor(m => m.FirstField)
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        @Html.UmaLabelFor(m => m.RequiredField)
+                        @Html.UmaTextBoxFor(m => m.RequiredField)
+                        @Html.ValidationMessageFor(m => m.RequiredField)
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row form-row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        @Html.UmaLabelFor(m => m.ValidationField)
+                        @Html.UmaTextBoxFor(m => m.ValidationField)
+                        @Html.ValidationMessageFor(m => m.ValidationField)
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        @Html.UmaLabelFor(m => m.RequiredDateField)
+                        @Html.UmaDatePickerFor(m => m.RequiredDateField)
+                        @Html.ValidationMessageFor(m => m.RequiredField)
+                    </div>
+                </div>
+            </div>
+
+            <div class="row form-row">
+                <div class="col-sm-8">
+                    <div class="form-group">
+                        @Html.UmaLabelFor(m => m.TextBlock)
+                        @Html.UmaTextAreaFor(m => m.TextBlock)
+                        @Html.ValidationMessageFor(m => m.TextBlock)
+                    </div>
+                </div>
+            </div>
+
+            <div class="row blocksave">
+                <div class="col-sm-8">
+                    <button id="block1save" class="btn btn-primary btn-sm formblocksubmit" type="button" data-targetpanel="1">@T("SAVE")</button>
+                </div>
+            </div>
+        }
+
+        using (Html.BeginUmaExpander("Dropdown, Radio-buttons and Check-Boxes", "accordionTestForm1", true))
+        {
+            <div class="row form-row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        @Html.UmaLabelFor(m => m.CountrySelection)
+                        @Html.UmaDropDownFor(m => m.CountrySelection, Model.CountryList)
+                        @Html.ValidationMessageFor(m => m.CountrySelection)
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        @Html.UmaLabelFor(m => m.DateField)
+                        @Html.UmaDatePickerFor(m => m.DateField)
+                        @Html.ValidationMessageFor(m => m.DateField)
+                    </div>
+                </div>
+            </div>
+
+            <div class="row form-row">
+                <div class="col-sm-8">
+                    <div class="form-group">
+                        @Html.UmaLabelFor(m => m.Gender)
+                    </div>
+                    @Html.UmaRadioButtonFor(m => m.Gender)
+                </div>
+            </div>
+
+            <div class="row form-row">
+                <div class="col-sm-8">
+                    <div class="form-group">
+                        @Html.UmaLabelFor(m => m.CheckboxField)
+                    </div>
+                    @Html.UmaCheckBoxButtonFor(m => m.CheckboxField, T("This can have additional label").ToString())
+                </div>
+            </div>
+
+            <div class="row blocksave">
+                <div class="col-sm-8">
+                    <button id="block1save" class="btn btn-primary btn-sm formblocksubmit" type="button" data-targetpanel="1">@T("SAVE")</button>
+                </div>
+            </div>
+        }
+
+        using (Html.BeginUmaExpander("Dynamic blocks", "accordionTestForm1", true))
+        {
+            <div class="row form-row">
+                <div class="col-sm-4">
+                </div>
+                <div class="col-sm-4">
+                </div>
+            </div>
+
+            <hr class="form-separator" />
+        }
+    }
+
+    <div class="row formsubmit">
+        <div class="col-sm-8">
+            @Html.UmaButton("FormSubmit", "SAVE FORM", UmaButtonType.FormSubmit)
+        </div>
+    </div>
+}
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/formjs")
+}

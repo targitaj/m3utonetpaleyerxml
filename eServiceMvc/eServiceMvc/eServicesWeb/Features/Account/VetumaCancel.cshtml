@@ -1,0 +1,25 @@
+﻿@{
+    ViewBag.Title = "Strong Login failed";
+}
+<div class="row">
+    <div class="path-descr">
+        <div>@T("Home")</div>
+        <div>@T("Account")</div>
+    </div>
+</div>
+
+<h1>@T(ViewBag.Title)</h1>
+
+<h4>@T("External Login system failed or you cancelled logging in it.")</h4>
+@if (!@User.Identity.IsAuthenticated)
+{
+    @Html.UmaButtonLink("Login", Url.RouteUrl("Default", result: MVC.Account.Login()))
+    @:&nbsp;
+    @Html.UmaButtonLink("Register", Url.RouteUrl("Default", result: MVC.Account.Register()))
+}
+else
+{
+    @Html.UmaButtonLink("My applications", Url.RouteUrl("Default", result: MVC.Dashboard.Index()))
+    @:&nbsp;
+    @Html.UmaButtonLink("My account", Url.RouteUrl("Default", taskResult: MVC.Account.UserProfile()))
+}

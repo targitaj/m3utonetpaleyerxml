@@ -1,0 +1,44 @@
+﻿@model Uma.Eservices.Models.OLE.OLEOPIStayingBlock
+
+<h4>@T("Educational institution where you have been accepted")</h4>
+
+@Html.HiddenFor(o => o.ApplicationId)
+<div class="row form-row">
+    <div class="col-sm-4">
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.DurationOfStudies)
+            @Html.UmaTextBoxFor(m => m.DurationOfStudies)
+            @Html.ValidationMessageFor(o => o.DurationOfStudies)
+        </div>
+    </div>
+</div>
+
+<div class="row form-row">
+    <div class="col-sm-8">
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.ReasonToStayLonger)
+            @Html.TextAreaFor(m => m.ReasonToStayLonger, new { @class = "form-control" })
+        </div>
+    </div>
+</div>
+
+<h4>@T("Or")</h4>
+
+<div class="row form-row">
+    <div class="col-sm-8">
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.ReasonToHaveLongerPermit)
+            @Html.TextAreaFor(m => m.ReasonToHaveLongerPermit, new { @class = "form-control" })
+        </div>
+    </div>
+</div>
+
+<div class="row form-row">
+    <div class="col-sm-8">
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.ReasonToStudyInFinland)
+            @Html.TextAreaFor(m => m.ReasonToStudyInFinland, new { @class = "form-control" })
+            @Html.ValidationMessageFor(o => o.ReasonToStudyInFinland)
+        </div>
+    </div>
+</div>

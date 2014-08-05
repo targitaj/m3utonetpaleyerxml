@@ -1,0 +1,17 @@
+﻿@model Uma.Eservices.Models.OLE.OLEOPIFinancialInformationPage
+@{
+    ViewBag.Title = "Residence permit for Studies application: Step 3";
+    ViewBag.FeatureName = "OLE";
+}
+
+<h2>@T("How will you support yourself in Finland?")</h2>
+@Html.Partial("PdfPartialViews/_PDF_OLE_OPI_Step3_Block1_FinancialSupport", Model.FinancialStudySupport)
+
+<h2>@T("What type of health insurance will you have in Finland?")</h2>
+@Html.Partial("PdfPartialViews/_PDF_OLE_OPI_Step3_Block2_HealthInsurance", Model.HealthInsurance)
+
+<h2>@T("Additional information for the application")</h2>
+@Html.Partial("PdfPartialViews/_PDF_OLE_OPI_Step3_Block3_AdditionalInfo", Model.AdditionalInformation)
+
+<h2>@T("Applicant’s criminal history and refusal of entry")</h2>
+@Html.Partial("PdfPartialViews/_PDF_OLE_OPI_Step3_Block4_CriminalInfo", Model.CriminalInformation)
