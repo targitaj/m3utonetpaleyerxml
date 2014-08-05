@@ -1,0 +1,187 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Emc.Documentum.FS.Services.Bpm</name>
+    </assembly>
+    <members>
+        <member name="T:Emc.Documentum.FS.Services.Bpm.WorkflowServicePortClient">
+            <exclude/>
+            <exclude/>
+        </member>
+        <member name="T:Emc.Documentum.FS.Services.Bpm.IWorkflowService">
+            <summary>
+            IWorkflowService provides functionality to query available process templates, and start process.
+            </summary> 
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.IWorkflowService.GetProcessTemplates(System.String,System.String,System.String)">
+            <summary>
+            Obtain a list of installed process templates in the repository. If folderPath is passed in, only
+            the process templates within the folderPath will be returned.
+            </summary>
+            <param name="repositoryName"></param>
+            <param name="folderPath"></param>
+            <param name="additionalAttrs">additionalAttrs a comma separated list of attribute names</param>
+            <returns><see cref="T:Emc.Documentum.FS.DataModel.Core.DataPackage"/> to the installed templates.</returns>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.IWorkflowService.GetProcessInfo(Emc.Documentum.FS.DataModel.Core.ObjectIdentity)">
+            <summary>
+            Obtain a <see cref="T:Emc.Documentum.FS.DataModel.Core.Bpm.ProcessInfo"/> object for a specific process template in the repository.
+            </summary>
+            <param name="process">process <see cref="T:Emc.Documentum.FS.DataModel.Core.ObjectIdentity"/> to the process template. ObjectId is expected from this identity.</param>
+            <returns>A <see cref="T:Emc.Documentum.FS.DataModel.Core.Bpm.ProcessInfo"/> object for setting the start process parameters.</returns>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.IWorkflowService.StartProcess(Emc.Documentum.FS.DataModel.Core.Bpm.ProcessInfo)">
+            <summary>
+            Create and execute process.<p/>
+            
+            A process instance is a runtime instance of a dm_process object.  Process
+            objects store workflow definitions in the Documentum server.<para/>
+            To start a process, the process template must be in the installed state
+            and the user must have Relate and Execute permissions on
+            the process template.<para/>
+            This call should occur after a call to <see cref="M:Emc.Documentum.FS.Services.Bpm.IWorkflowService.GetProcessInfo(Emc.Documentum.FS.DataModel.Core.ObjectIdentity)"/> which
+            provides the process template that the process is based on.
+            </summary>
+            <param name="info"><see cref="T:Emc.Documentum.FS.DataModel.Core.Bpm.ProcessInfo"/> object that has be initialized with start process parameters.</param>
+            <returns><see cref="T:Emc.Documentum.FS.DataModel.Core.ObjectIdentity"/> of the process instance.</returns>
+        </member>
+        <member name="T:Emc.Documentum.FS.Services.Bpm.WorkflowServicePort">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.WorkflowServicePort.getProcessTemplates(Emc.Documentum.FS.Services.Bpm.getProcessTemplatesRequest)">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.WorkflowServicePort.getProcessInfo(Emc.Documentum.FS.Services.Bpm.getProcessInfoRequest)">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.WorkflowServicePort.startProcess(Emc.Documentum.FS.Services.Bpm.startProcessRequest)">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.WorkflowServicePortClient.GetServiceContext">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.WorkflowServicePortClient.#ctor">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.WorkflowServicePortClient.#ctor(System.String)">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.WorkflowServicePortClient.#ctor(System.String,System.String)">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.WorkflowServicePortClient.#ctor(System.String,System.ServiceModel.EndpointAddress)">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.WorkflowServicePortClient.#ctor(System.ServiceModel.Channels.Binding,System.ServiceModel.EndpointAddress)">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.WorkflowServicePortClient.Emc#Documentum#FS#Services#Bpm#WorkflowServicePort#getProcessTemplates(Emc.Documentum.FS.Services.Bpm.getProcessTemplatesRequest)">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.WorkflowServicePortClient.getProcessTemplates(System.String,System.String,System.String)">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.WorkflowServicePortClient.Emc#Documentum#FS#Services#Bpm#WorkflowServicePort#getProcessInfo(Emc.Documentum.FS.Services.Bpm.getProcessInfoRequest)">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.WorkflowServicePortClient.getProcessInfo(Emc.Documentum.FS.DataModel.Core.ObjectIdentity)">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.WorkflowServicePortClient.Emc#Documentum#FS#Services#Bpm#WorkflowServicePort#startProcess(Emc.Documentum.FS.Services.Bpm.startProcessRequest)">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.WorkflowServicePortClient.startProcess(Emc.Documentum.FS.DataModel.Core.Bpm.ProcessInfo)">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.WorkflowServicePortClient.GetProcessTemplates(System.String,System.String,System.String)">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.WorkflowServicePortClient.GetProcessInfo(Emc.Documentum.FS.DataModel.Core.ObjectIdentity)">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.WorkflowServicePortClient.StartProcess(Emc.Documentum.FS.DataModel.Core.Bpm.ProcessInfo)">
+            <exclude/>
+        </member>
+        <member name="T:Emc.Documentum.FS.Services.Bpm.getProcessTemplatesRequest">
+            <exclude/>
+        </member>
+        <member name="F:Emc.Documentum.FS.Services.Bpm.getProcessTemplatesRequest.repositoryName">
+            <exclude/>
+        </member>
+        <member name="F:Emc.Documentum.FS.Services.Bpm.getProcessTemplatesRequest.folderPath">
+            <exclude/>
+        </member>
+        <member name="F:Emc.Documentum.FS.Services.Bpm.getProcessTemplatesRequest.additionalAttrs">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.getProcessTemplatesRequest.#ctor">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.getProcessTemplatesRequest.#ctor(System.String,System.String,System.String)">
+            <exclude/>
+        </member>
+        <member name="T:Emc.Documentum.FS.Services.Bpm.getProcessTemplatesResponse">
+            <exclude/>
+        </member>
+        <member name="F:Emc.Documentum.FS.Services.Bpm.getProcessTemplatesResponse.return">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.getProcessTemplatesResponse.#ctor">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.getProcessTemplatesResponse.#ctor(Emc.Documentum.FS.DataModel.Core.DataPackage)">
+            <exclude/>
+        </member>
+        <member name="T:Emc.Documentum.FS.Services.Bpm.getProcessInfoRequest">
+            <exclude/>
+        </member>
+        <member name="F:Emc.Documentum.FS.Services.Bpm.getProcessInfoRequest.process">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.getProcessInfoRequest.#ctor">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.getProcessInfoRequest.#ctor(Emc.Documentum.FS.DataModel.Core.ObjectIdentity)">
+            <exclude/>
+        </member>
+        <member name="T:Emc.Documentum.FS.Services.Bpm.getProcessInfoResponse">
+            <exclude/>
+        </member>
+        <member name="F:Emc.Documentum.FS.Services.Bpm.getProcessInfoResponse.return">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.getProcessInfoResponse.#ctor">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.getProcessInfoResponse.#ctor(Emc.Documentum.FS.DataModel.Core.Bpm.ProcessInfo)">
+            <exclude/>
+        </member>
+        <member name="T:Emc.Documentum.FS.Services.Bpm.startProcessRequest">
+            <exclude/>
+        </member>
+        <member name="F:Emc.Documentum.FS.Services.Bpm.startProcessRequest.info">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.startProcessRequest.#ctor">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.startProcessRequest.#ctor(Emc.Documentum.FS.DataModel.Core.Bpm.ProcessInfo)">
+            <exclude/>
+        </member>
+        <member name="T:Emc.Documentum.FS.Services.Bpm.startProcessResponse">
+            <exclude/>
+        </member>
+        <member name="F:Emc.Documentum.FS.Services.Bpm.startProcessResponse.return">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.startProcessResponse.#ctor">
+            <exclude/>
+        </member>
+        <member name="M:Emc.Documentum.FS.Services.Bpm.startProcessResponse.#ctor(Emc.Documentum.FS.DataModel.Core.ObjectIdentity)">
+            <exclude/>
+        </member>
+        <member name="T:Emc.Documentum.FS.Services.Bpm.WorkflowServicePortChannel">
+            <exclude/>
+        </member>
+    </members>
+</doc>

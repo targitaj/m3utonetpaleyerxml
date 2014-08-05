@@ -1,0 +1,391 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CUITe</name>
+    </assembly>
+    <members>
+        <member name="T:CUITe.Controls.HtmlControls.CUITe_HtmlControl`1">
+            <summary>
+            Base class for all CUITe_Html controls, inherits from CUITe_ControlBase
+            </summary>
+            <typeparam name="T">The Coded UI Test Html control type</typeparam>
+        </member>
+        <member name="M:CUITe.Controls.CUITe_ControlBase`1.UnWrap">
+            <summary>
+            UnWraps the CUITe_Html* or CUITe_Sl* controls to expose the underlying UITestControl.
+            This helps when you want to use any methods/properties of the underlying UITestControl.
+            CUITe_Html* or CUITe_Sl* controls are wrappers/abstractions which hides complexity. UnWrap() helps you break the abstraction.
+            </summary>
+            <returns>The underlying UITestControl instance. For example, returns HtmlEdit in case of CUITe_HtmlEdit.</returns>
+        </member>
+        <member name="M:CUITe.Controls.HtmlControls.CUITe_HtmlControl`1.GetChildren">
+            <summary>
+            Returns a list of all first level children of the current CUITe control.
+            </summary>
+            <returns>list of all first level children</returns>
+        </member>
+        <member name="P:CUITe.Controls.HtmlControls.CUITe_HtmlControl`1.InnerText">
+            <summary>
+            Gets the text content of this control.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.HtmlControls.CUITe_HtmlControl`1.HelpText">
+            <summary>
+            Gets the value of the Help Text attribute of this control.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.HtmlControls.CUITe_HtmlControl`1.Title">
+            <summary>
+            Gets the value of the Title attribute of this control.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.HtmlControls.CUITe_HtmlControl`1.ValueAttribute">
+            <summary>
+            Gets the value of the Value attribute of this control.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.HtmlControls.CUITe_HtmlControl`1.AccessKey">
+            <summary>
+            Gets the value of the AccessKey attribute of this control.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.HtmlControls.CUITe_HtmlControl`1.Parent">
+            <summary>
+            Gets the parent of the current CUITe control.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.HtmlControls.CUITe_HtmlControl`1.PreviousSibling">
+            <summary>
+            Gets the previous sibling of the current CUITe control.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.HtmlControls.CUITe_HtmlControl`1.NextSibling">
+            <summary>
+            Gets the next sibling of the current CUITe control.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.HtmlControls.CUITe_HtmlControl`1.FirstChild">
+            <summary>
+            Gets the first child of the current CUITe control.
+            </summary>
+        </member>
+        <member name="T:CUITe.Controls.SilverlightControls.CUITe_SlTable">
+            <summary>
+            CUITe wrapper for SilverlightTable.
+            </summary>
+        </member>
+        <member name="M:CUITe.Controls.SilverlightControls.CUITe_SlControl`1.GetChildren">
+            <summary>
+            Returns a list of all first level children of the current CUITe control.
+            </summary>
+            <returns>list of all first level children</returns>
+        </member>
+        <member name="P:CUITe.Controls.SilverlightControls.CUITe_SlControl`1.LabeledBy">
+            <summary>
+            Gets the control's label text.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.SilverlightControls.CUITe_SlControl`1.Parent">
+            <summary>
+            Gets the parent of the current CUITe control.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.SilverlightControls.CUITe_SlControl`1.PreviousSibling">
+            <summary>
+            Gets the previous sibling of the current CUITe control.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.SilverlightControls.CUITe_SlControl`1.NextSibling">
+            <summary>
+            Gets the next sibling of the current CUITe control.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.SilverlightControls.CUITe_SlControl`1.FirstChild">
+            <summary>
+            Gets the first child of the current CUITe control.
+            </summary>
+        </member>
+        <member name="T:CUITe.Controls.SilverlightControls.CUITe_SlTabItem">
+            <summary>
+            CUITe wrapper for SilverlightTabItem.
+            </summary>
+        </member>
+        <member name="T:CUITe.Controls.SilverlightControls.CUITe_SlDataPager">
+            <summary>
+            CUITe wrapper for SilverlightDataPager.
+            </summary>
+        </member>
+        <member name="T:CUITe.Controls.SilverlightControls.CUITe_SlDatePicker">
+            <summary>
+            CUITe wrapper for SilverlightDatePicker.
+            </summary>
+        </member>
+        <member name="T:CUITe.Controls.SilverlightControls.CUITe_SlEdit">
+            <summary>
+            CUITe wrapper for SilverlightEdit.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.SilverlightControls.CUITe_SlEdit.Text">
+            <summary>
+            Gets or sets the text displayed on the Silverlight Edit.
+            </summary>
+        </member>
+        <member name="M:CUITe.Controls.HtmlControls.CUITe_BrowserWindow.GetBrowserWindow``1">
+            <summary>
+            Gets the instance of T, which is an Object repository class (page definition).
+            </summary>
+            <typeparam name="T">Object repository class</typeparam>
+            <returns>instance of T</returns>
+        </member>
+        <member name="M:CUITe.Controls.HtmlControls.CUITe_BrowserWindow.Close">
+            <summary>
+            Closes the CUITe_BrowserWindow instance.
+            </summary>
+        </member>
+        <member name="M:CUITe.Controls.HtmlControls.CUITe_BrowserWindow.CloseAllBrowsers">
+            <summary>
+            Closes all IE instances.
+            </summary>
+        </member>
+        <member name="M:CUITe.Controls.HtmlControls.CUITe_BrowserWindow.RunScript(System.String)">
+            <summary>
+            Run/evaluate JavaScript code in the DOM context.
+            </summary>
+            <param name="sCode">JavaScript code as string</param>
+        </member>
+        <member name="M:CUITe.Controls.HtmlControls.CUITe_BrowserWindow.Get``1(System.String)">
+            <summary>
+            Gets the CUITe control object when search parameters are passed. 
+            You don't have to create the object repository entry for this.
+            </summary>
+            <typeparam name="T">Pass the CUITe control you are looking for.</typeparam>
+            <param name="sSearchParameters">In 'Key1=Value1;Key2=Value2' format. For example 'Id=firstname'</param>
+            <returns>CUITe_* control object</returns>
+        </member>
+        <member name="M:CUITe.Controls.HtmlControls.CUITe_HtmlTable.GetColumnHeaders">
+            <summary>
+            Gets the column headers of the html table.
+            </summary>
+            <returns>string array</returns>
+        </member>
+        <member name="T:CUITe.Controls.SilverlightControls.CUITe_SlHyperlink">
+            <summary>
+            CUITe wrapper for SilverlightHyperlink.
+            </summary>
+        </member>
+        <member name="T:CUITe.Controls.SilverlightControls.CUITe_SlCalendar">
+            <summary>
+            CUITe wrapper for SilverlightCalendar.
+            </summary>
+        </member>
+        <member name="T:CUITe.Controls.SilverlightControls.CUITe_SlImage">
+            <summary>
+            CUITe wrapper for SilverlightImage.
+            </summary>
+        </member>
+        <member name="T:CUITe.Controls.SilverlightControls.CUITe_SlLabel">
+            <summary>
+            CUITe wrapper for SilverlightLabel.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.SilverlightControls.CUITe_SlLabel.Text">
+            <summary>
+            Gets the text displayed on the label.
+            </summary>
+        </member>
+        <member name="T:CUITe.Controls.SilverlightControls.CUITe_SlCheckBox">
+            <summary>
+            CUITe wrapper for SilverlightCheckBox.
+            </summary>
+        </member>
+        <member name="T:CUITe.Controls.SilverlightControls.CUITe_SlTab">
+            <summary>
+            CUITe wrapper for SilverlightTab.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.SilverlightControls.CUITe_SlTab.SelectedIndex">
+            <summary>
+            Gets or sets the index of the selected tab item.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.SilverlightControls.CUITe_SlTab.SelectedItem">
+            <summary>
+            Gets or sets the text of the selected tab item.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.SilverlightControls.CUITe_SlTab.ItemCount">
+            <summary>
+            Gets the count of tab items.
+            </summary>
+        </member>
+        <member name="T:CUITe.Controls.SilverlightControls.CUITe_SlButton">
+            <summary>
+            CUITe wrapper for SilverlightButton.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.SilverlightControls.CUITe_SlButton.DisplayText">
+            <summary>
+            Gets the text displayed on the Silverlight Button.
+            </summary>
+        </member>
+        <member name="T:CUITe.Controls.SilverlightControls.CUITe_SlSlider">
+            <summary>
+            CUITe wrapper for SilverlightSlider.
+            </summary>
+        </member>
+        <member name="T:CUITe.Controls.SilverlightControls.CUITe_SlText">
+            <summary>
+            CUITe wrapper for SilverlightText.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.SilverlightControls.CUITe_SlText.Text">
+            <summary>
+            Gets the text displayed on the SilverlightText block.
+            </summary>
+        </member>
+        <member name="T:CUITe.Controls.SilverlightControls.CUITe_SlRadioButton">
+            <summary>
+            CUITe wrapper for SilverlightRadioButton.
+            </summary>
+        </member>
+        <member name="T:CUITe.Controls.SilverlightControls.CUITe_SlTree">
+            <summary>
+            CUITe wrapper for SilverlightTree.
+            </summary>
+        </member>
+        <member name="T:CUITe.Controls.HtmlControls.CUITe_HtmlComboBox">
+            <summary>
+            CUITe wrapper for HtmlComboBox.
+            </summary>
+        </member>
+        <member name="M:CUITe.Controls.HtmlControls.CUITe_HtmlComboBox.SelectItem(System.String)">
+            <summary>
+            Selects the item in the combobox.
+            </summary>
+            <param name="sItem">Item as string</param>
+        </member>
+        <member name="M:CUITe.Controls.HtmlControls.CUITe_HtmlComboBox.SelectItem(System.Int32)">
+            <summary>
+            Selects the item in the combobox by index.
+            </summary>
+            <param name="index">index of item</param>
+        </member>
+        <member name="M:CUITe.Controls.HtmlControls.CUITe_HtmlComboBox.ItemExists(System.String)">
+            <summary>
+            Tells whether the specified item is present in the html combo box or not.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.HtmlControls.CUITe_HtmlComboBox.SelectedItem">
+            <summary>
+            Gets the selected item in a combobox.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.HtmlControls.CUITe_HtmlComboBox.SelectedIndex">
+            <summary>
+            Gets the selected index in a combobox.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.HtmlControls.CUITe_HtmlComboBox.ItemCount">
+            <summary>
+            Gets the count of the items in the combobox.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.HtmlControls.CUITe_HtmlComboBox.Items">
+            <summary>
+            Gets the items in a string array of the html combo box.
+            </summary>
+        </member>
+        <member name="T:CUITe.Controls.SilverlightControls.CUITe_SlComboBox">
+            <summary>
+            CUITe wrapper for SilverlightComboBox.
+            </summary>
+        </member>
+        <member name="M:CUITe.Controls.SilverlightControls.CUITe_SlComboBox.SelectItem(System.String)">
+            <summary>
+            Selects the item in the combobox.
+            </summary>
+            <param name="sItem">Item as string</param>
+        </member>
+        <member name="M:CUITe.Controls.SilverlightControls.CUITe_SlComboBox.SelectItem(System.Int32)">
+            <summary>
+            Selects the item in the combobox by index.
+            </summary>
+            <param name="index">index of item</param>
+        </member>
+        <member name="P:CUITe.Controls.SilverlightControls.CUITe_SlComboBox.SelectedItem">
+            <summary>
+            Gets the selected item in a combobox.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.SilverlightControls.CUITe_SlComboBox.SelectedIndex">
+            <summary>
+            Gets the selected index in a combobox.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.SilverlightControls.CUITe_SlComboBox.ItemCount">
+            <summary>
+            Gets the count of the items in the combobox.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.SilverlightControls.CUITe_SlComboBox.Items">
+            <summary>
+            Gets the items in a string array.
+            </summary>
+        </member>
+        <member name="T:CUITe.Controls.SilverlightControls.CUITe_SlCell">
+            <summary>
+            CUITe wrapper for SilverlightCell.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.SilverlightControls.CUITe_SlCell.ColumnIndex">
+            <summary>
+            Gets the 0-based index of the cell.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.SilverlightControls.CUITe_SlCell.RowIndex">
+            <summary>
+            Gets the 0-based index of the row.
+            </summary>
+        </member>
+        <member name="M:CUITe.Controls.HtmlControls.CUITe_HtmlList.ItemExists(System.String)">
+            <summary>
+            Tells whether the specified item is present in the html list or not.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.HtmlControls.CUITe_HtmlList.Items">
+            <summary>
+            Gets the items in a string array of the html list.
+            </summary>
+        </member>
+        <member name="T:CUITe.Controls.SilverlightControls.CUITe_SlList">
+            <summary>
+            CUITe wrapper for SilverlightList.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.SilverlightControls.CUITe_SlList.Items">
+            <summary>
+            Gets the collection of child list items of the list
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.SilverlightControls.CUITe_SlList.SelectedIndices">
+            <summary>
+            Gets or sets the indices of the selected items of the list.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.SilverlightControls.CUITe_SlList.SelectedItems">
+            <summary>
+            Gets or sets the selected items in the listbox.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.SilverlightControls.CUITe_SlList.SelectedItemsAsString">
+            <summary>
+            Gets or sets the selected items of the list in a comma separated format.
+            </summary>
+        </member>
+        <member name="P:CUITe.Controls.SilverlightControls.CUITe_SlList.SelectionMode">
+            <summary>
+            Gets a value indicating the selection mode of the list
+            </summary>
+        </member>
+    </members>
+</doc>
