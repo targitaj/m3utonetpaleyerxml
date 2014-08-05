@@ -136,7 +136,7 @@ namespace MyVideo.Controllers
                 {
                     outputFile = fi.Name.Replace(fi.Extension, "") + "." + fileFormat;
                     line = string.Format(
-                        @"-i ""{0}"" -ss {2} -b {3}k -v 0 -vcodec libx264 ""{1}""",
+                        @"-i ""{0}"" -ss {2} -b {3}k -v 0 -acodec mp3 -vf ""scale=400:trunc(ow/a/2)*2"" -map 0:{4} -vcodec h264 ""{1}""",
                         source, Server.MapPath("~") + outputFile, offset, bitrate);
                 }
                 else
@@ -186,6 +186,11 @@ namespace MyVideo.Controllers
 
             return RedirectToAction("Index");
         }
+
+        //public ActionResult LaunchJWPlayer(string source)
+        //{
+        //    return RedirectToAction("Index");
+        //}
 
         void myproc_ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
