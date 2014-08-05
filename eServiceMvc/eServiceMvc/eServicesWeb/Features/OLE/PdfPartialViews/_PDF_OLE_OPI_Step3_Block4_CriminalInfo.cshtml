@@ -1,0 +1,155 @@
+﻿@model Uma.Eservices.Models.OLE.OLEOPICriminalInfoBlock
+
+<table class="width_full">
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.HaveCrimeConviction)
+    </td>
+        <td>
+            @if (@Model.HaveCrimeConviction.HasValue && @Model.HaveCrimeConviction.Value)
+            {
+                @T("Yes")
+            }
+            else
+            {
+                @T("No")
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.ConvictionCrimeDescription)
+    </td>
+        <td>
+            @Model.ConvictionCrimeDescription
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.ConvictionCountry)
+    </td>
+        <td>
+            @Html.GetState(@Model.ConvictionCountry)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.ConvictionDate)
+    </td>
+        <td>@Model.ConvictionDate</td>
+    </tr>
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.ConvictionSentence)
+    </td>
+        <td>
+            @Model.ConvictionSentence
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.WasSuspectOfCrime)
+    </td>
+        <td>
+            @if (@Model.WasSuspectOfCrime.HasValue && @Model.WasSuspectOfCrime.Value)
+            {
+                @T("Yes")
+            }
+            else
+            {
+                @T("No")
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.CrimeAllegedOffence)
+    </td>
+        <td>
+            @Model.CrimeAllegedOffence
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.CrimeCountry)
+    </td>
+        <td>
+            @Html.GetState(@Model.CrimeCountry)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.CrimeDate)
+    </td>
+        <td>
+            @Model.CrimeDate
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.CriminalRecordApproval)
+    </td>
+        <td>
+            @if (@Model.CriminalRecordApproval.HasValue && @Model.CriminalRecordApproval.Value)
+            {
+                @T("Yes")
+            }
+            else
+            {
+                @T("No")
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>@Html.UmaPdfLabelFor(m => m.CriminalRecordRetriveDenialReason)</td>
+        <td>
+            @Model.CriminalRecordRetriveDenialReason
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.WasSchengenEntryRefusal)
+    </td>
+        <td>
+            @if (@Model.WasSchengenEntryRefusal.HasValue && @Model.WasSchengenEntryRefusal.Value)
+            {
+                @T("Yes")
+            }
+            else
+            {
+                @T("No")
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.SchengenEntryRefusalCountry)
+    </td>
+        <td>
+            @Html.GetState(@Model.SchengenEntryRefusalCountry)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.IsSchengenZoneEntryStillInForce)
+    </td>
+        <td>
+            @if (@Model.IsSchengenZoneEntryStillInForce.HasValue && @Model.IsSchengenZoneEntryStillInForce.Value)
+            {
+                @T("Yes")
+            }
+            else
+            {
+                @T("No")
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.SchengenEntryTimeRefusalExpiration)
+    </td>
+        <td>
+            @Model.SchengenEntryTimeRefusalExpiration
+        </td>
+    </tr>
+</table>

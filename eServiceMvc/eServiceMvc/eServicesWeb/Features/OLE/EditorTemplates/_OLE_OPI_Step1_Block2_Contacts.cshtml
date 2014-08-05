@@ -1,0 +1,92 @@
+﻿@model Uma.Eservices.Models.OLE.OLEContactInfoBlock
+
+    <h4>@T("Your current address where you live now")</h4>
+    @T("Enter here the contact information that is best for the authorities to use in order to reach you in matters related to the processing of your application. If your contact information changes, immediately notify the authority that received your application")
+<br/>
+    <div class="row form-row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.AddressInformation.StreetAddress)
+                @Html.UmaTextBoxFor(m => m.AddressInformation.StreetAddress)
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-row">
+        <div class="col-sm-4">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.AddressInformation.PostalCode)
+                @Html.UmaTextBoxFor(m => m.AddressInformation.PostalCode)
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.AddressInformation.City)
+                @Html.UmaTextBoxFor(m => m.AddressInformation.City)
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-row">
+        <div class="col-sm-4">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.AddressInformation.Country)
+                @Html.UmaDropDownFor(m => m.AddressInformation.Country, @Html.GetStateList())
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.TelephoneNumber)
+                @Html.UmaTextBoxFor(m => m.TelephoneNumber)
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-row">
+        <div class="col-sm-4">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.EmailAddress)
+                @Html.UmaTextBoxFor(m => m.EmailAddress)
+            </div>
+        </div>
+    </div>
+
+    <h4>@T("Contact information in Finland if different from above")"</h4>
+    <div class="row form-row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.FinlandAddressInformation.StreetAddress)
+                @Html.UmaTextBoxFor(m => m.FinlandAddressInformation.StreetAddress)
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-row">
+        <div class="col-sm-4">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.FinlandAddressInformation.PostalCode)
+                @Html.UmaTextBoxFor(m => m.FinlandAddressInformation.PostalCode)
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.FinlandAddressInformation.City)
+                @Html.UmaTextBoxFor(m => m.FinlandAddressInformation.City)
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-row">
+        <div class="col-sm-4">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.FinlandEmailAddress)
+                @Html.UmaTextBoxFor(m => m.FinlandEmailAddress)
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.FinlandTelephoneNumber)
+                @Html.UmaTextBoxFor(m => m.FinlandTelephoneNumber)
+            </div>
+        </div>
+    </div>

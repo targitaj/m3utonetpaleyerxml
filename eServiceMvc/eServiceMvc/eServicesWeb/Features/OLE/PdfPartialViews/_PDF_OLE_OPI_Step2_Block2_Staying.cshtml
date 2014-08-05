@@ -1,0 +1,36 @@
+﻿@model Uma.Eservices.Models.OLE.OLEOPIStayingBlock
+
+<table class="width_full">
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.DurationOfStudies)
+        </td>
+        <td>
+            @Model.DurationOfStudies
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.ReasonToStayLonger)
+        </td>
+        <td>
+            @Model.ReasonToStayLonger
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.ReasonToHaveLongerPermit)
+        </td>
+        <td>
+            @Model.ReasonToHaveLongerPermit
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.ReasonToStudyInFinland)
+        </td>
+        <td>
+            @Model.ReasonToStudyInFinland
+        </td>
+    </tr>
+</table>

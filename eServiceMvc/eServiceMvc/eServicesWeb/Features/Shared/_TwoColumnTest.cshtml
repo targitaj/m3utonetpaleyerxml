@@ -1,0 +1,17 @@
+﻿@model Uma.Eservices.Models.Sandbox.DynamicFieldsModel
+<div class="row">
+    <div class="col-sm-4 pull-bottom">
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.DynamicField)
+            @Html.UmaTextBoxFor(m => m.DynamicField)
+            @Html.ValidationMessageFor(m => m.DynamicField)
+        </div>
+    </div>
+    <div class="col-sm-4 pull-bottom">
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.SecondDynamicField)
+            @Html.UmaTextBoxFor(m => m.SecondDynamicField)
+            @Html.ValidationMessageFor(m => m.SecondDynamicField)
+        </div>
+    </div>
+</div>

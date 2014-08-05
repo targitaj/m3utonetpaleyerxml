@@ -1,0 +1,15 @@
+﻿@using System.Web.Script.Serialization
+@using Uma.Eservices.Models.OLE.Enums
+@model Uma.Eservices.Models.FormCommons.AttachmentBlock
+@using (Html.BeginUmaExpander("Attach supplemental documents | optional", "acordStep4", true))
+{
+    <div class="upload-text">
+        @T("Maximum 4 MB per single attachment.")
+    </div>
+    
+    using (Html.BeginForm(MVC.OLE.Actions.UploadFile(AttachmentTypeEnum.Supplemental, Model.ApplicationId, null), FormMethod.Post, new { data_upload_template_id = "template-upload-10", data_download_template_id = "template-download-10", ajaxSavingUrl = Url.Action(MVC.OLE.UploadFile(AttachmentTypeEnum.Supplemental, Model.ApplicationId, null)) }))
+    {
+        @Html.UmaAjaxFileUpload(4194304, Url.Action(MVC.OLE.Actions.UploadFile(AttachmentTypeEnum.Supplemental, Model.ApplicationId, null)), MVC.Shared.Views._MultiFileUploadWithDescription, Model, MVC.OLE.ActionNames.DeleteFile, MVC.OLE.ActionNames.DownloadFile, "template-upload-10", "template-download-10")
+    }
+    <hr class="form-separator-no-margin" />
+}

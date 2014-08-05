@@ -1,0 +1,151 @@
+﻿/// <reference path="migri-variables.less" />
+/// <reference path="../bootstrap/bootstrap.less" />
+
+table.form-progress-table {
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 40px;
+    
+
+    .circle-row{
+        height: 22px;
+        color: white;
+    }
+
+    td{
+        text-align: center;
+    }
+
+    .circle-td{
+        width: 32px;
+    }
+
+    .progress-title{
+        /*font-size: 16px;*/
+        vertical-align: top;
+        line-height: 100%;
+    }
+}
+
+.progress-circle {
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    text-align: center;
+    background-color: @migri-gray;
+
+    .progress-number{
+        display: table;
+        width: 100%;
+        height: 100%;
+    }
+
+    .number{
+        display: table-cell;
+        vertical-align: middle;
+        margin: 0;
+        font-size: 22px;
+        font-weight: bold;
+    }
+}
+
+.progress-circle.green{
+    background-color: @migri-accent-green;
+}
+
+@media (min-width: @screen-xs-min) {
+    table.form-progress-table {
+        .circle-row {
+            height: 42px;
+        }
+
+        .circle-td{
+            width: 42px;
+        }
+
+        .progress-title {
+            /*font-size: 18px;*/
+        }
+    }
+
+    .progress-circle {
+        width: 42px;
+        height: 42px;
+
+        .number{
+            font-size: 30px;
+        }
+    }
+}
+@media (min-width: @screen-sm-min) {
+    table.form-progress-table {
+        .circle-row {
+            height: 62px;
+        }
+
+        .circle-td{
+            width: 62px;
+        }
+
+        .progress-title {
+            /*font-size: 20px;*/
+        }
+    }
+
+    .progress-circle {
+        width: 62px;
+        height: 62px;
+
+        .number{
+            font-size: 40px;
+        }
+    }
+}
+@media (min-width: @screen-md-min) {
+    table.form-progress-table {
+        .circle-row {
+            height: 82px;
+        }
+
+        .circle-td{
+            width: 82px;
+        }
+
+        .progress-title {
+            /*font-size: 22px;*/
+        }
+    }
+
+    .progress-circle {
+        width: 82px;
+        height: 82px;
+
+        .number{
+            font-size: 48px;
+        }
+    }
+}
+@media (min-width: @screen-lg-min) {
+    table.form-progress-table {
+        .circle-row {
+            height: 102px;
+        }
+
+        .circle-td{
+            width: 102px;
+        }
+
+        .progress-title {
+            /*font-size: 24px;*/
+        }
+    }
+
+    .progress-circle {
+        width: 102px;
+        height: 102px;
+
+        .number{
+            font-size: 56px;
+        }
+    }
+}

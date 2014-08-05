@@ -1,0 +1,40 @@
+﻿@model Uma.Eservices.Models.FormCommons.ApplicationFormModel
+@{
+    ViewBag.Title = "Residence permit for Studies application: Step 1";
+    ViewBag.FeatureName = "OLE";
+}
+@{
+    Layout = "~/Features/Masters/PdfLayout.cshtml";
+}
+<h1 class="migri-background form-name">@T("Student Application Form")</h1>
+
+<table>         
+    <tr>
+        <td>
+            <h4>
+                @T("I am applying for and will be submitting an application for...")
+            </h4>
+        </td>
+        <td>
+            @if (Model.IsExtension)
+            {
+                @T("My first residence permit")
+            }
+            else
+            {
+                @T("An extension to my residence permit")
+            }
+        </td>
+    </tr>
+  </table>
+
+@*STEP 1*@
+@Html.Partial("PdfViews/PDF_OPI_Step1", Model.OleOpiPersonalInformationPge)
+
+
+@*STEP 2*@
+@Html.Partial("PdfViews/PDF_OPI_Step2", Model.OleOpiEducationInformationPage)
+
+
+@*STEP 3*@
+@Html.Partial("PdfViews/PDF_OPI_Step3", Model.OleOpiFinancialInformationPage)

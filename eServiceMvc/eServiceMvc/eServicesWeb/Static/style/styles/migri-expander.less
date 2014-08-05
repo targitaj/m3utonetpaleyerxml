@@ -1,0 +1,142 @@
+﻿/// <reference path="migri-variables.less" />
+/// <reference path="../bootstrap/bootstrap.less" />
+
+.expander-block {
+    margin-top: 45px;
+
+    .expander-header {
+        .header-left {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .header {
+            cursor: pointer;
+            position: relative;
+        }
+
+        .header-right {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+        }
+
+        .expander-green-line {
+            background-color: #90e600;
+            width: 0%;
+            float: left;
+            height: 4.5px;
+        }
+
+        .expander-pink-line {
+            background-color: #B1B1B1;
+            width: 100%;
+            height: 4.5px;
+        }
+
+        img {
+            width: @icon-img-width;
+            margin-right: 15px;
+        }
+
+        .expander-line-width-to-screen {
+            margin-left: -7.5px;
+            margin-right: -7.5px;
+        }
+    }
+
+    .expanding-element {
+        padding-top: 45px;
+    }
+}
+
+@media (min-width: @screen-xs-min) {
+    .expander-block {
+        margin-top: 60px;
+
+        .expander-header {
+            .header-left {
+                font-size: 18px;
+            }
+
+            img {
+                width: @icon-img-xs-width;
+            }
+
+            .expander-green-line {
+                height: 6px;
+            }
+
+            .expander-pink-line {
+                height: 6px;
+            }
+
+            .expander-line-width-to-screen {
+                margin-left: -7.5px;
+                margin-right: -7.5px;
+            }
+        }
+
+        .expanding-element {
+            padding-top: 60px;
+        }
+    }
+}
+
+@media (min-width: @screen-sm-min) {
+    .expander-block {
+        .expander-header {
+            .header-left {
+                font-size: 22px;
+            }
+        }
+    }
+}
+
+@media (min-width: @screen-md-min) {
+    .expander-block {
+        margin-top: 70px;
+
+        .expander-header {
+            img {
+                width: @icon-img-md-width;
+            }
+
+            .header-left {
+                font-size: 30px;
+            }
+
+            .expander-green-line {
+                height: 7px;
+            }
+
+            .expander-pink-line {
+                height: 7px;
+            }
+
+            .expander-line-width-to-screen {
+                margin-left: -15px;
+                margin-right: -15px;
+            }
+        }
+
+        .expanding-element {
+            padding-top: 90px;
+        }
+    }
+}
+
+@media (min-width: @screen-lg-min) {
+    .expander-block {
+        .expander-header {
+            .expander-line-width-to-screen {
+                margin-left: -37px;
+                margin-right: -37px;
+            }
+
+            img {
+                width: @icon-img-lg-width;
+            }
+        }
+    }
+}

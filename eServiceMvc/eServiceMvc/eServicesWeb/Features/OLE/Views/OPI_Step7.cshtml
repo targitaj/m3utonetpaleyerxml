@@ -1,0 +1,87 @@
+﻿@using Microsoft.AspNet.Identity
+@using Uma.Eservices.Logic.Features
+
+@model Uma.Eservices.Models.OLE.OLEApplicationSubmit
+@{
+    ViewBag.Title = "Residence permit for Studies application: Step 7";
+}
+
+<div class="path-descr">
+    <div><a href="@Url.Action(MVC.Home.Index())">@T("Home")</a></div>
+    <div><a href="@Url.Action(MVC.Info.StudyPermit())">@T("Studying in Finland")</a></div>
+    <div>@T("Student Application Form")</div>
+</div>
+
+@using (Html.BeginForm(MVC.OLE.ActionNames.OPIStep7Save, MVC.OLE.Name, FormMethod.Post, new { role = "form" }))
+{
+    @Html.AntiForgeryToken();
+    @Html.HiddenFor(o => o.ApplicationId)
+
+    @Html.Partial(MVC.Shared.Views._DashboardTabs, 2)
+    <h1>@T("Student Application Form")</h1>
+    @Html.Partial(MVC.Shared.Views._FormProgress, Model.FormProgress)
+
+    <h2>@T("Hi ") (@User.Identity.GetUserName())!</h2>
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-1 text-custom-left div-margins-sn">
+            <div>
+                @T("Your online bank account / cedit card has been succesfully charged for the amount of " +
+                    "300 €. A payment confirmation has been sent to your email address and your mobile " +
+                    "phone number. If you do not get one within the next 10 minutes, please send a email to " +
+                    "paymentsupport@migri in order ensure your payment has been successfully processed.")
+            </div>
+
+        </div>
+    </div>
+
+        <h4 class="row-padding-x3">
+            @T("Since you have now paid for your application, please confirm that you are in compliance with " +
+                "the accuracy of your application and submit your application.")
+        </h4>
+    
+    <div class="row form-row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.IUnderstand)
+            </div>
+        </div>
+        @Html.UmaCheckBoxButtonFor(m => m.IUnderstand, @T("I am applying for a Finnish residence permit and hereby airm that the information I submit in this " +
+                "application and its appendices is correct and accurate. I am aware that providing false personal " +
+                "information and false written documentation to the authorities is an act punishable under the Penal " +
+                "Code in Finland and that providing false information may lead to a refusal of a residence permit or the " +
+                "cancelling of an existing permit, repatriation and imposal of a refusal of entry into the Schengen " +
+                "territory.").ToString())
+    </div>
+    
+    <div class="row  row-padding">
+        <div class="col-sm-4 col-sm-offset-2">
+            @Html.UmaButton("submitButton", @T("SUBMIT").ToString(), UmaButtonType.FormSubmit, new { @class = "btn-full-width-maringLess" })
+        </div>
+    </div>
+
+    <h2 class="row-padding"></h2>
+
+    <div class="row gray-block">
+        <h1 class="text-center">@T("Please remember to go to the Finnish embassy!")</h1>
+        <div class="col-sm-6 col-sm-offset-1 text-custom-left h4-margins">
+            <h4>
+                @T("After you have selected the “Submit My Application” button, please " +
+                    "know that your application will only start getting processed after you" +
+                    "have visited either the Finnish Embassy near you or Police station to" +
+                    "present your application, supporting documents, and make a payment.")
+            </h4>
+            <h4>
+                @T("You can find the nearest Finnish Embassy near you by visiting their web site at http://formin.finland.fi.")
+            </h4>
+            <h4>
+                @T("Please contact the embassy in order to confirm payment method and any additional information you need.")
+            </h4>
+
+        </div>
+    </div>
+}
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/formjs")
+}

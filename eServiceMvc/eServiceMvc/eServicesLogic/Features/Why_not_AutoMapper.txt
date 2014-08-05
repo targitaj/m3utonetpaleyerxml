@@ -1,0 +1,12 @@
+﻿After using AutoMapper on a couple of projects I have stopped using it. 
+The problem is that the convention based mappings introduce annoying bugs when property names change or the object graph changes. 
+When a change breaks the convention it results in a runtime exception. Very annoying.
+
+1. If you use the convention-based mapping (which is easy way to go) 
+   and a property is later renamed that becomes a runtime error 
+   and a common source of annoying bugs. 
+2. If you don't use convention-based mapping (ie you explicitly map each property) 
+   then you are just using automapper to do your projection, which is unnecessary complexity.
+   And amount of code is on-par with hand-crafted mappers. In AutoMapper case you have to learn to use it. 
+   Hand-crafter is just plain and fast C# code.
+ 

@@ -1,0 +1,31 @@
+﻿@using System.Web.UI.WebControls
+@model Uma.Eservices.Models.Sandbox.GroupSpouseFormerCitiz
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.Citiz)
+            <div class="col-sm-9">
+                @Html.UmaTextBoxFor(m => m.Citiz)
+                @Html.ValidationMessageFor(m => m.Citiz)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.CitizHowGotten)
+            <div class="col-sm-9">
+                @Html.UmaTextBoxFor(m => m.CitizHowGotten)
+                @Html.ValidationMessageFor(m => m.CitizHowGotten)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.CitizWhenGotten)
+            <div class="col-sm-9">
+                @Html.UmaDatePickerFor(m => m.CitizWhenGotten)
+                @Html.ValidationMessageFor(m => m.CitizWhenGotten)
+            </div>
+        </div>
+    </div>
+</div>
+   

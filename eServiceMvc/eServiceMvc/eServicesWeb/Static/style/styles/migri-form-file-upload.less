@@ -1,0 +1,163 @@
+﻿/// <reference path="migri-variables.less" />
+/// <reference path="../bootstrap/bootstrap.less" />
+
+.btn.upload-button[disabled='disabled']{
+    background-color: lighten(@migri-main-blue, 70%);
+        cursor: default;
+}
+
+
+/* AjaxFileUpload */
+.files{
+    padding-top: 10px;
+}
+
+.empty-string{
+    color: @input-color-placeholder;
+}
+
+.btn.add-button{ 
+    background-color: @input-color-placeholder;
+    border-width: 0;
+}
+
+.btn.upload-button{
+    border-width: 0;
+    display: block;
+    float: right;
+    background-color: @gray-dark;
+}
+
+.upload-text{
+    margin-top: -30px;
+}
+
+.fileupload-buttonbar{
+    padding-top: 40px;
+}
+
+.template-upload, .template-download {
+    .upload-progress-bar {
+        display: table-cell;
+        vertical-align: middle;
+        padding-left: 15px;
+        width: 300px;
+    }
+
+    .upload-with-description-progress-bar {
+        width: 150px;
+    }
+
+    .progress {
+        margin-bottom: 0px;
+    }
+
+    .file-row {
+        position: relative;
+    }
+
+    div.name {
+        min-width: 100px;
+        max-width: 150px;
+    }
+
+    .file-name {
+        display: table-cell;
+        vertical-align: middle;
+        padding-left: 15px;
+    }
+
+    .file-block-wrapper {
+        position: relative;
+        height: 100%;
+    }
+
+    .file-block {
+        padding-left: 15px;
+        position: absolute;
+        bottom: 0;
+    }
+
+    .delete-image {
+        display: table-cell;
+        vertical-align: middle;
+        cursor: pointer;
+        min-width: 42px;
+    }
+
+    .start {
+        height: 0;
+        border-width: 0;
+    }
+
+    .item-upload-button {
+        height: 0;
+        float: right;
+        visibility: collapse;
+    }
+}
+
+@media (max-width:@screen-xs-max) {
+    .btn.upload-button {
+        float: none;
+    }
+
+    .template-upload, .template-download {
+        .file-block{
+            position: relative;
+        }
+    }
+}
+
+@media (min-width: @screen-xs-min) {
+    .upload-text {
+        margin-top: -40px;
+    }
+
+    .files {
+        padding-top: 15px;
+    }
+
+    .template-upload, .template-download {
+        div.name{
+            min-width: 280px;
+            max-width: none;
+        }
+
+        div.name.description{
+            min-width: 0;
+            max-width: 280px;
+        }
+
+        .upload-with-description-progress-bar {
+            min-width: 280px;
+        }
+    }
+}
+@media (min-width:@screen-sm-min) {
+    .upload-text {
+        margin-top: -50px;
+    }
+
+    .files {
+        padding-top: 20px;
+    }
+}
+@media (min-width: @screen-md-min) {
+    .upload-text {
+        margin-top: -60px;
+    }
+
+    .files {
+        padding-top: 25px;
+    }
+}
+@media (min-width: @screen-lg-min) {
+    .upload-text {
+        margin-top: -70px;
+    }
+
+    .files {
+        padding-top: 30px;
+    }
+}

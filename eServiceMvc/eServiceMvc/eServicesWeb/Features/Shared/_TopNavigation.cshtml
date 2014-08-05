@@ -1,0 +1,82 @@
+﻿@using Microsoft.AspNet.Identity
+@using Uma.Eservices.Logic.Features
+@model Uma.Eservices.Models.Shared.TopNavigationModel
+<nav>
+    <div class="menu">
+        <div class="dropdown">
+            <a data-toggle="dropdown" href="#">
+                <div class="menutoggle"></div>
+            </a>
+            <ul class="dropdown-menu main-dropDown" role="menu" aria-labelledby="dLabel">
+                <li><a role="menuitem" tabindex="-1" href="@Url.Action(MVC.Home.Index())">@T("Home")</a></li>
+                @if (Request.IsAuthenticated)
+                {
+                    <li><a role="menuitem" tabindex="-1" href="@Url.Action(MVC.Account.ActionNames.UserProfile, MVC.Account.Name)">@T("My account")</a></li>
+                    <li><a role="menuitem" tabindex="-1" href="@Url.Action(MVC.Dashboard.ActionNames.Index, MVC.Dashboard.Name)">@T("My application")</a></li>
+                }
+                <li class="divider"></li>
+                <li class="dropdown-submenu visible-xs">
+                    <a tabindex="-1" href="#">@T("Language")</a>
+                    <ul class="dropdown-menu">
+                        <li><a tabindex="-1" href="@Url.Action(MVC.Home.SetEnglish())" @Html.Raw(Model.EnglishSelectorStyle)>English</a></li>
+                        <li><a tabindex="-1" href="@Url.Action(MVC.Home.SetFinnish())" @Html.Raw(Model.FinnishSelectorStyle)>Suomi</a></li>
+                        <li><a tabindex="-1" href="@Url.Action(MVC.Home.SetSwedish())" @Html.Raw(Model.SwedishSelectorStyle)>Svenska</a></li>
+                    </ul>
+                </li>
+                <li class="divider visible-xs"></li>
+                @if (Request.IsAuthenticated)
+                {
+                    <li><a role="menuitem" tabindex="-1" href="@Url.Action(MVC.Account.LogOff())">@T("Logoff") (@User.Identity.GetUserName())</a></li>
+                }
+                else
+                {
+                    <li><a role="menuitem" tabindex="-1" href="@Url.Action(MVC.Account.Login())">@T("Login")</a></li>
+                    <li><a role="menuitem" tabindex="-1" href="@Url.Action(MVC.Account.Register())">@T("Register")</a></li>
+                }
+                <li><a role="menuitem" tabindex="-1" href="@Url.Action(MVC.Info.Help())">@T("Support")</a></li>
+                <li class="divider"></li>
+                <li role="menuitem" class="dropdown-header">@T("Applications")</li>
+                <li><a role="menuitem" tabindex="-1" href="@Url.Action(MVC.Info.ResidencePermit())">@T("First time residence permit")</a></li>
+                <li><a role="menuitem" tabindex="-1" href="#">@T("Finnish Citizenship")</a></li>
+                <li><a role="menuitem" tabindex="-1" href="#">@T("EU Residence")</a></li>
+                <li><a role="menuitem" tabindex="-1" href="#">@T("Extended Residence Permit")</a></li>
+            </ul>
+        </div>
+    </div>
+    @if (Model.LanguagesDisabled)
+    {
+        <div class="lang hidden-xs disabled">
+            English<br />
+            Suomi<br />
+            Svenska
+        </div>
+    }
+    else
+    {
+        <div class="lang hidden-xs">
+            <a href="@Url.Action(MVC.Home.SetEnglish())" @Html.Raw(Model.EnglishSelectorStyle)>English</a><br />
+            <a href="@Url.Action(MVC.Home.SetFinnish())" @Html.Raw(Model.FinnishSelectorStyle)>Suomi</a><br />
+            <a href="@Url.Action(MVC.Home.SetSwedish())" @Html.Raw(Model.SwedishSelectorStyle)>Svenska</a>
+        </div>
+    }
+        @if (Model.AuthenticationDisabled)
+        {
+            <div class="auth hidden-xs disabled">
+                @T("Login")
+            </div>
+        }
+        else
+        {
+            <div class="auth hidden-xs">
+                @if (Request.IsAuthenticated)
+                {
+                    //TODO: REmove Username when better solution is provided or testing has ended
+                    <a href="@Url.Action(MVC.Account.LogOff())">@T("Logoff")<br/>@User.Identity.GetUserName()</a>
+                }
+                else
+                {
+                    <a href="@Url.Action(MVC.Account.Login())">@T("Login")</a>
+                }
+            </div>
+        }
+</nav>

@@ -1,0 +1,57 @@
+﻿@model Uma.Eservices.Models.OLE.OLEOPIFinancialSupportBlock
+
+<table class="width_full">
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.IncomeInfo)
+        </td>
+        <td>@Html.UmaPdfEnumFor(o => o.IncomeInfo)</td>
+    </tr>
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.OtherIncome)
+        </td>
+        <td>
+            @Model.OtherIncome
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.IsCurrentlyStudying)
+        </td>
+        <td>
+            @if (@Model.IsCurrentlyStudying.HasValue && @Model.IsCurrentlyStudying.Value)
+            {
+                @T("Yes")
+            }
+            else
+            {
+                @T("No")
+            }
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.IsCurrentlyStudying)
+        </td>
+        <td>
+            @if (@Model.IsCurrentlyStudying.HasValue && @Model.IsCurrentlyStudying.Value)
+            {
+                @T("Yes")
+            }
+            else
+            {
+                @T("No")
+            }
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.StudyWorkplaceName)
+        </td>
+        <td>
+            @Model.StudyWorkplaceName
+        </td>
+    </tr>
+</table>

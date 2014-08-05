@@ -1,0 +1,25 @@
+﻿<footer>
+    <audio id="audiotag1" src="Content/tada.wav" preload="auto"></audio>
+    <div class="footer-row">
+        <div class="col-sm-3 footer-left">
+            <div class="row info">
+                <a href="@Url.Action(MVC.Info.Terms())" >@T("Terms of Service")</a>
+                <a href="@Url.Action(MVC.Info.Privacy())" class="privacy hidden-xs">@T("Privacy")</a>
+            </div>
+            <div class="row copyright">
+                Source Sans Pro
+            </div>
+        </div>
+        <div class="footer-right">
+            <div class="imgs">
+                <div class="policyimg"></div>
+            </div>
+            <div class="imgs">
+                <div class="migriimg"></div>
+            </div>
+        </div>
+    </div>
+</footer>
+<script>
+    document.getElementById('audiotag1').play();
+</script>

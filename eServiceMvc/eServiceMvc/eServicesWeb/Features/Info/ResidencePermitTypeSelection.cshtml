@@ -1,0 +1,82 @@
+﻿@model bool
+@{
+    ViewBag.Title = "Residence Permits";
+}
+<section id="ResidencyPermitsForms">
+
+    @if (Model == true)
+    {
+        <div class="path-descr">
+            <div><a href="@Url.Action(MVC.Home.Index())">@T("Home")</a></div>
+            <div>@T("New Application")</div>
+            <div>@T("Residence Permit")</div>
+        </div>
+        @Html.Partial(MVC.Shared.Views._DashboardTabs, 2)
+    }
+    else
+    {
+        <div class="path-descr">
+            <div><a href="@Url.Action(MVC.Home.Index())">@T("Home")</a></div>
+            <div>@T("Residency Permits")</div>
+        </div>
+    }
+
+
+
+    <h1>@T("Apply for a residence permit")</h1>
+    <h4>
+        @T("In order to move to Finland, you need a residence permit. Please select between two application types, work or study." +
+        "If you are a citizen of the EU, please visit the EU Residence page for more details on how to register yourself in Finland.")
+    </h4>
+
+    <h2>@T("Select the application type")</h2>
+
+    <div class="row">
+        <!--Left side Column-->
+        <div class="col-sm-4">
+            <div class="actionblock" onclick="location.href = '@Url.Action(Model ? MVC.Dashboard.ResidenceForWork() : MVC.Info.WorkPermit())';">
+                <div class="actionblock-title">
+                    <h1>@T("Work permit")</h1>
+                </div>
+
+                <div class="actionblock-descr">
+                    @T("You want to work for a private organization or create your own business in Finland.")
+                </div>
+            </div>
+            <div>@T("Overall processing time")</div>
+            <div class="text-BckGround-Border padding-left">@T("1 – 6 months")</div>
+
+            <p class="padding-left">
+                @T("The overall processing time for a study permit usually takes a total" +
+                    "of 1 to 6 months. If you have not been informed about your" +
+                    "decision within this time frame , please do not contact support," +
+                    "since a decision is already being processed. Please note: Adding" +
+                        "supplemental documents to your application will increase the" +
+                    "processing time involved.")
+            </p>
+        </div>
+
+        <!--Right side Column-->
+        <div class="col-sm-4">
+            <div class="actionblock" onclick="location.href = '@Url.Action(Model ? MVC.Dashboard.ResidenceStudy() : MVC.Info.StudyPermit())';">
+                <div class="actionblock-title">
+                    <h1>@T("Study permit")</h1>
+                </div>
+                <div class="actionblock-descr">
+                    @T("You plan on moving to Finland for studying.")
+                </div>
+            </div>
+            <div>@T("Overall processing time")</div>
+            <div class="text-BckGround-Border-HalfColor padding-left">@T("1 – 3 months")</div>
+            <p class="padding-left">
+                @T("The overall processing time for a study permit usually takes a total" +
+                    "of 1 to 3 months. If you have not been informed about your" +
+                    "decision within this time frame , please do not contact support," +
+                    "since a decision is already being processed. Please note: Adding" +
+                    "supplemental documents to your application will increase the" +
+                    "processing time involved.")
+            </p>
+        </div>
+    </div>
+
+</section>

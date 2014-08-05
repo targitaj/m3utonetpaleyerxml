@@ -1,0 +1,68 @@
+﻿@using Uma.Eservices.Web.Components
+
+@model Uma.Eservices.Models.Localization.TranslatePageModel
+@{
+    ViewBag.Title = "LightCMS: Text block";
+}
+<div class="row">
+    <div class="col-sm-8">
+        <h2>Text block translations</h2>
+    </div>
+</div>
+@using (Html.BeginForm(MVC.Localization.TextTranslation(), FormMethod.Post, new { @class = "resource-form", }))
+{
+    @Html.HiddenFor(o => o.Feature)
+    @Html.HiddenFor(o => o.OriginalText)
+    @Html.HiddenFor(o => o.LanguageToSave)
+    @Html.HiddenFor(o => o.ReturnLink)
+    @Html.HiddenFor(o => o.IsReturnBack)
+
+    <div class="row form-row">
+        <div class="col-sm-8">
+            <label for="SelectedLanguage">Selected language to edit</label>
+            @Html.UmaRadioButtonFor(m => m.SelectedLanguage, omitZeroValue: false)
+        </div>
+    </div>
+
+    <div class="row form-row">
+        <div class="col-sm-8">
+            <label for="SelectedLanguage">Original text</label><br/>
+            @Html.Raw(Model.OriginalText)
+        </div>
+    </div>
+
+
+    <div class="row form-row">
+        <div class="col-sm-8">
+            <label for="SelectedLanguage">Translated or adjusted text for selected language</label>
+            @Html.TextAreaFor(o => o.TranslatedText, new { @class = "form-control", @autofocus = "autofocus" })
+        </div>
+    </div>
+
+    <div class="row form-row">
+        <div class="col-sm-8">
+            @Html.UmaButton("form_submit", "Save & Close", UmaButtonType.FormSubmit, null, new { @class = "btn-sm" })
+            <div class="button-link-separator left">
+                <div class="mask"></div>
+            </div>
+            <a id="returnUrl" href="@Url.Action(MVC.Localization.RedirectBack(absoluteReturnLink: (string)this.Session["callerURL"]))">Cancel</a>
+        </div>
+    </div>
+}
+@section scripts
+{
+    <script src="~/Scripts/ckedit/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace('@Html.IdFor(m => m.TranslatedText)');
+        $(function () {
+            $('input:radio').change(
+                function (btn) {
+                    var form = $('.resource-form');
+                    $('#IsReturnBack').val(false);
+                    // Disabling elements until form submitted and page relaoded
+                    $('#form_submit').prop('disabled', true);
+                    form.submit();
+                });
+        });
+    </script>
+}

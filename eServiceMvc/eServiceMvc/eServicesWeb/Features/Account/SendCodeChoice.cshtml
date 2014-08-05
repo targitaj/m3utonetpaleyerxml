@@ -1,0 +1,28 @@
+﻿@model Uma.Eservices.Models.Account.SendCodeViewModel
+@{
+    ViewBag.Title = "Send Verification Code";
+}
+<div class="row">
+    <div class="path-descr">
+        <div>@T("Home")</div>
+        <div>@T("Browser enablement")</div>
+    </div>
+</div>
+
+<h1>@ViewBag.Title</h1>
+
+@using (Html.BeginForm("SendCode", "Account", new { ReturnUrl = Model.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-md-8">
+            Two Factor Authentication Provider:
+            @Html.DropDownListFor(model => model.SelectedProvider, Model.Providers)
+            <input type="submit" value="Submit" class="btn btn-default" />
+        </div>
+    </div>
+}
+
+@section scripts {
+    @Scripts.Render("~/bundles/formjs")
+}

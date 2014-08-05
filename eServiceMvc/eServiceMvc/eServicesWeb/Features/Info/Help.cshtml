@@ -1,0 +1,76 @@
+﻿@using System.Linq
+@using Uma.Eservices.Models.Localization
+
+@model List<TranslateFAQPageModel>
+@{
+    ViewBag.Title = "Support";
+}
+<section id="HelpPage">
+    <div class="path-descr">
+        <div><a href="@Url.Action(MVC.Home.Index())">@T("Home")</a></div>
+        <div>@T("Help")</div>
+    </div>
+
+    <h1>@T("Help")</h1>
+
+    @T("In order to help you better understand how the Finnish Immigration " +
+            "eService can be used and whom to contact with any questions or comments you might have.")
+
+    <h2>@T("Frequently Asked Questions")</h2>
+
+    @for (int i = 0; i < Model.Count(); i++)
+    {
+        @Html.Partial(MVC.Shared.Views._helpQuestionAnswer, Model[i])
+    }
+
+    @if (this.User.IsInRole(Uma.Eservices.Models.Account.ApplicationRoles.Translator))
+    {
+        <div class="actionblock" onclick="location.href = '@Url.Action(MVC.Localization.CreateNewFaq())';">
+            <div class="actionblock-title-small">
+                <h3>Add new question / answer</h3>
+            </div>
+        </div>
+
+    }
+
+    <h2>@T("Whom to contact when you need help")</h2>
+
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="div-gray-large">
+                <h3>@T("Technical Support")</h3>
+                @T("If you are having technical problems using the Finnish Immigration Online eServices, please contact us at:")<br />
+                <strong><a href="mailto:emailsupport@migri.fi">emailsupport@migri.fi</a></strong>
+            </div>
+
+            <div class="div-gray-large">
+                <h3>@T("EU Registration and residence permit extension")</h3>
+                @T("If you are having questions about registering as a EU resident in Finland or extending your Resident Permit, " +
+            "please go to the Finnish Police website for more information")<br />
+                <strong><a href="http://www.migri.fi">www.poliisi.fi</a></strong>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="div-gray-large">
+                <h3>@T("First permit & citizenship application questions")</h3>
+                @T("If you are having issues with your first permit or your Finnish Citizenship application, please go to the " +
+               "Finnish Immigration website for more information.")<br />
+                <strong><a href="http://www.migri.fi">www.migri.fi</a></strong>
+            </div>
+
+            <div class="div-gray-large">
+                <h3>@T("Finnish embassy related questions")</h3>
+                @T("If you are having questions about either making a personal " +
+                "visit to a Finnish Embassy near you or getting a decision from" +
+                "a Finnish Embassy about your application, please go to the" +
+                "Ministry of Foreign Aairs website for more information.")<br />
+                <strong><a href="www.formin.finland.fi">www.formin.finland.fi</a></strong>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/formjs")
+}

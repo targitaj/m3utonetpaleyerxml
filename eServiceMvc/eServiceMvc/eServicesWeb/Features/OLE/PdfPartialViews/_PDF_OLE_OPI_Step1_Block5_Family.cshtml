@@ -1,0 +1,117 @@
+﻿@model Uma.Eservices.Models.OLE.OLEFamilyBlock
+
+<table class="width_full">
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.FamilyStatus)
+        </td>
+        <td>
+            @Html.UmaPdfEnumFor(m => m.FamilyStatus)
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.PersonName.LastName)
+        </td>
+        <td>
+            @Model.PersonName.LastName
+        </td>
+    </tr>
+
+
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.PersonName.FirstName)
+        </td>
+        <td>
+            @Model.PersonName.FirstName
+        </td>
+    </tr>
+
+    @for (int i = 0; i < @Model.PreviousNames.Count(); i++)
+    {
+        @Html.Partial("PdfPartialViews/PDF_OLE_PersonPersonPreviousNames", Model.PreviousNames[i])
+    }
+
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.Gender)
+        </td>
+        <td>
+            @Html.UmaPdfEnumFor(m => m.Gender)
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.Birthday)
+        </td>
+        <td>
+            @Model.Birthday
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.PersonCode)
+        </td>
+        <td>
+            @Model.PersonCode
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.BirthCountry)
+        </td>
+        <td>
+            @Html.GetState(@Model.BirthCountry)
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.BirthPlace)
+        </td>
+        <td>
+            @Model.BirthPlace
+        </td>
+    </tr>
+
+    @for (int i = 0; i < @Model.CurrentCitizenships.Count(); i++)
+    {
+        @Html.Partial("PdfPartialViews/PDF_OLE_CurrentCitizenship", Model.CurrentCitizenships[i])
+    }
+
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.SpouseIntentions)
+        </td>
+        <td>
+            @Html.UmaPdfEnumFor(m => m.SpouseIntentions)
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            @Html.UmaPdfLabelFor(m => m.HaveChildren)
+        </td>
+        <td>
+            @if (@Model.HaveChildren)
+            {
+                @T("Yes, I have children")
+            }
+            else
+            {
+                @T("No, I do not have children")
+            }
+        </td>
+    </tr>
+
+    @for (int i = 0; i < @Model.Children.Count(); i++)
+    {
+        @Html.Partial("PdfPartialViews/PDF_OLE_Children", Model.Children[i])
+    }
+
+</table>

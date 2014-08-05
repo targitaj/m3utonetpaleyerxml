@@ -1,0 +1,102 @@
+﻿@model Uma.Eservices.Models.OLE.OLEOPIEducationInstitutionBlock
+
+    <h4>@T("Educational institution where you have been accepted")</h4>
+
+    <div class="row form-row">
+        <div class="col-sm-4">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.EducationalInstitution)
+                @Html.UmaDropDownFor(m => m.EducationalInstitution, @Html.GetEducationInstitutionList())
+                @Html.ValidationMessageFor(o => o.EducationalInstitution)
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.EducationalInstitutionName)
+                @Html.TextAreaFor(m => m.EducationalInstitutionName, new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+
+    <h4>@T("Please, specify your type of studies")</h4>
+    <div class="row form-row">
+        <div class="col-sm-4">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.TypeOfStudies)
+                @Html.UmaDropDownFor(m => m.TypeOfStudies, @Html.GetTypeOfStudiesList())
+                @Html.ValidationMessageFor(o => o.TypeOfStudies)
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.LanguageOfStudy)
+                @Html.UmaDropDownFor(m => m.LanguageOfStudy, @Html.GetLanguageList())
+            </div>
+        </div>
+    </div>
+
+    <h4>@T("Tell us your registration status")</h4>
+    <div class="row form-row">
+        <div class="col-sm-4">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.TermStartDate)
+                @Html.UmaDatePickerFor(m => m.TermStartDate)
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.TermEndDate)
+                @Html.UmaDatePickerFor(m => m.TermEndDate)
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.IsPresentAttendance)
+            </div>
+            @Html.UmaRadioButtonFor(m => m.IsPresentAttendance, "Present", true)
+            @Html.UmaRadioButtonFor(m => m.IsPresentAttendance, "Absent", false)
+            @Html.ValidationMessageFor(o => o.IsPresentAttendance)
+        </div>
+    </div>
+
+    <div class="row form-row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.RegisterWhenInFinland)
+            </div>
+        </div>
+        @Html.UmaCheckBoxButtonFor(m => m.RegisterWhenInFinland, string.Empty)
+    </div>
+
+    <div class="row form-row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.StudyExchangeProgram)
+                @Html.TextAreaFor(m => m.StudyExchangeProgram, new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.OtherStudies)
+                @Html.TextAreaFor(m => m.OtherStudies, new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+
+<div class="row form-row">
+    <div class="col-sm-8">
+        <div class="form-group">
+            @Html.UmaLabelFor(m => m.OtherLevelStudies)
+            @Html.TextAreaFor(m => m.OtherLevelStudies, new { @class = "form-control" })
+        </div>
+    </div>
+</div>

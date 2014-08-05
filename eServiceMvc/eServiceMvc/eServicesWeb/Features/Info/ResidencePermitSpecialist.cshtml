@@ -1,0 +1,157 @@
+﻿@model bool
+           
+@{
+    ViewBag.Title = "Specialist";
+}
+
+<section id="ResidencePermitSpecialist">
+    @if (Model == true)
+    {
+        <div class="path-descr">
+            <div><a href="@Url.Action(MVC.Home.Index())">@T("Home")</a></div>
+            <div>@T("New Application")</div>
+            <div><a href="@Url.Action(MVC.Info.ResidencePermit())">@T("Residency Permits")</a></div>
+            <div>@T("Specialist")</div>
+        </div>
+        @Html.Partial(MVC.Shared.Views._DashboardTabs, 2)
+    }
+    else
+    {
+        <div class="path-descr">
+            <div><a href="@Url.Action(MVC.Home.Index())">@T("Home")</a></div>
+            <div><a href="@Url.Action(MVC.Info.ResidencePermit())">@T("Residency Permits")</a></div>
+            <div><a href="@Url.Action(MVC.Info.WorkPermit())">@T("Working in Finland")</a></div>
+            <div>@T("Specialist")</div>
+        </div>
+    }
+
+    <!--Block-->
+    <div class="row">
+        <div class="col-sm-8">
+            <h1 class="padding-left">@T("Specialist")</h1>
+
+            <!--Left text-->
+            <div class="col-sm-4">
+                <div>
+                    <h4>
+                        @T("The key requirements for a Specialist residence" +
+                        "permit are a minimum salary of 3,000 €," +
+                        "a university degree and proof of employment" +
+                        "in a Finnish company as a specialist.")
+                    </h4>
+                </div>
+                <p>
+                    @T("If you intend to work in Finland as a specialist, your work tasks are" +
+                                "very demanding and require university studies. A salary that is" +
+                                "higher than average (gross salary of at least approximately € 3,000" +
+                                "per month) is also an indication of the demanding nature of your" +
+                                "duties. In your application, you must prove that you meet these criteria.")
+                </p>
+                <p>
+                    @T("Specialists include, for example, IT experts, in a special field who" +
+                    "have a university degree, and other persons who have a university" +
+                    "degree and whose duties require special expertise.")
+                </p>
+                <p>
+                    @T("If you do not meet these criteria, you will not be considered to be a" +
+                    "specialist. In this case you must apply for a residence permit for an" +
+                    "employed person.")
+                </p>
+            </div>
+
+            @Html.Partial(MVC.Common.Views.ViewNames._MigriBannerTextPic)
+        </div>
+    </div>
+
+    <!--Online application steps for a Specialist-->
+    <div class="row">
+        <h2 class="padding-left">@T("Online application steps for a Specialist")</h2>
+
+        <div class="col-sm-offset-1 col-sm-7">
+            <h4>@T("What you should know and need to fill in the Online Work Application")</h4>
+
+            <div class="column-float">
+                <p>
+                    @T("Before you may apply for a residence permit for an" +
+                        "employed person, you must have a job waiting. If" +
+                        "an employer has made you a job oer, this employer" +
+                        "must confirm that he or she will definitely" +
+                        "employ you. This is usually done by signing an employment" +
+                        "contract. Your employer will confirm the" +
+                        "information by filling in the TEM 054 form and" +
+                        "signing it.")
+                </p>
+                <p>
+                    @T("You may not begin work until you have been granted" +
+                        "a residence permit for an employed person." +
+                        "Residence permit for an employed person is usually" +
+                        "granted for the professional field that your job" +
+                        "belongs to. Thus you may have several jobs in the" +
+                        "same professional field and one permit. If you" +
+                        "have another job waiting in another professional" +
+                        "field, you may apply for a permit for both with one" +
+                        "application. In this case, you may be granted a" +
+                        "permit for several lines of trade.")
+                </p>
+                <p>
+                    @T("In some cases a permit may be granted only for " +
+                        "work with a certain employer. If this is the case, " +
+                        "you may not take another job.")
+                </p>
+                <p>
+                    @T("If you are a silent partner in a limited partnership" +
+                        "company (kommandiittiyhtiö) and you work in" +
+                        "your own company, you will need a residence" +
+                        "permit for an employed person.")
+                </p>
+                <p>
+                    @T("If you own shares of a public limited company" +
+                        "(osakeyhtiö) and you work in this company, you" +
+                        "will need a residence permit for an employed" +
+                        "person. A residence permit will not be granted on" +
+                        "the grounds that you own shares; you also have to" +
+                        "work for the company, and the work must be performed" +
+                        "in Finland.")
+                </p>
+                <p>
+                    @T("Please note that health care professionals in Finland" +
+                        "must receive permission to practice their" +
+                        "profession from Valvira, the National Supervisory" +
+                        "Authority for Welfare and Health.")
+                </p>
+            </div>
+        </div>
+    </div>
+
+    @Html.Partial(MVC.Common.Views.ViewNames._PrepareDocuments)
+
+    @if (!@User.Identity.IsAuthenticated)
+    {
+        <h4>@T("Register or Log in to start with your Specialist Residence Permit application:")</h4>
+        @Html.Partial(MVC.Common.Views.ViewNames._RegisterLogInPanels)
+    }
+
+    @Html.Partial(MVC.Common.Views.ViewNames._FillApplication)
+
+    @Html.Partial(MVC.Common.Views.ViewNames._PayAndSubmit)
+
+    @Html.Partial(MVC.Common.Views.ViewNames._VisitiEmbassyOfPoliceStation)
+
+    @Html.Partial(MVC.Common.Views.ViewNames._ReviewProgress)
+
+    @if (!@User.Identity.IsAuthenticated)
+    {
+        @Html.Partial(MVC.Common.Views.ViewNames._CreateNewAppLoginPanels)
+    }
+    else
+    {
+        <h2></h2>
+        <div class="row  row-padding">
+            <div class="col-sm-4 col-sm-offset-2">
+                @Html.UmaButtonLink(@T("GO TO FORM").ToString(),@Url.Action(MVC.Home.ActionNames.Index,MVC.Home.Name), UmaButtonType.FormSubmit, new { @class = "btn-full-width-maringLess" })
+            </div>
+        </div>
+    }
+
+</section>
+

@@ -1,0 +1,15 @@
+﻿/*http://forum.ecrion.com/forum/css-selectors-supported-in-html-to-pdf-conversion_topic1492.html
+  style info
+*/
+.text_left {
+  text-align: left;
+}
+table,
+td,
+th {
+  border: 1px solid black;
+  padding-left: 10px;
+}
+.width_full {
+  width: 100%;
+}

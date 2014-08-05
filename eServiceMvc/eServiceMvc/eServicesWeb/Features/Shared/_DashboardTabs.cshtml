@@ -1,0 +1,27 @@
+﻿@model int
+<table class="dashboard-tab-table">
+    <tbody>
+        <tr>
+            <td style="width: 33.3%">
+                @Html.Raw(Model != 1 ? "<a href='"+@Url.Action(MVC.Dashboard.Index())+"'>" : string.Empty)
+                    @T("My Application")
+                @Html.Raw(Model != 1 ? "</a>" : string.Empty)
+            </td>
+            <td style="width: 33.3%">
+                @Html.Raw(Model != 2 ? "<a href='" + @Url.Action(MVC.Dashboard.NewApplication()) + "'>" : string.Empty)
+                    @T("New Application")
+                @Html.Raw(Model != 2 ? "</a>" : string.Empty)
+            </td>
+            <td style="width: 33.3%">
+                @Html.Raw(Model != 3 ? "<a href='" + @Url.Action(MVC.Dashboard.SupplementalDocuments()) + "'>" : string.Empty)
+                    @T("Supplemental Documents")
+                @Html.Raw(Model != 3 ? "</a>" : string.Empty)
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 33.3%; height: 10px" class="@Html.Raw(Model == 1 ? "active" : "inactive")"></td>
+            <td style="width: 33.3%; height: 10px" class="@Html.Raw(Model == 2 ? "active" : "inactive")"></td>
+            <td style="width: 33.3%; height: 10px" class="@Html.Raw(Model == 3 ? "active" : "inactive")"></td>
+        </tr>
+    </tbody>
+</table>

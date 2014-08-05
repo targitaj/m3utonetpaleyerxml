@@ -1,0 +1,136 @@
+﻿@model Uma.Eservices.Models.OLE.OLEOPICriminalInfoBlock
+
+    <div class="row form-row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.HaveCrimeConviction)
+            </div>
+            @Html.UmaRadioButtonFor(m => m.HaveCrimeConviction, @T("Yes").ToString(), true)
+            @Html.UmaRadioButtonFor(m => m.HaveCrimeConviction, @T("No").ToString(), false)
+        </div>
+    </div>
+
+    <div class="row form-row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.ConvictionCrimeDescription)
+                @Html.TextAreaFor(m => m.ConvictionCrimeDescription, new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-row">
+        <div class="col-sm-4">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.ConvictionCountry)
+                @Html.UmaDropDownFor(m => m.ConvictionCountry, @Html.GetStateList())
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.ConvictionDate)
+                @Html.UmaDatePickerFor(m => m.ConvictionDate)
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.ConvictionSentence)
+                @Html.TextAreaFor(m => m.ConvictionSentence, new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.WasSuspectOfCrime)
+            </div>
+            @Html.UmaRadioButtonFor(m => m.WasSuspectOfCrime, @T("Yes").ToString(), true)
+            @Html.UmaRadioButtonFor(m => m.WasSuspectOfCrime, @T("No").ToString(), false)
+        </div>
+    </div>
+
+    <div class="row form-row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.CrimeAllegedOffence)
+                @Html.TextAreaFor(m => m.CrimeAllegedOffence, new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-row">
+        <div class="col-sm-4">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.CrimeCountry)
+                @Html.UmaDropDownFor(m => m.CrimeCountry,@Html.GetStateList())
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.CrimeDate)
+                @Html.UmaDatePickerFor(m => m.CrimeDate)
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.CriminalRecordApproval)
+            </div>
+            @Html.UmaRadioButtonFor(m => m.CriminalRecordApproval, @T("Yes").ToString(), true)
+            @Html.UmaRadioButtonFor(m => m.CriminalRecordApproval, @T("No").ToString(), false)
+        </div>
+    </div>
+
+    <div class="row form-row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.CriminalRecordRetriveDenialReason)
+                @Html.TextAreaFor(m => m.CriminalRecordRetriveDenialReason, new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.WasSchengenEntryRefusal)
+            </div>
+            @Html.UmaRadioButtonFor(m => m.WasSchengenEntryRefusal, @T("Yes").ToString(), true)
+            @Html.UmaRadioButtonFor(m => m.WasSchengenEntryRefusal, @T("No").ToString(), false)
+        </div>
+    </div>
+
+    <div class="row form-row">
+        <div class="col-sm-4">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.SchengenEntryRefusalCountry)
+                @Html.UmaDropDownFor(m => m.SchengenEntryRefusalCountry, @Html.GetStateList())
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-row">
+        <div class="col-sm-8">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.IsSchengenZoneEntryStillInForce)
+            </div>
+            @Html.UmaRadioButtonFor(m => m.IsSchengenZoneEntryStillInForce, @T("Yes").ToString(), true)
+            @Html.UmaRadioButtonFor(m => m.IsSchengenZoneEntryStillInForce, @T("No").ToString(), false)
+        </div>
+    </div>
+
+    <div class="row form-row">
+        <div class="col-sm-4">
+            <div class="form-group">
+                @Html.UmaLabelFor(m => m.SchengenEntryTimeRefusalExpiration)
+                @Html.UmaDatePickerFor(m => m.SchengenEntryTimeRefusalExpiration)
+            </div>
+        </div>
+    </div>
+
