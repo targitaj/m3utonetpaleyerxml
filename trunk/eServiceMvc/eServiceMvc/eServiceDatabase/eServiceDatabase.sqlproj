@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>eServiceDatabase</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{a0e125a0-1d60-411e-9f8c-a6a4af327c65}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql100DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath>
+    </RootPath>
+    <RootNamespace>eServiceDatabase</RootNamespace>
+    <AssemblyName>eServiceDatabase</AssemblyName>
+    <ModelCollation>1033, CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <!-- VS10 without SP1 will not have VisualStudioVersion set, so do that here -->
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <!-- Default to the v10.0 targets path if the targets file for the current VS version is not found -->
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="Tables" />
+    <Folder Include="StoredProcedures" />
+    <Folder Include="Scripts" />
+    <Folder Include="Tables\OLE" />
+    <Folder Include="Tables\Vetuma" />
+    <Folder Include="Tables\WebElementTranslation" />
+    <Folder Include="Tables\FAQ" />
+    <Folder Include="Tables\TextTranslation" />
+    <Folder Include="Tables\Security" />
+    <Folder Include="Tables\Common" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="StoredProcedures\GetModelTranslations.sql" />
+    <Build Include="Tables\ApplicationForm.sql" />
+    <Build Include="Tables\FormDataOLE.sql" />
+    <Build Include="Tables\OLE\OLEPersonalInformationPage.sql" />
+    <Build Include="Tables\OLE\PersonName.sql" />
+    <Build Include="Tables\OLE\OLECitizenship.sql" />
+    <Build Include="Tables\OLE\AddressInformation.sql" />
+    <Build Include="Tables\Vetuma\VetumaPayment.sql" />
+    <Build Include="Tables\WebElementTranslation\WebElement.sql" />
+    <Build Include="Tables\WebElementTranslation\WebElementTranslation.sql" />
+    <Build Include="Tables\FAQ\FAQ.sql" />
+    <Build Include="Tables\FAQ\FAQTranslations.sql" />
+    <Build Include="Tables\TextTranslation\OriginalText.sql" />
+    <Build Include="Tables\TextTranslation\OriginalTextTranslation.sql" />
+    <Build Include="Tables\OLE\OLEChildData.sql" />
+    <Build Include="Tables\Security\User.sql" />
+    <Build Include="Tables\WebElementTranslation\WebElementValidationTranslation.sql" />
+    <Build Include="Tables\OLE\OLEOPIEducationInformationPage.sql" />
+    <Build Include="Tables\OLE\OLEOPIFinancialInformationPage.sql" />
+    <Build Include="Tables\Common\Attachment.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Scripts\Script.PostDeployment.Debug.sql" />
+    <None Include="Scripts\Script.PostDeployment.Release.sql" />
+    <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
+    <None Include="Scripts\Roles.sql" />
+    <None Include="eServiceDatabase.Assm.publish.xml" />
+    <None Include="eServiceDatabase.publish.xml" />
+    <None Include="Scripts\UserConversion.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="eServiceDatabase.refactorlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Tables\Security\UserClaim.sql" />
+    <Build Include="Tables\Security\UserInRole.sql" />
+    <Build Include="Tables\Security\UserLogin.sql" />
+    <Build Include="Tables\Security\UserRole.sql" />
+  </ItemGroup>
+  <Target Name="BeforeBuild">
+    <Copy SourceFiles="Scripts\Script.PostDeployment.$(Configuration).sql" DestinationFiles="Scripts\Script.PostDeployment.sql" />
+  </Target>
+</Project>
