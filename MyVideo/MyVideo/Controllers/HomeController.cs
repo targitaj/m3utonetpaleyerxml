@@ -136,7 +136,7 @@ namespace MyVideo.Controllers
                 {
                     outputFile = fi.Name.Replace(fi.Extension, "") + "." + fileFormat;
                     line = string.Format(
-                        @"-i ""{0}"" -ss {2} -b {3}k -v 0 -acodec mp3 -vf ""scale=400:trunc(ow/a/2)*2"" -map 0:{4} -vcodec h264 ""{1}""",
+                        @"-i ""{0}"" -ss {2} -b {3}k -v 0 -acodec mp3 -vf ""scale=400:trunc(ow/a/2)*2"" -map 0:0 -map 0:{4} -vcodec h264 ""{1}""",
                         source, Server.MapPath("~") + outputFile, offset, bitrate, soundNumber);
                 }
                 else
@@ -180,7 +180,8 @@ namespace MyVideo.Controllers
                 }
                 else
                 {
-                    Response.Redirect(Url.Content(@"..\\" + outputFile), true);
+                    
+                    Response.Redirect(Url.Content(fi.Directory.FullName), true);
                 }
             }
 
