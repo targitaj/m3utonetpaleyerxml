@@ -27,11 +27,15 @@ namespace BSerach
     /// </summary>
     public partial class MainWindow : Window
     {
+        private string mainUrl =
+            "http://www.babystore.lv/?dir=cat&id=258&s=shtanishki-shorty-dzhinsy&instock=false&price_from=0.00&price_to=42.16&page=all&lang=ru";
+
         public MainWindow()
         {
             InitializeComponent();
-            browser.Navigate("http://www.boomtime.lv");
-            browser.LoadCompleted += browser_FirstLoadCompleted;
+            browser.LoadCompleted += browser_LoadCompleted;
+            browser.Navigate(mainUrl);
+
             SuppressScriptErrors(browser, true);
         }
 
@@ -55,49 +59,41 @@ namespace BSerach
 
         private bool go = false;
 
-        private void browser_FirstLoadCompleted(object sender, NavigationEventArgs e)
-        {
-            browser.LoadCompleted -= browser_FirstLoadCompleted;
-
-            HTMLDocument dom = (HTMLDocument)browser.Document;
-            object ie = dom.getElementById("prf_login");
-            if (ie != null)
-            {
-                if (ie is IHTMLInputElement)
-                {
-                    ((IHTMLInputElement)ie).value = "targitaj";
-                }
-            }
-
-            ie = dom.getElementById("prf_pass");
-            if (ie != null)
-            {
-                if (ie is IHTMLInputElement)
-                {
-                    ((IHTMLInputElement)ie).value = "privetboomtime";
-                }
-            }
-
-
-            dom.all.item("auth_button").click();
-
-            ThreadPool.QueueUserWorkItem((delegate
-            {
-                Thread.Sleep(1000);
-                Dispatcher.BeginInvoke(new Action(delegate()
-                {
-                    //browser.LoadCompleted += browser_LoadCompleted;
-                    browser.Navigate("http://friends.boomtime.lv/dating.html");
-                }));
-            }));
-
-            
-        }
-
         private string res = "";
+        private List<string> seenUrls = new List<string>();
+        private string lastHtml;
+
+
+        private bool isInProduct = false;
+
+        void browser_Inproduct(object sender, NavigationEventArgs e)
+        {
+            if (!isInProduct)
+                return;
+
+            HTMLDocument dd = (HTMLDocument)browser.Document;
+            var tt = dd.body.innerHTML;
+
+            HtmlDocument doc = new HtmlDocument();
+            doc.LoadHtml(tt);
+            var fnode = doc.DocumentNode.SelectNodes("//form[@name='in_cart']").FirstOrDefault();
+
+            if (tt.Contains("92 cm"))
+            {
+                File.AppendAllText("test.html", lastHtml.Replace(@"href=""", @"href=""http://www.babystore.lv/").Replace("url(", "url(http://www.babystore.lv/"));
+            }
+
+            browser.LoadCompleted -= browser_Inproduct;
+            browser.LoadCompleted += browser_LoadCompleted;
+
+            browser.Navigate(mainUrl);
+        }
 
         void browser_LoadCompleted(object sender, NavigationEventArgs e)
         {
+            browser.LoadCompleted -= browser_LoadCompleted;
+            browser.LoadCompleted += browser_Inproduct;
+
             HTMLDocument dd = (HTMLDocument)browser.Document;
             var tt = dd.body.innerHTML;
 
@@ -106,64 +102,27 @@ namespace BSerach
 
             var dn = doc.DocumentNode;
 
-            var nodes = dn.SelectNodes("//td[@class='tbl']");
-;
+            var nodes = dn.SelectNodes("//div[@class='productblock']");
+
             if (nodes != null)
             {
                 foreach (HtmlNode htmlNode in nodes)
                 {
-                    if (IsOnline(htmlNode.ChildNodes))
+                    var urlNode = htmlNode.SelectSingleNode(".//a");
+                    var cc = htmlNode.ChildNodes;
+
+                    var url = urlNode.GetAttributeValue("href", "");
+
+                    if (!seenUrls.Contains(url))
                     {
-                        if (!htmlNode.InnerHtml.Contains("http://friends.boomtime.lv"))
-                        {
-                            File.AppendAllText("html.html",
-                                htmlNode.InnerHtml.Replace(@"<a href=""", @"<a href=""http://friends.boomtime.lv"));
-                        }
-                        File.AppendAllText("html.html", htmlNode.InnerHtml);
-                    }
-                }
-
-                counter++;
-
-                if (nodes.Count > 0)
-                {
-                    browser.Navigate(string.Format(tbUri.Text, counter));
-                }
-
-                txtNumber.Text = counter.ToString();
-            }
-        }
-
-        bool IsOnline(HtmlNodeCollection nodeCollection)
-        {
-            var res = false;
-
-            foreach (HtmlNode childNode in nodeCollection)
-            {
-                string def = "";
-
-                if (childNode.GetAttributeValue("src", def) != "")
-                {
-                    if (childNode.GetAttributeValue("src", def) == "/skin/all/on-line.gif")
-                    {
-                        return true;
-                    }
-                }
-                else
-                {
-                    if (childNode.HasChildNodes)
-                    {
-                        res = IsOnline(childNode.ChildNodes);
-                    }
-
-                    if (res)
-                    {
-                        break;
+                        seenUrls.Add(url);
+                        isInProduct = true;
+                        lastHtml = htmlNode.OuterHtml;
+                        browser.Navigate("http://www.babystore.lv/" + url.Replace("amp;", ""));
+                        return;
                     }
                 }
             }
-
-            return res;
         }
 
         public void HideScriptErrors(WebBrowser wb, bool Hide)
