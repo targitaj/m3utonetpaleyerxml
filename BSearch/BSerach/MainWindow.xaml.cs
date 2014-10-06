@@ -114,12 +114,40 @@ namespace BSerach
                 {
                     if (IsOnline(htmlNode.ChildNodes))
                     {
+                        if (!File.Exists("html.html"))
+                        {
+                            File.AppendAllText("html.html",
+                                @"<meta http-equiv=""content-type"" content=""text/html; charset=utf-8"">");
+                        }
                         if (!htmlNode.InnerHtml.Contains("http://friends.boomtime.lv"))
                         {
                             File.AppendAllText("html.html",
                                 htmlNode.InnerHtml.Replace(@"<a href=""", @"<a href=""http://friends.boomtime.lv"));
                         }
+
                         File.AppendAllText("html.html", htmlNode.InnerHtml);
+
+                        browser.InvokeScript("write_fast", GetId(htmlNode), "sid");
+                        Thread.Sleep(500);
+
+                        var msg = dd.getElementById("msg_editor_w");
+                        msg.innerText = "Привет :)";
+
+                        var links = dd.getElementsByTagName("table");
+                        this.InvalidateVisual();
+                        Thread.Sleep(1000);
+
+                        foreach (var link in links)
+                        {
+                            var table = (IHTMLElement)link;
+
+                            if (table.className == "button size1")
+                            {
+                                table.click();
+                            }
+                        }
+                        this.InvalidateVisual();
+                        Thread.Sleep(5000);
                     }
                 }
 
@@ -132,6 +160,16 @@ namespace BSerach
 
                 txtNumber.Text = counter.ToString();
             }
+        }
+
+        
+
+        private string GetId(HtmlNode node)
+        {
+            var nd = node.SelectNodes(".//a").First();
+            var val = nd.GetAttributeValue("href", "");
+
+            return val.Substring(val.LastIndexOf('/') + 1, val.Length - val.LastIndexOf('/') - 6);
         }
 
         bool IsOnline(HtmlNodeCollection nodeCollection)
@@ -181,21 +219,7 @@ namespace BSerach
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            go = true;
-
-            HTMLDocument dd = (HTMLDocument)browser.Document;
-
-            var tt = dd.body.innerHTML;
-
-            //File.WriteAllText("aaa.txt", tt);
-
-            HtmlDocument doc = new HtmlDocument();
-            doc.LoadHtml(tt);
-
-            var dn = doc.DocumentNode;
-            var nodes = dn.SelectNodes("//div[contains(@class, 'tbl')]");
-
-
+            browser.InvokeScript("write_fast", "clcxaaupfbn", "sid");
         }
 
         private bool started = true;
