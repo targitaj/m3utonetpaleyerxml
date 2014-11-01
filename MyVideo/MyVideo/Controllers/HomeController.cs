@@ -14,6 +14,11 @@ namespace MyVideo.Controllers
 {
     public class HomeController : Controller
     {
+        public string Source
+        {
+            get { return Server.MapPath(@"~\Videos\"); }
+        }
+
         public static Dictionary<string, Process> processes = new Dictionary<string, Process>();
         public static Dictionary<Process, string> otput = new Dictionary<Process, string>();
 
@@ -21,13 +26,13 @@ namespace MyVideo.Controllers
 
         public HomeController()
         {
-            //folders = System.IO.File.ReadAllLines(Server.MapPath("~") + "Folders.txt");
+            //folders = System.IO.File.ReadAllLines(Source + "Folders.txt");
         }
 
         [ValidateInput(false)]
         public ActionResult Index(string source)
         {
-            var folders = System.IO.File.ReadAllLines(Server.MapPath("~") + "Folders.txt");
+            var folders = System.IO.File.ReadAllLines(Server.MapPath(@"~\Folders.txt"));
             var model = new FolderModel();
             model.Folder = new Dictionary<string, string>();
 
@@ -43,7 +48,7 @@ namespace MyVideo.Controllers
             }
             else
             {
-                if (System.IO.File.Exists(Server.MapPath("~") + source))
+                if (System.IO.File.Exists(Source + source))
                 {
                     model.JWPlayerSource = source;
                 }
@@ -72,8 +77,6 @@ namespace MyVideo.Controllers
         [ValidateInput(false)]
         public ActionResult GetStream(string source, string offset, string fileFormat, string bitrate, bool isEmbed, int soundNumber)
         {
-            
-
             if (Directory.Exists(source))
             {
                 var di = new DirectoryInfo(source);
@@ -133,27 +136,27 @@ namespace MyVideo.Controllers
                     outputFile = fi.Name.Replace(fi.Extension, "") + ".flv";
                     line = string.Format(
                         @"-i ""{0}"" -ss {2} -async 1 -c:a libfdk_aac -vbr 3 -b {3}k -vf ""scale=400:trunc(ow/a/2)*2"" -map 0:0  -map 0:{4} -v 0 -f flv -vcodec libx264 ""{1}""",
-                        source, Server.MapPath("~") + outputFile, offset, bitrate, soundNumber);
+                        source, Source + outputFile, offset, bitrate, soundNumber);
                 }
                 else if (fileFormat == "mp4")
                 {
                     outputFile = fi.Name.Replace(fi.Extension, "") + "." + fileFormat;
                     line = string.Format(
                         @"-i ""{0}"" -ss {2} -b {3}k -acodec mp3 -vf ""scale=400:trunc(ow/a/2)*2"" -map 0:0 -map 0:{4} -vcodec h264 ""{1}""",
-                        source, Server.MapPath("~") + outputFile, offset, bitrate, soundNumber);
-                    otput.Add(myproc, Server.MapPath("~") + outputFile);
+                        source, Source + outputFile, offset, bitrate, soundNumber);
+                    otput.Add(myproc, Source + outputFile);
                 }
                 else
                 {
                     outputFile = fi.Name.Replace(fi.Extension, "") + "." + fileFormat;
                     line = string.Format(
                         @"-i ""{0}"" -ss {2} -b {3}k -v 0 -f mpegts ""{1}""",
-                        source, Server.MapPath("~") + outputFile, offset, bitrate);
+                        source, Source + outputFile, offset, bitrate);
                 }
 
                 try
                 {
-                    System.IO.File.Delete(Server.MapPath("~") + outputFile);
+                    System.IO.File.Delete(Source + outputFile);
                 }
                 catch (Exception)
                 {
@@ -177,10 +180,10 @@ namespace MyVideo.Controllers
                 Thread log = new Thread(Log);
                 log.Start(new Dictionary<Process, string>()
                 {
-                    {myproc, Server.MapPath("~") + outputFile}
+                    {myproc, Source + outputFile}
                 });
 
-                while (!myproc.HasExited && (!System.IO.File.Exists(Server.MapPath("~") + outputFile) || (new FileInfo(Server.MapPath("~") + outputFile).Length == 0)))
+                while (!myproc.HasExited && (!System.IO.File.Exists(Source + outputFile) || (new FileInfo(Source + outputFile).Length == 0)))
                 {
                     Thread.Sleep(2000);
                 }
@@ -269,7 +272,7 @@ namespace MyVideo.Controllers
 
         public bool IsMain(DirectoryInfo curDir)
         {
-            var folders = System.IO.File.ReadAllLines(Server.MapPath("~") + "Folders.txt");
+            var folders = System.IO.File.ReadAllLines(Server.MapPath(@"~\Folders.txt"));
 
             foreach (var folder in folders.Select(s => new DirectoryInfo(s)))
             {
