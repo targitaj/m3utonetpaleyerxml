@@ -16,5 +16,7 @@ namespace MyVideo.Models
         public string bitrate { get; set; }
 
         public string JWPlayerSource { get; set; }
+
+        public string SRC { get; set; }
     }
 }
