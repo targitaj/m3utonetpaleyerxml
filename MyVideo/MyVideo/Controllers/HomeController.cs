@@ -36,7 +36,7 @@ namespace MyVideo.Controllers
             var model = new FolderModel();
             model.Folder = new Dictionary<string, string>();
 
-            model.source = "123";
+            model.source = source;
 
             if (source == null)
             {
@@ -297,6 +297,25 @@ namespace MyVideo.Controllers
             ViewBag.Message = "Your contact page.";
 
             return View();
+        }
+
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult UploadFile(HttpPostedFileBase file, string source)
+        {
+            ViewBag.Message = "Your contact page.";
+
+            var folders = System.IO.File.ReadAllLines(Server.MapPath(@"~\Folders.txt"));
+
+            foreach (var folder in folders)
+            {
+                if (source.Contains(folder))
+                {
+                    file.SaveAs(folder + "\\" + file.FileName);
+                }
+            }
+
+            return View("Contact");
         }
     }
 }
