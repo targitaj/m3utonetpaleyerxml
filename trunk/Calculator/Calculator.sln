@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculator", "Calculator\Calculator.csproj", "{637D0BC6-16D6-4A5A-898E-56CEFC29DE36}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginShared", "PluginShared\PluginShared.csproj", "{F75236D4-541A-4DF5-89F3-5D3D63D7E025}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MosalskyCalculatorPlugin", "MosalskyCalculatorPlugin\MosalskyCalculatorPlugin.csproj", "{F471A17E-350E-4B3C-9474-7D6D87472DA9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{637D0BC6-16D6-4A5A-898E-56CEFC29DE36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{637D0BC6-16D6-4A5A-898E-56CEFC29DE36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{637D0BC6-16D6-4A5A-898E-56CEFC29DE36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{637D0BC6-16D6-4A5A-898E-56CEFC29DE36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F75236D4-541A-4DF5-89F3-5D3D63D7E025}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F75236D4-541A-4DF5-89F3-5D3D63D7E025}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F75236D4-541A-4DF5-89F3-5D3D63D7E025}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F75236D4-541A-4DF5-89F3-5D3D63D7E025}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F471A17E-350E-4B3C-9474-7D6D87472DA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F471A17E-350E-4B3C-9474-7D6D87472DA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F471A17E-350E-4B3C-9474-7D6D87472DA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F471A17E-350E-4B3C-9474-7D6D87472DA9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
