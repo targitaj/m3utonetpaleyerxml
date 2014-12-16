@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -301,21 +302,44 @@ namespace MyVideo.Controllers
 
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult UploadFile(HttpPostedFileBase file, string source)
+        public ActionResult UploadFile(HttpPostedFileBase[] files, string source)
         {
             ViewBag.Message = "Your contact page.";
-
+            source = "";
             var folders = System.IO.File.ReadAllLines(Server.MapPath(@"~\Folders.txt"));
+
+            if (string.IsNullOrWhiteSpace(source))
+            {
+                var folder = folders.Last();
+                SaveFiles(files, folder);
+            }
 
             foreach (var folder in folders)
             {
                 if (source.Contains(folder))
                 {
-                    file.SaveAs(folder + "\\" + file.FileName);
+                    SaveFiles(files, folder);
                 }
             }
 
             return View("Contact");
+        }
+
+        public void SaveFiles(HttpPostedFileBase[] files, string folder)
+        {
+            foreach (HttpPostedFileBase file in files)
+            {
+                var fi = new FileInfo(folder + "\\" + file.FileName);
+
+                if (fi.Extension == ".torrent")
+                {
+                    file.SaveAs(HttpContext.Server.MapPath("~") + "1.torrent");
+                }
+                else
+                {
+                    file.SaveAs(folder + "\\" + file.FileName);
+                }
+            }
         }
     }
 }
