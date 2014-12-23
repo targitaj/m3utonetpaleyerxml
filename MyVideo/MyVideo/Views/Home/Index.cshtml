@@ -1,10 +1,17 @@
-﻿@using MyVideo.Controllers
+﻿@using System.Drawing
+@using System.Net.Mime
+@using MyVideo.Controllers
 @using MyVideo.Models
 @using MyVideo;
 @model MyVideo.Models.FolderModel
 @{
     ViewBag.Title = "Home Page";
     var Source = Server.MapPath(@"~\Videos\");
+}
+
+@if (!string.IsNullOrEmpty(Model.VLCStreamUrl))
+{
+    @Html.Raw("Copy this text to vlc"); <input type="text" value="@Model.VLCStreamUrl" id="vlcText"/>
 }
 
 @if (!string.IsNullOrWhiteSpace(Model.Url))
@@ -61,6 +68,9 @@
         @Html.TextBox("soundNumber", "1", new {style = "width:50px;"})
         Встроеный плеер:
         @Html.CheckBox("isEmbed")
+        VLC: 
+        @Html.CheckBox("isVlc")
+
     </div>
     <br />
     foreach (var file in Model.Folder)
