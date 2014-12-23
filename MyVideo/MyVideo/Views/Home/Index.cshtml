@@ -7,6 +7,23 @@
     var Source = Server.MapPath(@"~\Videos\");
 }
 
+@if (!string.IsNullOrWhiteSpace(Model.Url))
+{
+    <script type="text/javascript" src="~/jwplayer.js"></script>
+<script type="text/javascript">jwplayer.key = "XqHvJ+ZjkpUdxSPZa/GAU0+JcSRmG1a8Zr0menqkcyJdaSU3Bl3EMQ==";</script>
+
+<div id="myElement">Loading the player...</div>
+
+<script type="text/javascript">
+    jwplayer("myElement").setup({
+        file: '@Model.Url'
+    });
+</script>
+    return;
+}
+
+
+
 @if (!string.IsNullOrWhiteSpace(Model.JWPlayerSource))
 {
     <video preload="none" controls="" src="@Url.Content("~/Videos/" + Model.JWPlayerSource)">
@@ -33,6 +50,7 @@
     <a href="@Url.Action("GetStream")" onclick=" return submitForm(this); " data="@Model.ParentFolder">Nazad</a>
     <br />
     <div>
+        Не совсем работает: 
         Minuti:
         @Html.TextBox("offset", "0", new {style = "width:50px;"})
         Bitrejt:
