@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Sockets;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Web;
 using System.Web.Mvc;
@@ -46,28 +48,58 @@ namespace MyVideo.Controllers
                     var di = new DirectoryInfo(folder);
                     model.Folder.Add(di.FullName, di.Name);
                 }
+
+                model.Folder.Add("TV", "TV");
             }
             else
             {
-                if (System.IO.File.Exists(Source + source))
+                if (source == "TV")
                 {
-                    model.JWPlayerSource = source;
+                    var urls = System.IO.File.ReadLines(Server.MapPath(@"~\TV\tv.m3u")).ToList();
+                    Uri res;
+
+                    foreach (var url in urls)
+                    {
+                        bool isUri = Uri.TryCreate(url, UriKind.Absolute, out res) && res.Scheme == Uri.UriSchemeHttp;
+
+                        if (isUri)
+                        {
+                            var name = urls[urls.IndexOf(url)-2].Replace("#EXTINF:-1, ", "");
+                            model.Folder.Add(url, name);
+                        }
+                    }
                 }
                 else
                 {
-                    var di = new DirectoryInfo(source);
+                    Uri res;
 
-                    foreach (var dir in di.GetDirectories())
+                    bool isUri = source.Contains("rtmp");
+
+                    if (isUri)
                     {
-                        model.Folder.Add(dir.FullName, dir.Name);
+                        model.Url = source;
                     }
-
-                    foreach (var file in di.GetFiles())
+                    else
+                    if (System.IO.File.Exists(Source + source))
                     {
-                        model.Folder.Add(file.FullName, file.Name);
+                        model.JWPlayerSource = source;
                     }
+                    else
+                    {
+                        var di = new DirectoryInfo(source);
 
-                    model.ParentFolder = di.Parent.FullName;
+                        foreach (var dir in di.GetDirectories())
+                        {
+                            model.Folder.Add(dir.FullName, dir.Name);
+                        }
+
+                        foreach (var file in di.GetFiles())
+                        {
+                            model.Folder.Add(file.FullName, file.Name);
+                        }
+
+                        model.ParentFolder = di.Parent.FullName;
+                    }
                 }
             }
 
@@ -78,6 +110,11 @@ namespace MyVideo.Controllers
         [ValidateInput(false)]
         public ActionResult GetStream(string source, string offset, string fileFormat, string bitrate, bool isEmbed, int soundNumber)
         {
+            if (source == "TV")
+            {
+                return RedirectToAction("Index", new RouteValueDictionary() { { "source", "TV" } });
+            }
+
             if (Directory.Exists(source))
             {
                 var di = new DirectoryInfo(source);
@@ -90,7 +127,10 @@ namespace MyVideo.Controllers
                 return RedirectToAction("Index");
             }
 
-            if (System.IO.File.Exists(source))
+            Uri res;
+            bool isUri = Uri.TryCreate(source, UriKind.Absolute, out res) && res.Scheme == Uri.UriSchemeHttp;
+
+            if (System.IO.File.Exists(source) || isUri)
             {
                 
 
@@ -113,13 +153,39 @@ namespace MyVideo.Controllers
                         processes.Remove(source);
                     }
                 }
+
+                if (isUri)
+                {
+                    var prcs = GetProcessIds();
+
+                    foreach (var pr in prcs)
+                    {
+                        if (pr.Key == Request.UserHostAddress)
+                        {
+                            try
+                            {
+                                Process prc = Process.GetProcessById(int.Parse(pr.Value));
+                                prc.Kill();
+                            }
+                            catch (Exception)
+                            {
+                            }
+                        }
+                    }
+                }
+
                 Server.ScriptTimeout = 90000;
                 Thread.Sleep(1000);
 
                 processes.Add(source, myproc);
 
-                var fi = new FileInfo(source);
-                string outputFile;
+                FileInfo fi = null;
+
+                if (!isUri)
+                {
+                    fi = new FileInfo(source);
+                }
+                string outputFile = null;
                 string line;
 
                 if (isEmbed)
@@ -132,6 +198,15 @@ namespace MyVideo.Controllers
                     }
                 }
 
+                if (isUri)
+                {
+                    outputFile = "TV.txt";
+
+                    line = string.Format(
+                        @"-i ""{0}"" -b {1}k -c:a libfdk_aac -vbr 3 -vf ""scale=400:trunc(ow/a/2)*2"" -loglevel quiet -f flv -vcodec libx264 rtmp://a.mosalsky.com:1935/live/" + Request.UserHostAddress,
+                        source, bitrate);
+                }
+                else
                 if (fileFormat == "flv")
                 {
                     outputFile = fi.Name.Replace(fi.Extension, "") + ".flv";
@@ -157,7 +232,10 @@ namespace MyVideo.Controllers
 
                 try
                 {
-                    System.IO.File.Delete(Source + outputFile);
+                    if (outputFile != null)
+                    {
+                        System.IO.File.Delete(Source + outputFile);
+                    }
                 }
                 catch (Exception)
                 {
@@ -178,14 +256,26 @@ namespace MyVideo.Controllers
                 myproc.ErrorDataReceived += myproc_ErrorDataReceived;
                 myproc.Start();
 
-                Thread log = new Thread(Log);
-                log.Start(new Dictionary<Process, string>()
+                if (!isUri)
                 {
-                    {myproc, Source + outputFile}
-                });
+                    Thread log = new Thread(Log);
+                    log.Start(new Dictionary<Process, string>()
+                    {
+                        {myproc, Source + outputFile}
+                    });
 
-                while (!myproc.HasExited && (!System.IO.File.Exists(Source + outputFile) || (new FileInfo(Source + outputFile).Length == 0)))
+                    while (!myproc.HasExited &&
+                           (!System.IO.File.Exists(Source + outputFile) ||
+                            (new FileInfo(Source + outputFile).Length == 0)))
+                    {
+                        Thread.Sleep(2000);
+                    }
+
+                    
+                }
+                else
                 {
+                    AddProcessId(myproc.Id);
                     Thread.Sleep(2000);
                 }
 
@@ -193,17 +283,92 @@ namespace MyVideo.Controllers
                 {
                     return RedirectToAction("Index", new RouteValueDictionary() { { "source", outputFile } });
                 }
-                else
+
+                if (isUri)
                 {
-                    
-                    Response.Redirect(Url.Content(fi.Directory.FullName), true);
+                    return RedirectToAction("Index", new RouteValueDictionary() { { "source", @"rtmp://a.mosalsky.com:1936/live/" + Request.UserHostAddress } });
                 }
+
+                var di = new DirectoryInfo(source);
+                return RedirectToAction("Index", new RouteValueDictionary() { { "source", di.Parent.FullName } });
             }
 
             return RedirectToAction("Index");
         }
 
-        
+        public Dictionary<string, string> GetProcessIds()
+        {
+            var formatter = new BinaryFormatter();
+            FileStream fs = null;
+            var channels = new Dictionary<string, string>();
+            try
+            {
+                fs = System.IO.File.Open(Server.MapPath(@"~\TV\streamIds.txt"), FileMode.Open);
+                channels = (Dictionary<string, string>)formatter.Deserialize(fs);
+            }
+            catch
+            {
+            }
+            finally
+            {
+                if (fs != null)
+                    fs.Close();
+            }
+
+            return channels;
+        }
+
+
+        public void SaveProcessIds(Dictionary<string, string> ids)
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+
+           FileStream writer = null;
+            try
+            {
+                writer = System.IO.File.Create(Server.MapPath(@"~\TV\streamIds.txt"));
+                formatter.Serialize(writer, ids);
+            }
+            catch (Exception e)
+            {
+            }
+            finally
+            {
+                if (writer != null)
+                {
+                    writer.Close();
+                    writer.Dispose();
+                }
+            }
+        }
+
+        public void AddProcessId(int id)
+        {
+            var prc = GetProcessIds();
+
+            if (!prc.ContainsKey(Request.UserHostAddress))
+            {
+                prc.Add(Request.UserHostAddress, id.ToString());
+            }
+            else
+            {
+                prc[Request.UserHostAddress] = id.ToString();
+            }
+
+            SaveProcessIds(prc);
+        }
+
+        public void RemoveProcessId()
+        {
+            var prc = GetProcessIds();
+
+            if (prc.ContainsKey(Request.UserHostAddress))
+            {
+                prc.Remove(Request.UserHostAddress);
+            }
+
+            SaveProcessIds(prc);
+        }
 
         //public ActionResult LaunchJWPlayer(string source)
         //{
