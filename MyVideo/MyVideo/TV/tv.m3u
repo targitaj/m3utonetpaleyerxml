@@ -15,3 +15,7 @@ http://87.110.171.175:8081/channels/play?id=1428
 http://87.110.171.175:8081/channels/play?id=8996
 #EXTINF:-1, Animal Planet (Познавательные)
 http://87.110.171.175:8081/channels/play?id=5482
+#EXTINF:-1, Пятница (Развлекательные)
+http://87.110.171.175:8081/channels/play?id=388
+#EXTINF:-1, Пятница (+2) (Развлекательные)
+http://87.110.171.175:8081/channels/play?id=8873

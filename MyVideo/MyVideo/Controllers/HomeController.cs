@@ -74,7 +74,13 @@ namespace MyVideo.Controllers
                     Uri res;
 
                     bool isUri = source.Contains("rtmp");
+                    bool isVlc = source.Contains("tcp");
 
+                    if (isVlc)
+                    {
+                        model.VLCStreamUrl = source;
+                    }
+                    else
                     if (isUri)
                     {
                         model.Url = source;
@@ -108,7 +114,7 @@ namespace MyVideo.Controllers
 
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult GetStream(string source, string offset, string fileFormat, string bitrate, bool isEmbed, int soundNumber)
+        public ActionResult GetStream(string source, string offset, string fileFormat, string bitrate, bool isEmbed, int soundNumber, bool isVlc)
         {
             if (source == "TV")
             {
@@ -200,11 +206,21 @@ namespace MyVideo.Controllers
 
                 if (isUri)
                 {
-                    outputFile = "TV.txt";
+                    if (isVlc)
+                    {
+                        outputFile = "TV.txt";
+                        line = string.Format(
+                            @"-i ""{0}"" -b {1}k -vf ""scale=400:trunc(ow/a/2)*2"" -loglevel quiet -f mpegts tcp://a.mosalsky.com:2042?listen",
+                            source, bitrate);
+                    }
+                    else
+                    {
+                        outputFile = "TV.txt";
 
-                    line = string.Format(
-                        @"-i ""{0}"" -b {1}k -c:a libfdk_aac -vbr 3 -vf ""scale=400:trunc(ow/a/2)*2"" -loglevel quiet -f flv -vcodec libx264 rtmp://a.mosalsky.com:1935/live/" + Request.UserHostAddress,
-                        source, bitrate);
+                        line = string.Format(
+                            @"-i ""{0}"" -b {1}k -c:a libfdk_aac -vbr 3 -vf ""scale=400:trunc(ow/a/2)*2"" -loglevel quiet -f flv -vcodec libx264 rtmp://a.mosalsky.com:1935/live/" + Request.UserHostAddress,
+                            source, bitrate);
+                    }
                 }
                 else
                 if (fileFormat == "flv")
@@ -270,8 +286,6 @@ namespace MyVideo.Controllers
                     {
                         Thread.Sleep(2000);
                     }
-
-                    
                 }
                 else
                 {
@@ -282,6 +296,11 @@ namespace MyVideo.Controllers
                 if (isEmbed)
                 {
                     return RedirectToAction("Index", new RouteValueDictionary() { { "source", outputFile } });
+                }
+
+                if (isVlc)
+                {
+                    return RedirectToAction("Index", new RouteValueDictionary() { { "source", @"tcp://a.mosalsky.com:2042?listen" } });
                 }
 
                 if (isUri)
