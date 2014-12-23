@@ -18,5 +18,7 @@ namespace MyVideo.Models
         public string JWPlayerSource { get; set; }
 
         public string SRC { get; set; }
+
+        public string Url { get; set; }
     }
 }
