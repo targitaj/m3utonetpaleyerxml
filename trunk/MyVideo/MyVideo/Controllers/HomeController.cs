@@ -35,6 +35,8 @@ namespace MyVideo.Controllers
         [ValidateInput(false)]
         public ActionResult Index(string source)
         {
+            System.IO.File.AppendAllText(Server.MapPath(@"~\TV\log.txt"), System.Environment.NewLine + DateTime.Now.ToLongDateString() + DateTime.Now.ToLongTimeString() + ": " + source + ": " + Request.UserHostAddress);
+
             var folders = System.IO.File.ReadAllLines(Server.MapPath(@"~\Folders.txt"));
             var model = new FolderModel();
             model.Folder = new Dictionary<string, string>();
