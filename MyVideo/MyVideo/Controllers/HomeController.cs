@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using System.Threading;
 using System.Web;
 using System.Web.Mvc;
@@ -35,7 +36,7 @@ namespace MyVideo.Controllers
         [ValidateInput(false)]
         public ActionResult Index(string source)
         {
-            System.IO.File.AppendAllText(Server.MapPath(@"~\TV\log.txt"), System.Environment.NewLine + DateTime.Now.ToLongDateString() + DateTime.Now.ToLongTimeString() + ": " + source + ": " + Request.UserHostAddress);
+            UrlExtensions.Prepend(Server.MapPath(@"~\TV\log.txt"), System.Environment.NewLine + DateTime.Now.ToLongDateString() + DateTime.Now.ToLongTimeString() + ": " + source + ": " + Request.UserHostAddress);
 
             var folders = System.IO.File.ReadAllLines(Server.MapPath(@"~\Folders.txt"));
             var model = new FolderModel();
@@ -118,6 +119,8 @@ namespace MyVideo.Controllers
         [ValidateInput(false)]
         public ActionResult GetStream(string source, string offset, string fileFormat, string bitrate, bool isEmbed, int soundNumber, bool isVlc)
         {
+            UrlExtensions.Prepend(Server.MapPath(@"~\TV\log.txt"), System.Environment.NewLine + DateTime.Now.ToLongDateString() + DateTime.Now.ToLongTimeString() + ": " + source + ": " + Request.UserHostAddress);
+
             if (source == "TV")
             {
                 return RedirectToAction("Index", new RouteValueDictionary() { { "source", "TV" } });
@@ -316,6 +319,8 @@ namespace MyVideo.Controllers
 
             return RedirectToAction("Index");
         }
+
+        
 
         public Dictionary<string, string> GetProcessIds()
         {
