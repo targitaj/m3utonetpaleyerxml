@@ -252,5 +252,27 @@ namespace Deleter
             salary = salary - 75;
             return salary - ((salary/100)*10.5) - ((salary/100)*24) + 75;
         }
+
+        private void BtnSelDirectoryRenamer_OnClick(object sender, RoutedEventArgs e)
+        {
+            var diag = new System.Windows.Forms.FolderBrowserDialog();
+            if (diag.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                tbPathRenamer.Text = diag.SelectedPath;
+            }
+        }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            var di = new DirectoryInfo(tbPathRenamer.Text);
+            var counter = 0;
+
+            foreach (var file in di.GetFiles())
+            {
+                File.Move(file.FullName, file.Directory.FullName + "\\" + string.Concat(Enumerable.Repeat("0", 5 - counter.ToString().Length).ToArray()) + counter + file.Extension);
+                
+                counter++;
+            }
+        }
     }
 }
