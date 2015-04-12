@@ -1,21 +1,21 @@
 #EXTM3U
 #EXTINF:-1, Первый канал (Общие)
 http://87.110.171.175:8081/channels/play?id=7662
-#EXTINF:-1, РТР-Планета СНГ (Общие)
-http://87.110.171.175:8081/channels/play?id=1403
-#EXTINF:-1, EuroNews (Новостные)
-http://87.110.171.175:8081/channels/play?id=1402
-#EXTINF:-1, Eurosport (Спорт)
-http://87.110.171.175:8081/channels/play?id=380
-#EXTINF:-1, Моя планета (Познавательные)
-http://87.110.171.175:8081/channels/play?id=1634
-#EXTINF:-1, Disney Channel (Детские)
-http://87.110.171.175:8081/channels/play?id=1428
+#EXTINF:-1, Россия 1 (Общие)
+http://87.110.171.175:8081/channels/play?id=7664
+#EXTINF:-1, ТНТ (Развлекательные)
+http://87.110.171.175:8081/channels/play?id=1153
+#EXTINF:-1, РЕН ТВ (Общие)
+http://87.110.171.175:8081/channels/play?id=386
+#EXTINF:-1, Охота и рыбалка (Мужские)
+http://87.110.171.175:8081/channels/play?id=1005
 #EXTINF:-1, Discovery Channel (Познавательные)
 http://87.110.171.175:8081/channels/play?id=8996
 #EXTINF:-1, Animal Planet (Познавательные)
 http://87.110.171.175:8081/channels/play?id=5482
-#EXTINF:-1, Пятница (Развлекательные)
-http://87.110.171.175:8081/channels/play?id=388
-#EXTINF:-1, Пятница (+2) (Развлекательные)
-http://87.110.171.175:8081/channels/play?id=8873
+#EXTINF:-1, Outdoor Channel (Мужские)
+http://87.110.171.175:8081/channels/play?id=5615
+#EXTINF:-1, Муз ТВ (Музыка)
+http://87.110.171.175:8081/channels/play?id=1086
+#EXTINF:-1, Моя планета (Познавательные)
+http://87.110.171.175:8081/channels/play?id=1634
