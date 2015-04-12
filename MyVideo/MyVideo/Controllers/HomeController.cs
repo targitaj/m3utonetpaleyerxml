@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
@@ -11,6 +12,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.IO;
 using System.Web.Routing;
+using log4net;
 using MyVideo.Models;
 using WebGrease.Css.Extensions;
 
@@ -18,6 +20,8 @@ namespace MyVideo.Controllers
 {
     public class HomeController : Controller
     {
+        private static readonly log4net.ILog log1 = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         public string Source
         {
             get { return Server.MapPath(@"~\Videos\"); }
@@ -36,12 +40,12 @@ namespace MyVideo.Controllers
         [ValidateInput(false)]
         public ActionResult Index(string source)
         {
-            UrlExtensions.Prepend(Server.MapPath(@"~\TV\log.txt"), System.Environment.NewLine + DateTime.Now.ToLongDateString() + DateTime.Now.ToLongTimeString() + ": " + source + ": " + Request.UserHostAddress);
+            UrlExtensions.Prepend(Server.MapPath(@"~\TV\log.txt"), Environment.NewLine + DateTime.Now.ToLongDateString() + DateTime.Now.ToLongTimeString() + ": " + source + ": " + Request.UserHostAddress);
 
             var folders = System.IO.File.ReadAllLines(Server.MapPath(@"~\Folders.txt"));
             var model = new FolderModel();
             model.Folder = new Dictionary<string, string>();
-
+            model.SRC = Source;
             model.source = source;
 
             if (source == null)
@@ -102,10 +106,21 @@ namespace MyVideo.Controllers
                             model.Folder.Add(dir.FullName, dir.Name);
                         }
 
-                        foreach (var file in di.GetFiles())
+                        if (source.Contains("игореша"))
                         {
-                            model.Folder.Add(file.FullName, file.Name);
+                            foreach (var file in di.GetFiles().OrderBy(o=>o.CreationTime))
+                            {
+                                model.Folder.Add(file.FullName, file.Name);
+                            }
                         }
+                        else
+                        {
+                            foreach (var file in di.GetFiles())
+                            {
+                                model.Folder.Add(file.FullName, file.Name);
+                            }
+                        }
+                        
 
                         model.ParentFolder = di.Parent.FullName;
                     }
@@ -117,9 +132,9 @@ namespace MyVideo.Controllers
 
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult GetStream(string source, string offset, string fileFormat, string bitrate, bool isEmbed, int soundNumber, bool isVlc)
+        public ActionResult GetStream(string source, string offset, string fileFormat, string bitrate, bool isEmbed, int soundNumber, bool isVlc, bool isStream)
         {
-            UrlExtensions.Prepend(Server.MapPath(@"~\TV\log.txt"), System.Environment.NewLine + DateTime.Now.ToLongDateString() + DateTime.Now.ToLongTimeString() + ": " + source + ": " + Request.UserHostAddress);
+            UrlExtensions.Prepend(Server.MapPath(@"~\TV\log.txt"), Environment.NewLine + DateTime.Now.ToLongDateString() + DateTime.Now.ToLongTimeString() + ": " + source + ": " + Request.UserHostAddress);
 
             if (source == "TV")
             {
@@ -145,7 +160,7 @@ namespace MyVideo.Controllers
             {
                 
 
-                offset = (int.Parse(offset) * 60).ToString();
+                offset = (Int32.Parse(offset) * 60).ToString();
                 var  myproc = new Process();
 
                 if (processes.ContainsKey(source))
@@ -175,7 +190,7 @@ namespace MyVideo.Controllers
                         {
                             try
                             {
-                                Process prc = Process.GetProcessById(int.Parse(pr.Value));
+                                Process prc = Process.GetProcessById(Int32.Parse(pr.Value));
                                 prc.Kill();
                             }
                             catch (Exception)
@@ -214,7 +229,7 @@ namespace MyVideo.Controllers
                     if (isVlc)
                     {
                         outputFile = "TV.txt";
-                        line = string.Format(
+                        line = String.Format(
                             @"-i ""{0}"" -b {1}k -vf ""scale=400:trunc(ow/a/2)*2"" -loglevel quiet -f mpegts tcp://a.mosalsky.com:2042?listen",
                             source, bitrate);
                     }
@@ -222,7 +237,7 @@ namespace MyVideo.Controllers
                     {
                         outputFile = "TV.txt";
 
-                        line = string.Format(
+                        line = String.Format(
                             @"-i ""{0}"" -b {1}k -c:a libfdk_aac -vbr 3 -vf ""scale=400:trunc(ow/a/2)*2"" -loglevel quiet -f flv -vcodec libx264 rtmp://a.mosalsky.com:1935/live/" + Request.UserHostAddress,
                             source, bitrate);
                     }
@@ -230,23 +245,46 @@ namespace MyVideo.Controllers
                 else
                 if (fileFormat == "flv")
                 {
-                    outputFile = fi.Name.Replace(fi.Extension, "") + ".flv";
-                    line = string.Format(
-                        @"-i ""{0}"" -ss {2} -async 1 -c:a libfdk_aac -vbr 3 -b {3}k -vf ""scale=400:trunc(ow/a/2)*2"" -map 0:0  -map 0:{4} -v 0 -f flv -vcodec libx264 ""{1}""",
-                        source, Source + outputFile, offset, bitrate, soundNumber);
+                    if (isStream)
+                    {
+                        isUri = true;
+                        line = String.Format(
+                            @"-i ""{0}"" -b {1}k -c:a libfdk_aac -vbr 3 -vf ""scale=400:trunc(ow/a/2)*2"" -loglevel quiet -f flv -vcodec libx264 rtmp://a.mosalsky.com:1935/live/" + Request.UserHostAddress,
+                            source, bitrate);
+                        outputFile = "TV.txt";
+                    }
+                    else
+                    {
+                        outputFile = fi.Name.Replace(fi.Extension, "") + ".flv";
+                        line = String.Format(
+                            @"-i ""{0}"" -ss {2} -async 1 -c:a libfdk_aac -vbr 3 -b {3}k -vf ""scale=400:trunc(ow/a/2)*2"" -map 0:0  -map 0:{4} -v 0 -f flv -vcodec libx264 ""{1}""",
+                            source, Source + outputFile, offset, bitrate, soundNumber);
+                    }
                 }
                 else if (fileFormat == "mp4")
                 {
-                    outputFile = fi.Name.Replace(fi.Extension, "") + "." + fileFormat;
-                    line = string.Format(
-                        @"-i ""{0}"" -ss {2} -b {3}k -acodec mp3 -vf ""scale=400:trunc(ow/a/2)*2"" -map 0:0 -map 0:{4} -vcodec h264 ""{1}""",
-                        source, Source + outputFile, offset, bitrate, soundNumber);
-                    otput.Add(myproc, Source + outputFile);
+                    if (isStream)
+                    {
+                        isUri = true;
+                        line = String.Format(
+                            @"-re -i ""{0}"" -ss {2} -b {1}k -c:a libfdk_aac -vbr 3 -vf ""scale=400:trunc(ow/a/2)*2"" -loglevel quiet -f flv -vcodec libx264 rtmp://a.mosalsky.com:1935/live/" + Request.UserHostAddress,
+                            source, bitrate, offset);
+                        outputFile = "TV.txt";
+                    }
+                    else
+                    {
+                        outputFile = fi.Name.Replace(fi.Extension, "." + fileFormat);
+                        //outputFile = fi.Name.Remove(fi.Name.Length - fi.Extension.Length, fi.Name.Length) + "." + fileFormat;
+                        line = String.Format(
+                            @"-i ""{0}"" -ss {2} -b {3}k -acodec mp3 -vf ""scale=400:trunc(ow/a/2)*2"" -map 0:0 -map 0:{4} -vcodec h264 ""{1}""",
+                            source, Source + outputFile, offset, bitrate, soundNumber);
+                        otput.Add(myproc, Source + outputFile);
+                    }
                 }
                 else
                 {
                     outputFile = fi.Name.Replace(fi.Extension, "") + "." + fileFormat;
-                    line = string.Format(
+                    line = String.Format(
                         @"-i ""{0}"" -ss {2} -b {3}k -v 0 -f mpegts ""{1}""",
                         source, Source + outputFile, offset, bitrate);
                 }
@@ -264,6 +302,8 @@ namespace MyVideo.Controllers
 
                 }
 
+                log1.Debug("tut");
+
                 var myProcessStartInfo = new ProcessStartInfo();
                 myProcessStartInfo.FileName = Server.MapPath("~") + "ffmpeg.exe";
                 myProcessStartInfo.Arguments = line;
@@ -276,6 +316,11 @@ namespace MyVideo.Controllers
                 myproc.StartInfo = myProcessStartInfo;
                 myproc.ErrorDataReceived += myproc_ErrorDataReceived;
                 myproc.Start();
+
+                myproc.Exited += myproc_Exited;
+                log1.Debug("myproc.HasExited: " + myproc.HasExited);
+                log1.Debug("myProcessStartInfo.Arguments: " + myProcessStartInfo.Arguments);
+                
 
                 if (!isUri)
                 {
@@ -318,6 +363,11 @@ namespace MyVideo.Controllers
             }
 
             return RedirectToAction("Index");
+        }
+
+        void myproc_Exited(object sender, EventArgs e)
+        {
+            log1.Debug("exited");
         }
 
         
@@ -403,7 +453,7 @@ namespace MyVideo.Controllers
 
         void myproc_ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
-            
+            log1.Debug("error");
         }
 
         void Log(object proc)
@@ -420,19 +470,59 @@ namespace MyVideo.Controllers
             }
         }
 
-        public static string GetProcessPercentage(Process proc)
+        public static string GetProcessPercentage(string file)
         {
             var res = "no percentage data";
 
             try
             {
-                string data = System.IO.File.ReadAllText(otput[proc] + ".txt");
+                FileInfo fi = new FileInfo(file);
 
-                var allTime = GetTime(data, data.IndexOf(":", data.IndexOf("Duration:") + 10));
-                var currTime = GetTime(data, data.LastIndexOf(":") - 3);
+                string data = System.IO.File.ReadAllText(file);
+                if (data.Contains("final ratefactor") || data.Contains("Chapter"))
+                {
+                    res = "100";
+                }
+                else
+                {
+                    var allTime = GetTime(data, data.IndexOf(":", data.IndexOf("Duration:") + 10));
 
-                var percentage = (currTime.TotalMilliseconds / allTime.TotalMilliseconds) * 100;
-                res = Convert.ToInt32(percentage).ToString();
+                    
+                    var currTime = GetTime(data, data.LastIndexOf(":") - 3);
+
+                    var percentage = (currTime.TotalMilliseconds / allTime.TotalMilliseconds) * 100;
+                    res = Convert.ToInt32(percentage).ToString();
+
+                    //if (data.Split(new[] {"frame=  "}, StringSplitOptions.None).Length - 1 > 20)
+                    //{
+                    //    var cnt = 0;
+                    //    int i = data.Length - 3;
+                    //    for (; i >= 0; i--)
+                    //    {
+                    //        if (data[i] == '\n')
+                    //        {
+                    //            cnt++;
+                    //        }
+
+                    //        if (cnt == 21)
+                    //        {
+                    //            break;
+                    //        }
+                    //    }
+
+                    //    for (; i >= 0; i--)
+                    //    {
+                    //        if (data[i] == ':')
+                    //        {
+                    //            break;
+                    //        }
+                    //    }
+
+                    //    var minus20SecTime = GetTime(data, i - 3);
+
+
+                    //}
+                }
             }
             catch (Exception)
             {
@@ -449,7 +539,7 @@ namespace MyVideo.Controllers
             var minutes = data.Substring(index + 1, 2);
             var seconds = data.Substring(index + 4, 2);
 
-            return new TimeSpan(int.Parse(hours), int.Parse(minutes), int.Parse(seconds));
+            return new TimeSpan(Int32.Parse(hours), Int32.Parse(minutes), Int32.Parse(seconds));
         }
 
         public bool ContainsMain(DirectoryInfo curDir)
@@ -499,7 +589,7 @@ namespace MyVideo.Controllers
             source = "";
             var folders = System.IO.File.ReadAllLines(Server.MapPath(@"~\Folders.txt"));
 
-            if (string.IsNullOrWhiteSpace(source))
+            if (String.IsNullOrWhiteSpace(source))
             {
                 var folder = folders.Last();
                 SaveFiles(files, folder);
@@ -514,6 +604,64 @@ namespace MyVideo.Controllers
             }
 
             return View("Contact");
+        }
+
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult Mp3File(string source, string bitrate)
+        {
+            var files = Directory.GetFiles(source);
+
+            if (!Directory.Exists(source + "/Converted"))
+            {
+                Directory.CreateDirectory(source + "/Converted");
+            }
+
+            foreach (var file in files)
+            {
+                var fi = new FileInfo(file);
+
+                if (fi.Extension.ToLower() == ".mp3")
+                {
+                    var outputFile = String.Format(@"{0}/Converted/{1}", source,
+                        fi.Name.Replace(fi.Extension, ".aac"));
+
+                    try
+                    {
+                        if (outputFile != null)
+                        {
+                            System.IO.File.Delete(Source + outputFile);
+                        }
+                    }
+                    catch (Exception)
+                    {
+
+
+                    }
+
+                    StartMp3Convert(String.Format(@"-i ""{0}"" -c:a libfdk_aac -b:a {2}k -loglevel quiet ""{1}""", file, outputFile, bitrate));
+                }
+            }
+
+            return RedirectToAction("Index", new RouteValueDictionary() { { "source", source } });
+        }
+
+        public void StartMp3Convert(string line)
+        {
+            var myproc = new Process();
+
+            var myProcessStartInfo = new ProcessStartInfo();
+            myProcessStartInfo.FileName = Server.MapPath("~") + "ffmpeg.exe";
+            myProcessStartInfo.Arguments = line;
+            myProcessStartInfo.UseShellExecute = false;
+            myProcessStartInfo.RedirectStandardOutput = true;
+            myProcessStartInfo.RedirectStandardError = true;
+            myProcessStartInfo.RedirectStandardInput = true;
+            myProcessStartInfo.RedirectStandardOutput = true;
+            myProcessStartInfo.CreateNoWindow = true;
+            myproc.StartInfo = myProcessStartInfo;
+            myproc.ErrorDataReceived += myproc_ErrorDataReceived;
+            myproc.Start();
         }
 
         public void SaveFiles(HttpPostedFileBase[] files, string folder)

@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using log4net;
 
 namespace MyVideo
 {
@@ -16,6 +18,8 @@ namespace MyVideo
 
     public class MvcApplication : System.Web.HttpApplication
     {
+        private static readonly log4net.ILog log1 = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         protected void Application_Start()
         {
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en"); 
@@ -25,11 +29,18 @@ namespace MyVideo
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            AuthConfig.RegisterAuth();
 
             GlobalFilters.Filters.Add(new ValidateInputAttribute(false));
 
 
+        }
+
+        void Application_Error(object sender, EventArgs e)
+        {
+            //get reference to the source of the exception chain
+            Exception ex = Server.GetLastError().GetBaseException();
+
+            log1.Debug("erglobal", ex);
         }
     }
 }
