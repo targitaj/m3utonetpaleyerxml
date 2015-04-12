@@ -22,5 +22,7 @@ namespace MyVideo.Models
         public string Url { get; set; }
 
         public string VLCStreamUrl { get; set; }
+
+
     }
 }

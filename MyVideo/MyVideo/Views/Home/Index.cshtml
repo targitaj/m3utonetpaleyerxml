@@ -21,11 +21,13 @@
 
 <div id="myElement">Loading the player...</div>
 
-<script type="text/javascript">
-    jwplayer("myElement").setup({
-        file: '@Model.Url'
-    });
-</script>
+    <script type="text/javascript">
+        jwplayer("myElement").setup({
+            file: '@Model.Url'
+        });
+    </script>
+    
+    @Html.Raw("Copy this text to rtmp player"); <input type="text" value="@Model.Url" id="vlcText"/>
     return;
 }
 
@@ -70,6 +72,9 @@
         @Html.CheckBox("isEmbed")
         VLC: 
         @Html.CheckBox("isVlc")
+        
+        Streams:
+        @Html.CheckBox("isStream")
 
     </div>
     <br />
@@ -88,12 +93,16 @@
                 }
 
                 var mp4 = fi.Name.Replace(fi.Extension, ".mp4");
+                var txt = fi.Name.Replace(fi.Extension, ".txt");
                 if (File.Exists(Source + mp4))
                 {
+                    <a href="@Url.Action("GetStream", "Home")" onclick=" return submitForm(this); " data="@file.Key">R*</a>
                     @file.Value
-                    if (HomeController.processes != null && HomeController.processes.ContainsKey(file.Key) && !HomeController.processes[file.Key].HasExited)
+
+                    var percentage = HomeController.GetProcessPercentage(Source + mp4 + ".txt");
+                    if (percentage != "100")
                     {
-                        @Html.Raw(" " + HomeController.GetProcessPercentage(HomeController.processes[file.Key]))
+                        @Html.Raw(" " + percentage)
                         @Html.Raw("% ")
                     }
                     else
@@ -126,5 +135,12 @@
     <input type="submit" value="Upload" title="Uplad" />
     <div style="color:Red;font-size:14px">@ViewBag.Message</div>
     @Html.HiddenFor(m=>m.source)
+}
+
+@using (Html.BeginForm("Mp3File", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.TextBox("bitrate", "32", new {style = "width:50px;"})
+    <input type="submit" value="Convert All MP3" title="Convert All MP3" />
+    @Html.HiddenFor(m => m.source)
 }
 
