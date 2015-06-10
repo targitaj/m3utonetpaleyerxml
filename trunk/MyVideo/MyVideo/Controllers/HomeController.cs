@@ -92,8 +92,7 @@ namespace MyVideo.Controllers
                     {
                         model.Url = source;
                     }
-                    else
-                    if (System.IO.File.Exists(Source + source))
+                    else if (System.IO.File.Exists(Source + source))
                     {
                         model.JWPlayerSource = source;
                     }
@@ -105,14 +104,27 @@ namespace MyVideo.Controllers
                         {
                             model.Folder.Add(dir.FullName, dir.Name);
                         }
-
-                        if (source.Contains("игореша"))
+                        if (source.Contains("игореша") || source.Contains("Igorosa"))
                         {
-                            foreach (var file in di.GetFiles().OrderBy(o=>o.CreationTime))
+                            var filesException =
+                                di.GetFiles()
+                                    .Where(
+                                        w =>
+                                            (new DirectoryInfo(Source)).GetFiles().Select(s => s.Name).Contains(w.Name) ==
+                                            false);
+
+                            
+                            foreach (var file in (new DirectoryInfo(Source)).GetFiles().Where(w=>w.Extension == ".mp4"))
+                            {
+                                model.Folder.Add(file.FullName, file.Name);
+                            }
+                            foreach (var file in filesException.OrderBy(o => o.CreationTime))
                             {
                                 model.Folder.Add(file.FullName, file.Name);
                             }
                         }
+
+                        
                         else
                         {
                             foreach (var file in di.GetFiles())
@@ -365,6 +377,11 @@ namespace MyVideo.Controllers
             return RedirectToAction("Index");
         }
 
+        private void GetOutput(FileInfo fileInfo)
+        {
+            
+        }
+
         void myproc_Exited(object sender, EventArgs e)
         {
             log1.Debug("exited");
@@ -479,7 +496,7 @@ namespace MyVideo.Controllers
                 FileInfo fi = new FileInfo(file);
 
                 string data = System.IO.File.ReadAllText(file);
-                if (data.Contains("final ratefactor") || data.Contains("Chapter"))
+                if (data.Contains("final ratefactor") || data.Contains("Chapter") || (DateTime.Now - fi.LastWriteTime).TotalMinutes > 2)
                 {
                     res = "100";
                 }
