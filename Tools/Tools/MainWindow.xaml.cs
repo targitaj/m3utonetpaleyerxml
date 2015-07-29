@@ -228,8 +228,9 @@ namespace Deleter
                     }
                 }
 
-                double sal = result/12;
-
+                double sal = (result - double.Parse(tbHolidays.Text)*salar);
+                sal /= 12;
+                
                 tbSalaryResult.Text = ((int)sal).ToString();
                 lbMonths.ItemsSource = salPerMonths;
 
