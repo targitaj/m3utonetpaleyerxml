@@ -199,6 +199,7 @@ namespace Deleter
 
 
                 var salar = double.Parse(tbSalary.Text) * 8;
+                var dependants = int.Parse(tbDependants.Text);
                 double result = 0;
 
                 var currentYear = new DateTime(int.Parse(tbYear.Text), 1, 1);
@@ -211,7 +212,7 @@ namespace Deleter
 
                 while (currentYear < nextYear)
                 {
-                    if (currentYear.DayOfWeek != DayOfWeek.Sunday && currentYear.DayOfWeek != DayOfWeek.Saturday)
+                    if (!IsHoliday(currentYear))
                     {
                         result += salar;
                         curSalPer.Salary += salar;
@@ -223,18 +224,19 @@ namespace Deleter
                         salPerMonths.Add(curSalPer);
                         curSalPer = new SalaryPerMonth()
                         {
-                            Month = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(curMonth) + ": "
+                            Month = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(curMonth) + ": ",
+                            DependentCount = dependants
                         };
                     }
                 }
 
-                double sal = (result - double.Parse(tbHolidays.Text)*salar);
+                double sal = result;
                 sal /= 12;
                 
                 tbSalaryResult.Text = ((int)sal).ToString();
                 lbMonths.ItemsSource = salPerMonths;
 
-                tbTaxSalaryResult.Text = ((int) MinusTax(sal)).ToString();
+                tbTaxSalaryResult.Text = ((int) MinusTax(sal, dependants)).ToString();
             }
             catch (Exception)
             {
@@ -248,10 +250,20 @@ namespace Deleter
             }
         }
 
-        public double MinusTax(double salary)
+        DateTimeExtensions.WorkingDays.WorkingDayCultureInfo ci = new DateTimeExtensions.WorkingDays.WorkingDayCultureInfo("lv-LV");
+
+        public bool IsHoliday(DateTime dt)
         {
-            salary = salary - 75;
-            return salary - ((salary/100)*10.5) - ((salary/100)*24) + 75;
+            return !ci.IsWorkingDay(dt) || ci.IsHoliday(dt);
+        }
+
+        public double MinusTax(double salary, int dependentCount)
+        {
+            var notTaxed = 75 + (165 * dependentCount);
+            var obligate = (salary * 0.105);
+            var livTax = (salary - obligate - notTaxed) * 0.23;
+
+            return salary - obligate - livTax;
         }
 
         private void BtnSelDirectoryRenamer_OnClick(object sender, RoutedEventArgs e)

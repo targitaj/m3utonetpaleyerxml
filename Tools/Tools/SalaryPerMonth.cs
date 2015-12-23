@@ -10,18 +10,23 @@ namespace Tools
         public string Month { get; set; }
         public double Salary { get; set; }
 
+        public int DependentCount { get; set; }
+
         public double TaxSalary
         {
             get
             {
-                return MinusTax(Salary);
+                return MinusTax(Salary, DependentCount);
             }
         }
 
-        public double MinusTax(double salary)
+        public double MinusTax(double salary, int dependentCount)
         {
-            salary = salary - 75;
-            return salary - ((salary / 100) * 10.5) - ((salary / 100) * 24) + 75;
+            var notTaxed = 75 + (165 * dependentCount);
+            var obligate = (salary * 0.105);
+            var livTax = (salary - obligate - notTaxed) * 0.23;
+
+            return salary - obligate - livTax;
         }
     }
 }
