@@ -12,6 +12,12 @@ namespace Tools
 
         public int DependentCount { get; set; }
 
+        public int WeekEnds { get; set; }
+
+        public int Holidays { get; set; }
+
+        public int Hours { get; set; }
+
         public double TaxSalary
         {
             get

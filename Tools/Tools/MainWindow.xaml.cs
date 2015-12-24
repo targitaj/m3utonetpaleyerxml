@@ -207,19 +207,40 @@ namespace Deleter
                 var curMonth = currentYear.Month;
                 SalaryPerMonth curSalPer = new SalaryPerMonth()
                 {
-                    Month = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(1) + ": "
+                    Month = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(1) + ": ",
+                    DependentCount = dependants
                 };
+
+                var holidays = 0;
+                var weekEnds = 0;
+                var hours = 0;
+
 
                 while (currentYear < nextYear)
                 {
                     if (!IsHoliday(currentYear))
                     {
+                        hours += 8;
                         result += salar;
                         curSalPer.Salary += salar;
                     }
+
+                    if (currentYear.DayOfWeek == DayOfWeek.Sunday || currentYear.DayOfWeek == DayOfWeek.Saturday)
+                    {
+                        weekEnds++;
+                    }
+                    else if (ci.IsHoliday(currentYear))
+                    {
+                        holidays++;
+                    }
+
                     currentYear = currentYear.AddDays(1);
                     if (curMonth != currentYear.Month)
                     {
+                        curSalPer.Holidays = holidays;
+                        curSalPer.WeekEnds = weekEnds;
+                        curSalPer.Hours = hours;
+                        hours = weekEnds = holidays = 0;
                         curMonth = currentYear.Month;
                         salPerMonths.Add(curSalPer);
                         curSalPer = new SalaryPerMonth()
