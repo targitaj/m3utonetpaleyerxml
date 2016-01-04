@@ -1,7 +1,7 @@
 ﻿<Window x:Class="Deleter.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Tools" Height="360" Width="696" Closing="MainWindow_OnClosing">
+        Title="Tools by Andrey Mosalsky" Height="460" Width="696" Closing="MainWindow_OnClosing">
     <Grid>
         <TabControl>
             <TabItem Header="Folder deleter">
@@ -28,20 +28,25 @@
                         <Label>Dependants</Label>
                         <TextBox Name="tbDependants" Height="30" Width="150" Text="0" TextChanged="TbSalary_OnTextChanged"/>
                         <Label>----------------------------</Label>
-                        <Label>Avare salary per month</Label>
+                        <Label>Average salary per month</Label>
                         <TextBlock Text="0" Name="tbSalaryResult"></TextBlock>
-                        <Label>Avare salary per month - tax</Label>
+                        <Label>Average salary per month - tax</Label>
                         <TextBlock Text="0" Name="tbTaxSalaryResult"></TextBlock>
+                        <Label>Worked hours</Label>
+                        <TextBox Name="tbWorkedHours" Height="30" Width="150" Text="0" TextChanged="TbSalary_OnTextChanged"/>
+                        <Label>Salary for worked hours</Label>
+                        <TextBlock Text="0" Name="tbSalaryForWorkedDays"></TextBlock>
                     </StackPanel>
                     <StackPanel Grid.Column="1">
                         <DataGrid Name="lbMonths" ItemsSource="{Binding}" AutoGenerateColumns="False">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Month" Binding="{Binding Month}" />
                                 <DataGridTextColumn Header="Salary" Binding="{Binding Salary}" />
-                                <DataGridTextColumn Header="TaxSalary" Binding="{Binding TaxSalary}" />
+                                <DataGridTextColumn Header="Tax Salary" Binding="{Binding TaxSalary}" />
                                 <DataGridTextColumn Header="Week Ends" Binding="{Binding WeekEnds}" />
                                 <DataGridTextColumn Header="Holidays" Binding="{Binding Holidays}" />
                                 <DataGridTextColumn Header="Hours" Binding="{Binding Hours}" />
+                                <DataGridTextColumn Header="Working Days" Binding="{Binding WorkingDays}" />
                             </DataGrid.Columns>
                         </DataGrid>
                     </StackPanel>
