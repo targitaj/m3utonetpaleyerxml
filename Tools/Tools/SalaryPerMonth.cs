@@ -18,6 +18,8 @@ namespace Tools
 
         public int Hours { get; set; }
 
+        public int WorkingDays { get; set; }
+
         public double TaxSalary
         {
             get

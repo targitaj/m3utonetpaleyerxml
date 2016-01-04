@@ -214,12 +214,13 @@ namespace Deleter
                 var holidays = 0;
                 var weekEnds = 0;
                 var hours = 0;
-
+                var workingDays = 0;
 
                 while (currentYear < nextYear)
                 {
                     if (!IsHoliday(currentYear))
                     {
+                        workingDays++;
                         hours += 8;
                         result += salar;
                         curSalPer.Salary += salar;
@@ -240,7 +241,8 @@ namespace Deleter
                         curSalPer.Holidays = holidays;
                         curSalPer.WeekEnds = weekEnds;
                         curSalPer.Hours = hours;
-                        hours = weekEnds = holidays = 0;
+                        curSalPer.WorkingDays = workingDays;
+                        workingDays = hours = weekEnds = holidays = 0;
                         curMonth = currentYear.Month;
                         salPerMonths.Add(curSalPer);
                         curSalPer = new SalaryPerMonth()
@@ -258,6 +260,9 @@ namespace Deleter
                 lbMonths.ItemsSource = salPerMonths;
 
                 tbTaxSalaryResult.Text = ((int) MinusTax(sal, dependants)).ToString();
+
+                tbSalaryForWorkedDays.Text =
+                    MinusTax(double.Parse(tbWorkedHours.Text)*double.Parse(tbSalary.Text), dependants).ToString();
             }
             catch (Exception)
             {
