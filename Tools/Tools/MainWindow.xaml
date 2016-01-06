@@ -9,7 +9,6 @@
                     <Button Content="Select Directory" HorizontalAlignment="Left" Margin="148,32,0,0" VerticalAlignment="Top" Width="108" Name="btnSelDirectory" Click="BtnSelDirectory_OnClick"/>
                     <TextBox HorizontalAlignment="Left" Height="23" Margin="10,32,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="133" Name="tbPath"/>
                     <Button Content="Delete Folder" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Width="75" Name="btnDelete" Click="btnDelete_Click"/>
-
                     <TextBlock  TextWrapping="Wrap" Text="" VerticalAlignment="Top" Name="tbLog" Margin="10,109,0,0" HorizontalAlignment="Left" />
                     <Button Content="Stop" HorizontalAlignment="Left" Margin="102,60,0,0" VerticalAlignment="Top" Width="75" Name="btnStop" Click="BtnStop_OnClick"/>
                 </Grid>
