@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
+using System.Security.Permissions;
 using System.Security.Principal;
 using System.Text;
 using System.Threading;
@@ -33,6 +34,7 @@ namespace Deleter
         {
             InitializeComponent();
             th = new Thread(DeleteFolder);
+            
         }
 
         private void BtnSelDirectory_OnClick(object sender, RoutedEventArgs e)
@@ -46,9 +48,43 @@ namespace Deleter
 
         private void btnDelete_Click(object sender, RoutedEventArgs e)
         {
-            DirectoryInfo di = new DirectoryInfo(tbPath.Text);
-            th = new Thread(DeleteFolder);
-            th.Start(di);
+            if (!IsRunAsAdmin)
+            {
+                ProcessStartInfo proc = new ProcessStartInfo();
+                proc.UseShellExecute = true;
+                proc.WorkingDirectory = Environment.CurrentDirectory;
+                proc.FileName = System.Reflection.Assembly.GetEntryAssembly().Location;
+                proc.Verb = "runas";
+
+                try
+                {
+                    Process.Start(proc);
+                }
+                catch
+                {
+                    // The user refused to allow privileges elevation.
+                    // Do nothing and return directly ...
+                    return;
+                }
+
+                Application.Current.Shutdown();
+            }
+            else
+            {
+                DirectoryInfo di = new DirectoryInfo(tbPath.Text);
+                th = new Thread(DeleteFolder);
+                th.Start(di);
+            }
+        }
+
+        public bool IsRunAsAdmin
+        {
+            get
+            {
+                WindowsIdentity id = WindowsIdentity.GetCurrent();
+                WindowsPrincipal principal = new WindowsPrincipal(id);
+                return principal.IsInRole(WindowsBuiltInRole.Administrator);
+            }
         }
 
         private void DeleteFolder(object dir)
