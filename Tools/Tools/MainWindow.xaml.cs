@@ -337,7 +337,7 @@ namespace Deleter
             }
         }
 
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        private void btnRename_Click(object sender, RoutedEventArgs e)
         {
             var di = new DirectoryInfo(tbPathRenamer.Text);
             var counter = 0;
@@ -348,6 +348,32 @@ namespace Deleter
                 
                 counter++;
             }
+        }
+
+        private void TestBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            var curDateTime = new DateTime(2016, 1, 1);
+            var endDate = curDateTime.AddYears(100).AddDays(-1);
+            var yearData = new Dictionary<int, int>();
+
+            while (curDateTime <= endDate)
+            {
+                if (!yearData.ContainsKey(curDateTime.Year))
+                {
+                    yearData.Add(curDateTime.Year, 0);
+                }
+
+                if (IsHoliday(curDateTime) && curDateTime.DayOfWeek != DayOfWeek.Sunday && curDateTime.DayOfWeek != DayOfWeek.Saturday)
+                {
+                    yearData[curDateTime.Year] ++;
+                }
+
+                curDateTime = curDateTime.AddDays(1);
+            }
+
+            var res = yearData.Where(w=>w.Value<=7).Aggregate("", (current, i) => current + i.Key + ": " + i.Value + Environment.NewLine);
+
+            MessageBox.Show(res);
         }
     }
 }
