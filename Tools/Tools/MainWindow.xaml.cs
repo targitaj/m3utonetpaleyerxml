@@ -350,30 +350,91 @@ namespace Deleter
             }
         }
 
+        private CultureInfo _enCulture = new CultureInfo("en-US");
+
         private void TestBase_OnClick(object sender, RoutedEventArgs e)
         {
-            var curDateTime = new DateTime(2016, 1, 1);
-            var endDate = curDateTime.AddYears(100).AddDays(-1);
-            var yearData = new Dictionary<int, int>();
+            var res = "<table>";
 
-            while (curDateTime <= endDate)
+            var endYear = 2100;
+            var currYear = 0;
+            var currDate = new DateTime(2016, 1, 1);
+            //CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(1)
+            var curMonth = string.Empty;
+            var hasMonth = false;
+
+            while (currDate.Year != endYear)
             {
-                if (!yearData.ContainsKey(curDateTime.Year))
+                if (currYear != currDate.Year)
                 {
-                    yearData.Add(curDateTime.Year, 0);
+                    currYear = currDate.Year;
+                    res += "<tr><td><br>" + currYear + "</td></tr>";
                 }
 
-                if (IsHoliday(curDateTime) && curDateTime.DayOfWeek != DayOfWeek.Sunday && curDateTime.DayOfWeek != DayOfWeek.Saturday)
+                if (curMonth != _enCulture.DateTimeFormat.GetMonthName(currDate.Month))
                 {
-                    yearData[curDateTime.Year] ++;
+                    if (hasMonth)
+                    {
+                        res += "</td></tr>";
+                    }
+
+                    hasMonth = false;
+                    curMonth = _enCulture.DateTimeFormat.GetMonthName(currDate.Month);
                 }
 
-                curDateTime = curDateTime.AddDays(1);
+                if (ci.IsHoliday(currDate))
+                {
+                    if (!hasMonth)
+                    {
+                        res += "<tr><td>" + curMonth;
+                        hasMonth = true;
+                    }
+
+                    res += res.EndsWith("<tr><td>" + curMonth) ? " " + HolidayStringDay(currDate) : ", " + HolidayStringDay(currDate);
+                }
+
+                currDate = currDate.AddDays(1);
             }
 
-            var res = yearData.Where(w=>w.Value<=7).Aggregate("", (current, i) => current + i.Key + ": " + i.Value + Environment.NewLine);
+            res += "</td></tr></table>";
 
-            MessageBox.Show(res);
+            File.WriteAllText(@"C:\Temp\1.html", res);
+
+            MessageBox.Show("complete");
+            //ci.IsHoliday()
+
+            //var curDateTime = new DateTime(2016, 1, 1);
+            //var endDate = curDateTime.AddYears(100).AddDays(-1);
+            //var yearData = new Dictionary<int, int>();
+
+            //while (curDateTime <= endDate)
+            //{
+            //    if (!yearData.ContainsKey(curDateTime.Year))
+            //    {
+            //        yearData.Add(curDateTime.Year, 0);
+            //    }
+
+            //    if (IsHoliday(curDateTime) && curDateTime.DayOfWeek != DayOfWeek.Sunday && curDateTime.DayOfWeek != DayOfWeek.Saturday)
+            //    {
+            //        yearData[curDateTime.Year] ++;
+            //    }
+
+            //    curDateTime = curDateTime.AddDays(1);
+            //}
+
+            //var res = yearData.Where(w=>w.Value<=7).Aggregate("", (current, i) => current + i.Key + ": " + i.Value + Environment.NewLine);
+
+            //MessageBox.Show(res);
+        }
+
+        private string HolidayStringDay(DateTime date)
+        {
+            if (ci.IsHoliday(date) && date.DayOfWeek != DayOfWeek.Sunday && date.DayOfWeek != DayOfWeek.Saturday)
+            {
+                return "<span style='color: red'>" + date.Day + "</span>";
+            }
+
+            return date.Day.ToString();
         }
     }
 }
