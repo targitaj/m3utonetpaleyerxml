@@ -60,6 +60,27 @@
                     <Button Content="Rename" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Width="108" Click="btnRename_Click"/>
                 </Grid>
             </TabItem>
+            <TabItem Header="Time calculator">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+                        <TextBlock Text="H"/>
+                        <TextBox Width="40" Name="tbH1"/>
+                        <TextBlock Text="M"/>
+                        <TextBox Width="40" Name="tbM1"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+                        <TextBlock Text="H"/>
+                        <TextBox Width="40" Name="tbH2"/>
+                        <TextBlock Text="M"/>
+                        <TextBox Width="40" Name="tbM2"/>
+                    </StackPanel>
+                    <Button Content="Substruct" HorizontalAlignment="Left" Click="ButtonBase_OnClick"/>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+                        <TextBlock Text="Result"/>
+                        <TextBox Width="100" Name="tbRes"/>
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
         </TabControl>
     </Grid>
 </Window>

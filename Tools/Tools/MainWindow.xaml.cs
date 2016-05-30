@@ -19,6 +19,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using DateTimeExtensions.TimeOfDay;
 using ProcessPrivileges;
 using Tools;
 
@@ -435,6 +436,16 @@ namespace Deleter
             }
 
             return date.Day.ToString();
+        }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            var t1 = new TimeSpan(int.Parse(tbH1.Text), int.Parse(tbM1.Text), 0);
+            var t2 = new TimeSpan(int.Parse(tbH2.Text), int.Parse(tbM2.Text), 0);
+
+            var res = t1 - t2;
+
+            tbRes.Text = res.Hours + ":" + res.Minutes;
         }
     }
 }
