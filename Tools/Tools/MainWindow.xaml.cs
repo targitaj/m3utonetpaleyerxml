@@ -447,5 +447,20 @@ namespace Deleter
 
             tbRes.Text = res.Hours + ":" + res.Minutes;
         }
+
+        private void BtnNavigateToSite_OnClick(object sender, RoutedEventArgs e)
+        {
+            wbSS.Navigate(tbAddress.Text);
+        }
+
+        private void BtnStartRefresh_OnClick(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void BtnStopRefresh_OnClick(object sender, RoutedEventArgs e)
+        {
+            
+        }
     }
 }

@@ -81,6 +81,28 @@
                     </StackPanel>
                 </StackPanel>
             </TabItem>
+            <TabItem Header="SS.LV changes">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+                            <TextBlock Text="Address: "/>
+                            <TextBox Width="200" Name="tbAddress" Text="https://www.ss.lv"/>
+                            <Button Content="Navigate To Site" Name="btnNavigateToSite" Click="BtnNavigateToSite_OnClick"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+                            <TextBlock Text="Refresh interval in minutes: "/>
+                            <TextBox Name="tbRefreshInterval" Width="40" Text="60"/>
+                        </StackPanel>
+                        <Button Content="Start Refresh" Name="btnStartRefresh" Click="BtnStartRefresh_OnClick"/>
+                        <Button IsEnabled="False" Content="Stop Refresh" Name="btnStopRefresh" Click="BtnStopRefresh_OnClick"/>
+                    </StackPanel>
+                    <WebBrowser Grid.Row="1" Name="wbSS" />
+                </Grid>
+            </TabItem>
         </TabControl>
     </Grid>
 </Window>
