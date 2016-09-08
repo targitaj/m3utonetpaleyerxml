@@ -40,7 +40,12 @@ namespace MyVideo.Controllers
         [ValidateInput(false)]
         public ActionResult Index(string source)
         {
-            UrlExtensions.Prepend(Server.MapPath(@"~\TV\log.txt"), Environment.NewLine + DateTime.Now.ToLongDateString() + DateTime.Now.ToLongTimeString() + ": " + source + ": " + Request.UserHostAddress);
+            try
+            {
+                UrlExtensions.Prepend(Server.MapPath(@"~\TV\log.txt"), Environment.NewLine + DateTime.Now.ToLongDateString() + DateTime.Now.ToLongTimeString() + ": " + source + ": " + Request.UserHostAddress);
+            }
+            catch{}
+            
 
             var folders = System.IO.File.ReadAllLines(Server.MapPath(@"~\Folders.txt"));
             var model = new FolderModel();
@@ -146,7 +151,12 @@ namespace MyVideo.Controllers
         [ValidateInput(false)]
         public ActionResult GetStream(string source, string offset, string fileFormat, string bitrate, bool isEmbed, int soundNumber, bool isVlc, bool isStream)
         {
-            UrlExtensions.Prepend(Server.MapPath(@"~\TV\log.txt"), Environment.NewLine + DateTime.Now.ToLongDateString() + DateTime.Now.ToLongTimeString() + ": " + source + ": " + Request.UserHostAddress);
+            try
+            {
+                UrlExtensions.Prepend(Server.MapPath(@"~\TV\log.txt"), Environment.NewLine + DateTime.Now.ToLongDateString() + DateTime.Now.ToLongTimeString() + ": " + source + ": " + Request.UserHostAddress);
+            }
+            catch{}
+            
 
             if (source == "TV")
             {
