@@ -9,7 +9,9 @@
     var Source = Server.MapPath(@"~\Videos\");
 }
 
-@if (!string.IsNullOrEmpty(Model.VLCStreamUrl))
+
+
+@if(!string.IsNullOrEmpty(Model.VLCStreamUrl))
 {
     @Html.Raw("Copy this text to vlc"); <input type="text" value="@Model.VLCStreamUrl" id="vlcText"/>
 }
@@ -63,7 +65,7 @@
         Minuti:
         @Html.TextBox("offset", "0", new {style = "width:50px;"})
         Bitrejt:
-        @Html.TextBox("bitrate", "200", new {style = "width:50px;"})
+        @Html.TextBox("bitrate", "400", new {style = "width:50px;"})
         Tip:
         @Html.TextBox("fileFormat", "mp4", new {style = "width:50px;"})
         Nomer zvukovoj dorozki:
@@ -144,3 +146,19 @@
     @Html.HiddenFor(m => m.source)
 }
 
+@{
+    var map = new Dictionary<IPAddress, IPAddress>();
+
+    foreach (var ni in System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces())
+    {
+        foreach (var uipi in ni.GetIPProperties().UnicastAddresses)
+        {
+            if (uipi.Address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork) { continue; }
+
+            if (uipi.IPv4Mask == null) { continue; }//ignore 127.0.0.1
+            map[uipi.Address] = uipi.IPv4Mask;
+            @Html.Raw("<br>" + uipi.Address);
+        }
+
+    }
+}
