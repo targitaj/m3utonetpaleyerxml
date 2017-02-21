@@ -62,6 +62,11 @@
             </TabItem>
             <TabItem Header="Time calculator">
                 <StackPanel>
+                    <Button HorizontalAlignment="Left" VerticalAlignment="Top" Click="ButtonBase_OnClick">Start</Button>
+                    <Button HorizontalAlignment="Left" VerticalAlignment="Top" Click="Stop_OnClick">Stop</Button>
+                </StackPanel>
+            </TabItem>
+                <StackPanel>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
                         <TextBlock Text="H"/>
                         <TextBox Width="40" Name="tbH1"/>
