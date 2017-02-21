@@ -20,12 +20,14 @@ namespace Tools
 
         public int WorkingDays { get; set; }
 
+        public bool AutoCalculateTaxSalary { get; set; } = true;
+
+        private double _taxSalary;
+
         public double TaxSalary
         {
-            get
-            {
-                return MinusTax(Salary, DependentCount);
-            }
+            get { return AutoCalculateTaxSalary ? MinusTax(Salary, DependentCount) : _taxSalary; }
+            set { _taxSalary = value; }
         }
 
         public double MinusTax(double salary, int dependentCount)

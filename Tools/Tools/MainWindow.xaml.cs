@@ -5,10 +5,12 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security.AccessControl;
 using System.Security.Permissions;
 using System.Security.Principal;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -31,11 +33,12 @@ namespace Deleter
     public partial class MainWindow : Window
     {
         private Thread th;
+
         public MainWindow()
         {
             InitializeComponent();
             th = new Thread(DeleteFolder);
-            
+
         }
 
         private void BtnSelDirectory_OnClick(object sender, RoutedEventArgs e)
@@ -104,7 +107,7 @@ namespace Deleter
                             {
 
                                 tbLog.Text = "Deleting " + d.FullName + Environment.NewLine;
-                                
+
                                 return null;
                             }), null);
                         DeleteFolder(d);
@@ -117,7 +120,7 @@ namespace Deleter
                         {
 
                             //tbLog.Text = "ERROR " + Environment.NewLine;
-                            
+
                             return null;
                         }), null);
                 }
@@ -134,7 +137,7 @@ namespace Deleter
                                 {
 
                                     tbLog.Text = "Deleting " + f.FullName + Environment.NewLine;
-                                    
+
 
                                     return null;
                                 }), null);
@@ -147,7 +150,7 @@ namespace Deleter
                                 {
 
                                     //tbLog.Text = "ERROR " + Environment.NewLine;
-                                    
+
                                     return null;
                                 }), null);
                         }
@@ -164,7 +167,7 @@ namespace Deleter
                         {
 
                             tbLog.Text = "Deleting " + directoryInfo.FullName + Environment.NewLine;
-                            
+
                             return null;
                         }), null);
                     directoryInfo.Delete(true);
@@ -176,7 +179,7 @@ namespace Deleter
                         {
 
                             //tbLog.Text = "ERROR " + directoryInfo.FullName + Environment.NewLine;
-                            
+
                             return null;
                         }), null);
                 }
@@ -203,7 +206,7 @@ namespace Deleter
                 fs.SetOwner(ntAccount);
                 File.SetAccessControl(filepath, fs);
 
-                var currentRules = fs.GetAccessRules(true, false, typeof(NTAccount));
+                var currentRules = fs.GetAccessRules(true, false, typeof (NTAccount));
                 var newRule = new FileSystemAccessRule(
                     ntAccount, FileSystemRights.FullControl,
                     AccessControlType.Allow);
@@ -212,8 +215,14 @@ namespace Deleter
 
                 File.SetAttributes(filepath, FileAttributes.Normal);
             }
-            catch { }
-            finally { fs = null; ntAccount = null; }
+            catch
+            {
+            }
+            finally
+            {
+                fs = null;
+                ntAccount = null;
+            }
         }
 
         private void MainWindow_OnClosing(object sender, CancelEventArgs e)
@@ -235,7 +244,7 @@ namespace Deleter
                 List<SalaryPerMonth> salPerMonths = new List<SalaryPerMonth>();
 
 
-                var salar = double.Parse(tbSalary.Text) * 8;
+                var salar = double.Parse(tbSalary.Text)*8;
                 var dependants = int.Parse(tbDependants.Text);
                 double result = 0;
 
@@ -292,8 +301,20 @@ namespace Deleter
 
                 double sal = result;
                 sal /= 12;
-                
-                tbSalaryResult.Text = ((int)sal).ToString();
+
+                salPerMonths.Add(new SalaryPerMonth()
+                {
+                    AutoCalculateTaxSalary = false,
+                    Month = "Total: ",
+                    Salary = salPerMonths.Sum(s => s.Salary),
+                    Holidays = salPerMonths.Sum(s => s.Holidays),
+                    Hours = salPerMonths.Sum(s => s.Hours),
+                    TaxSalary = salPerMonths.Sum(s => s.TaxSalary),
+                    WeekEnds = salPerMonths.Sum(s => s.WeekEnds),
+                    WorkingDays = salPerMonths.Sum(s => s.WorkingDays)
+                });
+
+                tbSalaryResult.Text = ((int) sal).ToString();
                 lbMonths.ItemsSource = salPerMonths;
 
                 tbTaxSalaryResult.Text = ((int) MinusTax(sal, dependants)).ToString();
@@ -313,7 +334,8 @@ namespace Deleter
             }
         }
 
-        DateTimeExtensions.WorkingDays.WorkingDayCultureInfo ci = new DateTimeExtensions.WorkingDays.WorkingDayCultureInfo("lv-LV");
+        DateTimeExtensions.WorkingDays.WorkingDayCultureInfo ci =
+            new DateTimeExtensions.WorkingDays.WorkingDayCultureInfo("lv-LV");
 
         public bool IsHoliday(DateTime dt)
         {
@@ -322,9 +344,9 @@ namespace Deleter
 
         public double MinusTax(double salary, int dependentCount)
         {
-            var notTaxed = 75 + (165 * dependentCount);
-            var obligate = (salary * 0.105);
-            var livTax = (salary - obligate - notTaxed) * 0.23;
+            var notTaxed = 75 + (165*dependentCount);
+            var obligate = (salary*0.105);
+            var livTax = (salary - obligate - notTaxed)*0.23;
 
             return salary - obligate - livTax;
         }
@@ -345,8 +367,11 @@ namespace Deleter
 
             foreach (var file in di.GetFiles())
             {
-                File.Move(file.FullName, file.Directory.FullName + "\\" + string.Concat(Enumerable.Repeat("0", 5 - counter.ToString().Length).ToArray()) + counter + file.Extension);
-                
+                File.Move(file.FullName,
+                    file.Directory.FullName + "\\" +
+                    string.Concat(Enumerable.Repeat("0", 5 - counter.ToString().Length).ToArray()) + counter +
+                    file.Extension);
+
                 counter++;
             }
         }
@@ -372,7 +397,8 @@ namespace Deleter
                     res += "<tr><td><br>" + currYear + "</td></tr>";
                 }
 
-                if (curMonth != _enCulture.DateTimeFormat.GetMonthName(currDate.Month))
+                if (IsHoliday(curDateTime) && curDateTime.DayOfWeek != DayOfWeek.Sunday &&
+                    curDateTime.DayOfWeek != DayOfWeek.Saturday)
                 {
                     if (hasMonth)
                     {
@@ -397,7 +423,8 @@ namespace Deleter
                 currDate = currDate.AddDays(1);
             }
 
-            res += "</td></tr></table>";
+            var res = yearData.Where(w => w.Value <= 7)
+                .Aggregate("", (current, i) => current + i.Key + ": " + i.Value + Environment.NewLine);
 
             File.WriteAllText(@"C:\Temp\1.html", res);
 
@@ -427,6 +454,281 @@ namespace Deleter
 
             //MessageBox.Show(res);
         }
+
+        #region Service
+
+        private bool _serviceStarted = false;
+        HttpListener _httpListener;
+        public string _list;
+        public DateTime _lastUpDateTime = DateTime.MinValue;
+
+
+        public string TTVList
+        {
+            get
+            {
+                if (_lastUpDateTime <= DateTime.Now.AddMinutes(-5))
+                {
+                    _lastUpDateTime = DateTime.Now;
+                    using (WebClient myWebClient = new WebClient())
+                    {
+                        _list = myWebClient.DownloadString(
+                            "http://super-pomoyka.us.to/trash/ttv-list/ttv.m3u");
+                    }
+                }
+
+                return _list;
+            }
+        }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            _httpListener = new HttpListener();
+            _serviceStarted = true;
+            string url = "http://*";
+            string port = "1983";
+            string prefix = $"{url}:{port}/";
+            _httpListener.Prefixes.Add(prefix);
+            _httpListener.Start();
+            var previousPath = string.Empty;
+
+            Thread httpThread = new Thread(() =>
+            {
+                HttpListenerContext context = null;
+                Thread responseThread = null;
+                while (_serviceStarted)
+                {
+                    try
+                    {
+                        context = _httpListener.GetContext();
+                    }
+                    catch (Exception)
+                    {
+                    }
+
+                    
+
+
+                    if (_serviceStarted)
+                    {
+                        HttpListenerRequest request = context.Request;
+                        HttpListenerResponse response = context.Response;
+
+                        Stream inputStream = request.InputStream;
+                        Encoding encoding = request.ContentEncoding;
+                        StreamReader reader = new StreamReader(inputStream, encoding);
+                        //var requestBody = reader.ReadToEnd();
+                        response.StatusCode = (int) HttpStatusCode.OK;
+
+
+
+                        var chanellsString = TTVList;
+                                
+
+                            byte[] bytes = Encoding.Default.GetBytes(chanellsString);
+                            chanellsString = Encoding.UTF8.GetString(bytes);
+
+                            if (request.Url.AbsolutePath.ToLower() == "/tv.m3u")
+                            {
+                                using (StreamWriter stream = new StreamWriter(response.OutputStream))
+                                {
+                                    var res = "";
+
+                                    var chanelList = GetSubStrings(chanellsString, "#EXTINF:-1,", "");
+                                    res += "#EXTM3U" + Environment.NewLine;
+
+                                    foreach (var s in chanelList)
+                                    {
+                                        res +=
+                                            $@"#EXTINF:-1,{s}
+http://{request.Url.Authority}/{ToHexString(s)}
+";
+                                    }
+
+                                    stream.Write(res);
+
+                                    stream.Flush();
+                                    stream.Close();
+                                }
+                            }
+                            else
+                            {
+                                var path = FromHexString(request.Url.AbsolutePath.Substring(1));
+
+                                if (!string.IsNullOrEmpty(path))
+                                {
+                                    responseThread?.Abort();
+
+                                    if (previousPath != path || Process.GetProcessesByName("ace_player").Length == 0)
+                                    {
+                                        previousPath = path;
+
+                                        foreach (Process proc in Process.GetProcessesByName("ace_player"))
+                                        {
+                                            proc.Kill();
+                                        }
+
+                                        string regex =
+                                            $"{Regex.Escape("#EXTINF:-1," + path)}\n{Regex.Escape("acestream://")}(.*?)\n";
+
+                                        var matches = Regex.Matches(chanellsString, regex, RegexOptions.Singleline);
+                                        var arguments =
+                                            $" --qt-start-minimized {matches[0].Groups[1].Value} :sout=#http{{mux=ffmpeg{{mux=flv}},dst=:1999/}} :sout-keep";
+
+                                        try
+                                        {
+                                            Process.Start(@"C:\Users\dron\AppData\Roaming\ACEStream\player\ace_player.exe",
+                                                arguments);
+                                        }
+                                        catch (Exception exception)
+                                        {
+                                        }
+                                    }
+
+                                    
+                                    
+
+                                    
+
+                                    responseThread = new Thread(() =>
+                                    {
+                                        using (HttpWebResponse vlcResponse = GetVlcRequest())
+                                        {
+
+                                            if (vlcResponse != null)
+                                            {
+                                                byte[] buffer = new byte[4096];
+                                                using (var vlcStream = vlcResponse.GetResponseStream())
+                                                {
+                                                    var noError = true;
+
+                                                    while (noError)
+                                                    {
+                                                        vlcStream.Flush();
+                                                        int bytesRead = vlcStream.Read(buffer, 0, buffer.Length);
+                                                        vlcStream.Flush();
+
+                                                        if (bytesRead == 0)
+                                                        {
+                                                            //vlcResponse = GetVlcRequest();
+                                                            //vlcStream = vlcResponse.GetResponseStream();
+                                                            Thread.Sleep(10);
+                                                        }
+                                                        try
+                                                        {
+                                                            response.OutputStream.Flush();
+                                                            response.OutputStream.Write(buffer, 0, bytesRead);
+                                                            response.OutputStream.Flush();
+                                                        }
+                                                        catch (Exception exc1)
+                                                        {
+                                                            File.AppendAllText("test.txt",
+                                                                DateTime.Now.ToString("o") + ": ERROR: " + exc1.Message +
+                                                                Environment.NewLine + exc1.InnerException?.Message +
+                                                                Environment.NewLine);
+
+                                                            noError = false;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    });
+
+                                    responseThread.Start();
+                                }
+                            }
+                        }
+                    }
+                
+
+
+            });
+            
+            httpThread.Start();
+        }
+
+        private HttpWebResponse GetVlcRequest()
+        {
+            var counter = 0;
+            var vlcHasError = true;
+
+            HttpWebRequest vlcRequest = null;
+
+            
+            HttpWebResponse vlcResponse = null;
+
+            while (counter <= 60 && vlcHasError)
+            {
+                try
+                {
+                    vlcRequest = (HttpWebRequest)WebRequest.Create(@"http://localhost:1999");
+                    vlcRequest.Timeout = 20000;
+                    vlcResponse = (HttpWebResponse)vlcRequest.GetResponse();
+                    vlcHasError = false;
+                }
+                catch (Exception)
+                {
+                    Thread.Sleep(1000);
+                }
+
+                counter++;
+            }
+
+            return vlcHasError ? null : vlcResponse;
+        }
+
+        public static string ToHexString(string str)
+        {
+            var sb = new StringBuilder();
+
+            var bytes = Encoding.Unicode.GetBytes(str);
+            foreach (var t in bytes)
+            {
+                sb.Append(t.ToString("X2"));
+            }
+
+            return sb.ToString(); // returns: "48656C6C6F20776F726C64" for "Hello world"
+        }
+
+        public static string FromHexString(string hexString)
+        {
+            string res = null;
+
+            try
+            {
+                var bytes = new byte[hexString.Length / 2];
+                for (var i = 0; i < bytes.Length; i++)
+                {
+                    bytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
+                }
+
+                res = Encoding.Unicode.GetString(bytes); // returns: "Hello world" for "48656C6C6F20776F726C64"
+            }
+            catch (Exception)
+            {
+                
+            }
+
+            return res;
+        }
+
+        public static IEnumerable<string> GetSubStrings(string text, string start, string end)
+        {
+            string regex = $"{Regex.Escape(start)}(.*){Regex.Escape(end)}";
+
+            return Regex.Matches(text, regex, RegexOptions.Multiline)
+                .Cast<Match>()
+                .Select(match => match.Groups[1].Value);
+        }
+
+        private void Stop_OnClick(object sender, RoutedEventArgs e)
+        {
+            _serviceStarted = false;
+            _httpListener?.Stop();
+        }
+
+        #endregion
 
         private string HolidayStringDay(DateTime date)
         {
