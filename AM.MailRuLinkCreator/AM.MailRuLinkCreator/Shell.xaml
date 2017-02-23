@@ -3,11 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:AM.MailRuLinkCreator"
         xmlns:regions="http://www.codeplex.com/CompositeWPF"
         xmlns:mainViewModel="clr-namespace:AM.MailRuLinkCreator.MainViewModel;assembly=AM.MailRuLinkCreator.MainViewModel"
         mc:Ignorable="d"
-        Title="Shell" Height="350" Width="525">
+        Title="Утилита пакетного формирования ссылок на скачивание из облака" Height="350" Width="525">
     <Grid>
         <ContentControl regions:RegionManager.RegionName="{x:Static mainViewModel:Regions.MainViewRegion}" />
     </Grid>

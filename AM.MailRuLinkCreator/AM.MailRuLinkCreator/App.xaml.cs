@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Navigation;
+using System.Windows.Threading;
 using AM.MailRuLinkCreator.MainViewModel;
 using Microsoft.Practices.Prism.Regions;
 using Microsoft.Practices.ServiceLocation;
@@ -18,30 +20,34 @@ namespace AM.MailRuLinkCreator
     /// </summary>
     public partial class App : Application
     {
-        private readonly IUnityContainer _container = new UnityContainer();
-        //private IRegionManager _regionManager = new RegionManager();
-
         protected override void OnStartup(StartupEventArgs e)
         {
-            base.OnStartup(e);
-            Bootstrapper bootstrapper = new Bootstrapper();
-            bootstrapper.Run();
+                base.OnStartup(e);
+                Bootstrapper bootstrapper = new Bootstrapper();
+                bootstrapper.Run();
+
+            
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         }
-        //protected override void OnActivated(EventArgs e)
-        //{
-        //    ApplicationContext.Container = _container;
-        //    _container.RegisterType<RegionManager>();
-        //    _container.RegisterType<MainView.NavigationService>();
-        //    _container.RegisterType<MainViewModel.MainViewModel>();
-        //    _container.RegisterType<MainView.MainView>(Views.MainView);
 
-        //    //_regionManager.
-        //    //_container.RegisterType<IRegionManager>().RegisterInstance();
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            string fileName = "ERROR" + DateTime.Now.ToString("o").Replace(":", ".") + ".txt";
 
-        //    //ServiceLocator.Current.GetInstance<IRegionManager>();
-        //    //_regionManager.RegisterViewWithRegion<MainView.MainView, MainViewModel.MainViewModel>(Regions.MainViewRegion)
+            MessageBox.Show("Произошла ошибка, проверьте настройки, введенные данные. Детали ошибки записаны в файл " + fileName);
+            File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + fileName, GetErrorData((Exception)e.ExceptionObject));
+        }
 
-        //    base.OnActivated(e);
-        //}
+        private string GetErrorData(Exception exception)
+        {
+            var res = exception.Message + Environment.NewLine + exception.StackTrace;
+
+            if (exception.InnerException != null)
+            {
+                res += Environment.NewLine + GetErrorData(exception.InnerException);
+            }
+
+            return res;
+        }
     }
 }

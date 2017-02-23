@@ -177,7 +177,7 @@ namespace MailRuCloudApi
         /// <summary>
         /// Need to add this function for all calls.
         /// </summary>
-        internal void CheckAuth()
+        public void CheckAuth()
         {
             if (this.LoginName == null || this.Password == null)
             {
