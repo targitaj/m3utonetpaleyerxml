@@ -1099,15 +1099,16 @@ namespace MailRuCloudApi
         /// <returns>Public link or public item id.</returns>
         private async Task<string> PublishUnpulishLink(string name, string fullPath, bool publish, string publishLink)
         {
-            var addFileRequest = Encoding.UTF8.GetBytes(
-                string.Format(
-                "{5}={0}&api={1}&token={2}&email={3}&x-email={4}",
+            //this.Account.CheckAuth();
+            var requestString = string.Format("{5}={0}&api={1}&token={2}&email={3}&x-email={4}",
                 publish ? fullPath : publishLink.Replace(ConstSettings.PublishFileLink, string.Empty),
                 2,
                 this.Account.AuthToken,
-                this.Account.LoginName,
-                this.Account.LoginName,
-                publish ? "home" : "weblink"));
+                this.Account.LoginName + "@mail.ru",
+                this.Account.LoginName + "@mail.ru",
+                publish ? "home" : "weblink");
+
+            var addFileRequest = Encoding.UTF8.GetBytes(requestString);
 
             var url = new Uri(string.Format("{0}/api/v2/file/{1}", ConstSettings.CloudDomain, publish ? "publish" : "unpublish"));
             var request = (HttpWebRequest)WebRequest.Create(url.OriginalString);
