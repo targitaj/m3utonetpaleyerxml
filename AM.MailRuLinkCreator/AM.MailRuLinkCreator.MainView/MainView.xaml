@@ -10,9 +10,9 @@
     <StackPanel>
         <StackPanel Orientation="Horizontal">
             <TextBlock Text="Логин: " />
-            <TextBox Text="{Binding Path=LoginName}" Width="100"/>
+            <TextBlock Text="{Binding Path=LoginName}" Width="100"/>
             <TextBlock Text="Пароль: " />
-            <TextBox Text="{Binding Path=Password}" Width="100"/>
+            <TextBlock Text="{Binding Path=Password}" Width="100"/>
         </StackPanel>
         <Grid>
             <Grid.ColumnDefinitions>

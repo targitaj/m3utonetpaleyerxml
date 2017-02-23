@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -25,7 +26,6 @@ namespace AM.MailRuLinkCreator.MainViewModel
     {
 #region Members
 
-        private string _rootDirectoryPath;
         private string _directoryPath;// = @"C:\Users\dron\Mail.Ru\Цех №1";
         private string _loginName;// = "testAMApi";
         private string _password;// = "devTest1";
@@ -54,12 +54,6 @@ namespace AM.MailRuLinkCreator.MainViewModel
             set { SetProperty(ref _password, value); }
         }
 
-        public string RootDirectoryPath
-        {
-            get { return _rootDirectoryPath; }
-            set { SetProperty(ref _rootDirectoryPath, value); }
-        }
-
         public string DirectoryPath
         {
             get { return _directoryPath; }
@@ -75,6 +69,9 @@ namespace AM.MailRuLinkCreator.MainViewModel
             var settings = ini.Sections["settings"];
             _rootDirectory = settings["CloudLocalPath"];
             _qrCodeModuleSize = int.Parse(settings["QRCodeModuleSize"]);
+            DirectoryPath = _rootDirectory;
+            LoginName = settings["Login"];
+            Password = settings["Password"];
         }
 
         #region Methods
@@ -89,6 +86,8 @@ namespace AM.MailRuLinkCreator.MainViewModel
             DirectoryInfo di = new DirectoryInfo(DirectoryPath);
             var childDirectories = di.GetDirectories();
             var resultDocument = new Document();
+            resultDocument.Sections.Add(new Section(resultDocument));
+            //resultDocument.Sections.Add(new Body(new Document()))
             api.Account.CheckAuth();
 
             foreach (var childDirectory in childDirectories)
@@ -135,12 +134,25 @@ namespace AM.MailRuLinkCreator.MainViewModel
 
                     foreach (ISection section in template.Sections)
                     {
-                        resultDocument.Sections.Add(section.Clone());
+
+                        foreach (DocumentObject childObject in section.Body.ChildObjects)
+                        {
+                            resultDocument.Sections[0].Body.ChildObjects.Add(childObject.Clone());
+                        }
                     }
                 }
             }
 
             resultDocument.SaveToFile("result.doc");
+
+            Process p = new Process();
+            ProcessStartInfo pi = new ProcessStartInfo();
+            pi.UseShellExecute = true;
+            pi.FileName = @"result.doc";
+            p.StartInfo = pi;
+            p.Start();
+
+            Environment.Exit(0);
         }
 
         public void Start()
