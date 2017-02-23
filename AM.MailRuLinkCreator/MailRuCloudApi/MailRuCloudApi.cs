@@ -618,15 +618,15 @@ namespace MailRuCloudApi
         public async Task<File> UploadFileAsync(string fileName, Stream content, string destinationPath)
         {
             if (string.IsNullOrWhiteSpace(fileName))
-                throw new ArgumentNullException(nameof(fileName));
+                throw new ArgumentNullException("fileName");
             if (content == null)
-                throw new ArgumentNullException(nameof(content));
+                throw new ArgumentNullException("content");
             if (!content.CanRead)
-                throw new ArgumentException("Upload Stream must be readable", nameof(content));
+                throw new ArgumentException("Upload Stream must be readable", "content");
             if (content.Length > 1L << 31)
-                throw new ArgumentException("Upload Stream exceeds max size", nameof(content));
+                throw new ArgumentException("Upload Stream exceeds max size", "content");
             if (string.IsNullOrWhiteSpace(destinationPath))
-                throw new ArgumentNullException(nameof(destinationPath));
+                throw new ArgumentNullException("destinationPath");
 
             return await UploadFileAsync(fileName, content, destinationPath, true);
         }
