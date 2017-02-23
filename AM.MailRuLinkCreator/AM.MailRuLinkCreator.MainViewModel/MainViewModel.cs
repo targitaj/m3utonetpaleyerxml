@@ -31,6 +31,7 @@ namespace AM.MailRuLinkCreator.MainViewModel
         private string _password;// = "devTest1";
         private string _rootDirectory;
         private int _qrCodeModuleSize;
+        private int _filePrice;
 
         #endregion
 
@@ -72,6 +73,7 @@ namespace AM.MailRuLinkCreator.MainViewModel
             DirectoryPath = _rootDirectory;
             LoginName = settings["Login"];
             Password = settings["Password"];
+            _filePrice = int.Parse(settings["FilePrice"]);
         }
 
         #region Methods
@@ -115,7 +117,8 @@ namespace AM.MailRuLinkCreator.MainViewModel
                     QrEncoder qrEncoder = new QrEncoder(ErrorCorrectionLevel.H);
                     QrCode qrCode = qrEncoder.Encode(res);
                     GraphicsRenderer renderer = new GraphicsRenderer(new FixedModuleSize(_qrCodeModuleSize, QuietZoneModules.Two));
-                    
+
+                    template.Replace("%TotalCost%", (childDirectory.GetFiles().Length*_filePrice).ToString(), false, true);
                     using (MemoryStream stream = new MemoryStream())
                     {
                         renderer.WriteToStream(qrCode.Matrix, ImageFormat.Png, stream);
