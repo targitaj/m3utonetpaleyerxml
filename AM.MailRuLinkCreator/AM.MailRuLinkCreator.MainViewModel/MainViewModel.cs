@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Gma.QrCodeNet.Encoding;
 using Gma.QrCodeNet.Encoding.Windows.Render;
 using IniParser;
@@ -74,6 +75,16 @@ namespace AM.MailRuLinkCreator.MainViewModel
             LoginName = settings["Login"];
             Password = settings["Password"];
             _filePrice = int.Parse(settings["FilePrice"]);
+
+            var dialog = new FolderBrowserDialog();
+            var currentPath = DirectoryPath;
+            dialog.SelectedPath = currentPath;
+            var result = dialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                DirectoryPath = dialog.SelectedPath;
+                Start();
+            }
         }
 
         #region Methods
