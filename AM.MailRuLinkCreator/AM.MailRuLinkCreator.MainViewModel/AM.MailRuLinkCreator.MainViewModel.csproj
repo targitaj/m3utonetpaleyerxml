@@ -38,6 +38,10 @@
       <HintPath>..\packages\ini-parser.2.4.0\lib\net20\INIFileParser.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MailRuCloudApi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SolutionFiles\MailRuCloudApi.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Practices.Prism.Composition, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Composition.5.0.0\lib\NET45\Microsoft.Practices.Prism.Composition.dll</HintPath>
       <Private>True</Private>
@@ -81,6 +85,10 @@
       <HintPath>..\packages\Unity.3.5.1404.0\lib\net45\Microsoft.Practices.Unity.RegistrationByConvention.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SolutionFiles\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Spire.Doc, Version=5.7.0.54020, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
       <HintPath>..\packages\FreeSpire.Doc.5.7\lib\net20\Spire.Doc.dll</HintPath>
       <Private>True</Private>
@@ -119,10 +127,6 @@
     <ProjectReference Include="..\AM.MailRuLinkCreator.Utility\AM.MailRuLinkCreator.Utility.csproj">
       <Project>{41d17fbf-308d-4c2d-b5ab-851464150592}</Project>
       <Name>AM.MailRuLinkCreator.Utility</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MailRuCloudApi\MailRuCloudApi.csproj">
-      <Project>{75bf5eac-81a8-4e00-a82e-0bcbd17ac50b}</Project>
-      <Name>MailRuCloudApi</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
