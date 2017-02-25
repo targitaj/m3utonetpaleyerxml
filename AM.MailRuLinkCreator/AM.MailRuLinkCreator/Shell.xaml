@@ -4,10 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:regions="http://www.codeplex.com/CompositeWPF"
-        xmlns:mainViewModel="clr-namespace:AM.MailRuLinkCreator.MainViewModel;assembly=AM.MailRuLinkCreator.MainViewModel"
         mc:Ignorable="d"
         Title="Утилита пакетного формирования ссылок на скачивание из облака" Height="350" Width="525">
     <Grid>
-        <ContentControl regions:RegionManager.RegionName="{x:Static mainViewModel:Regions.MainViewRegion}" />
     </Grid>
 </Window>
