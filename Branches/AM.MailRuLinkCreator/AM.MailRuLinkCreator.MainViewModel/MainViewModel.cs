@@ -25,7 +25,7 @@ namespace AM.MailRuLinkCreator.MainViewModel
 {
     public class MainViewModel : BindableBase
     {
-#region Members
+        #region Members
 
         private string _directoryPath;// = @"C:\Users\dron\Mail.Ru\Цех №1";
         private string _loginName;// = "testAMApi";
@@ -42,7 +42,7 @@ namespace AM.MailRuLinkCreator.MainViewModel
 
 #endregion
 
-#region Properties
+        #region Properties
 
         public string LoginName
         {
