@@ -178,7 +178,7 @@ namespace AM.MailRuLinkCreator.MainViewModel
             //th.Start();
         }
 
-        public bool KeepAlive => true;
+        public bool KeepAlive => false;
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
