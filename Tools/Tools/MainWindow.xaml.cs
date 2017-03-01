@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -397,17 +398,17 @@ namespace Deleter
                     res += "<tr><td><br>" + currYear + "</td></tr>";
                 }
 
-                if (IsHoliday(curDateTime) && curDateTime.DayOfWeek != DayOfWeek.Sunday &&
-                    curDateTime.DayOfWeek != DayOfWeek.Saturday)
-                {
-                    if (hasMonth)
-                    {
-                        res += "</td></tr>";
-                    }
+                //if (IsHoliday(curDateTime) && curDateTime.DayOfWeek != DayOfWeek.Sunday &&
+                //    curDateTime.DayOfWeek != DayOfWeek.Saturday)
+                //{
+                //    if (hasMonth)
+                //    {
+                //        res += "</td></tr>";
+                //    }
 
-                    hasMonth = false;
-                    curMonth = _enCulture.DateTimeFormat.GetMonthName(currDate.Month);
-                }
+                //    hasMonth = false;
+                //    curMonth = _enCulture.DateTimeFormat.GetMonthName(currDate.Month);
+                //}
 
                 if (ci.IsHoliday(currDate))
                 {
@@ -423,8 +424,8 @@ namespace Deleter
                 currDate = currDate.AddDays(1);
             }
 
-            var res = yearData.Where(w => w.Value <= 7)
-                .Aggregate("", (current, i) => current + i.Key + ": " + i.Value + Environment.NewLine);
+            //var res = yearData.Where(w => w.Value <= 7)
+            //    .Aggregate("", (current, i) => current + i.Key + ": " + i.Value + Environment.NewLine);
 
             File.WriteAllText(@"C:\Temp\1.html", res);
 
@@ -472,8 +473,7 @@ namespace Deleter
                     _lastUpDateTime = DateTime.Now;
                     using (WebClient myWebClient = new WebClient())
                     {
-                        _list = myWebClient.DownloadString(
-                            "http://super-pomoyka.us.to/trash/ttv-list/ttv.m3u");
+                        _list = myWebClient.DownloadString(ConfigurationManager.AppSettings["AceContentIdList"]);
                     }
                 }
 
@@ -481,12 +481,15 @@ namespace Deleter
             }
         }
 
+        bool _noError;
+        bool _needRconect;
+
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             _httpListener = new HttpListener();
             _serviceStarted = true;
             string url = "http://*";
-            string port = "1983";
+            string port = ConfigurationManager.AppSettings["Port"];
             string prefix = $"{url}:{port}/";
             _httpListener.Prefixes.Add(prefix);
             _httpListener.Start();
@@ -528,7 +531,7 @@ namespace Deleter
                             byte[] bytes = Encoding.Default.GetBytes(chanellsString);
                             chanellsString = Encoding.UTF8.GetString(bytes);
 
-                            if (request.Url.AbsolutePath.ToLower() == "/tv.m3u")
+                            if (request.Url.AbsolutePath.ToLower() == "/" + ConfigurationManager.AppSettings["UrlToM3uList"])
                             {
                                 using (StreamWriter stream = new StreamWriter(response.OutputStream))
                                 {
@@ -573,11 +576,12 @@ http://{request.Url.Authority}/{ToHexString(s)}
 
                                         var matches = Regex.Matches(chanellsString, regex, RegexOptions.Singleline);
                                         var arguments =
-                                            $" --qt-start-minimized {matches[0].Groups[1].Value} :sout=#http{{mux=ffmpeg{{mux=flv}},dst=:1999/}} :sout-keep";
+                                            $" --qt-start-minimized {matches[0].Groups[1].Value} :sout=#http{{mux=ffmpeg{{mux=flv}},dst=:{ConfigurationManager.AppSettings["AcePort"]}/}} :sout-keep";
 
                                         try
                                         {
-                                            Process.Start(@"C:\Users\dron\AppData\Roaming\ACEStream\player\ace_player.exe",
+                                        
+                                            Process.Start(ConfigurationManager.AppSettings["AcePlayerPath"],
                                                 arguments);
                                         }
                                         catch (Exception exception)
@@ -585,57 +589,18 @@ http://{request.Url.Authority}/{ToHexString(s)}
                                         }
                                     }
 
-                                    
-                                    
 
-                                    
 
-                                    responseThread = new Thread(() =>
-                                    {
-                                        using (HttpWebResponse vlcResponse = GetVlcRequest())
-                                        {
 
-                                            if (vlcResponse != null)
-                                            {
-                                                byte[] buffer = new byte[4096];
-                                                using (var vlcStream = vlcResponse.GetResponseStream())
-                                                {
-                                                    var noError = true;
+                                _noError = true;
+                                _needRconect = false;
 
-                                                    while (noError)
-                                                    {
-                                                        vlcStream.Flush();
-                                                        int bytesRead = vlcStream.Read(buffer, 0, buffer.Length);
-                                                        vlcStream.Flush();
 
-                                                        if (bytesRead == 0)
-                                                        {
-                                                            //vlcResponse = GetVlcRequest();
-                                                            //vlcStream = vlcResponse.GetResponseStream();
-                                                            Thread.Sleep(10);
-                                                        }
-                                                        try
-                                                        {
-                                                            response.OutputStream.Flush();
-                                                            response.OutputStream.Write(buffer, 0, bytesRead);
-                                                            response.OutputStream.Flush();
-                                                        }
-                                                        catch (Exception exc1)
-                                                        {
-                                                            File.AppendAllText("test.txt",
-                                                                DateTime.Now.ToString("o") + ": ERROR: " + exc1.Message +
-                                                                Environment.NewLine + exc1.InnerException?.Message +
-                                                                Environment.NewLine);
 
-                                                            noError = false;
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    });
-
-                                    responseThread.Start();
+                               responseThread = new Thread(ResponseProress);
+                                
+                                
+                                responseThread.Start(response);
                                 }
                             }
                         }
@@ -646,6 +611,74 @@ http://{request.Url.Authority}/{ToHexString(s)}
             });
             
             httpThread.Start();
+        }
+
+        public void ResponseProress(object @object)
+        {
+            var response = (HttpListenerResponse) @object;
+
+            using (HttpWebResponse vlcResponse = GetVlcRequest())
+            {
+
+                if (vlcResponse != null)
+                {
+                    byte[] buffer = new byte[4096];
+                    using (var vlcStream = vlcResponse.GetResponseStream())
+                    {
+
+
+                        while (_noError && _serviceStarted)
+                        {
+                            vlcStream.Flush();
+                            int bytesRead = vlcStream.Read(buffer, 0, buffer.Length);
+                            vlcStream.Flush();
+
+                            if (bytesRead == 0)
+                            {
+                                try
+                                {
+                                    var len = vlcStream.Length;
+                                }
+                                catch
+                                {
+                                    _needRconect = true;
+                                    _noError = false;
+                                }
+
+                                Thread.Sleep(10);
+                            }
+
+                            if (_noError)
+                            {
+                                try
+                                {
+                                    response.OutputStream.Flush();
+                                    response.OutputStream.Write(buffer, 0, bytesRead);
+                                    response.OutputStream.Flush();
+                                }
+                                catch (Exception exc1)
+                                {
+                                    File.AppendAllText("test.txt",
+                                        DateTime.Now.ToString("o") + ": ERROR: " +
+                                        exc1.Message +
+                                        Environment.NewLine + exc1.InnerException?.Message +
+                                        Environment.NewLine);
+
+                                    _noError = false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (_needRconect)
+            {
+                _noError = true;
+                _needRconect = false;
+                var responseThread = new Thread(ResponseProress);
+                responseThread.Start(response);
+            }
         }
 
         private HttpWebResponse GetVlcRequest()
@@ -662,7 +695,7 @@ http://{request.Url.Authority}/{ToHexString(s)}
             {
                 try
                 {
-                    vlcRequest = (HttpWebRequest)WebRequest.Create(@"http://localhost:1999");
+                    vlcRequest = (HttpWebRequest)WebRequest.Create(@"http://localhost:" + ConfigurationManager.AppSettings["AcePort"]);
                     vlcRequest.Timeout = 20000;
                     vlcResponse = (HttpWebResponse)vlcRequest.GetResponse();
                     vlcHasError = false;
@@ -740,20 +773,20 @@ http://{request.Url.Authority}/{ToHexString(s)}
             return date.Day.ToString();
         }
 
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
-        {
-            var t1 = new TimeSpan(int.Parse(tbH1.Text), int.Parse(tbM1.Text), 0);
-            var t2 = new TimeSpan(int.Parse(tbH2.Text), int.Parse(tbM2.Text), 0);
+        //private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        //{
+        //    var t1 = new TimeSpan(int.Parse(tbH1.Text), int.Parse(tbM1.Text), 0);
+        //    var t2 = new TimeSpan(int.Parse(tbH2.Text), int.Parse(tbM2.Text), 0);
 
-            var res = t1 - t2;
+        //    var res = t1 - t2;
 
-            tbRes.Text = res.Hours + ":" + res.Minutes;
-        }
+        //    tbRes.Text = res.Hours + ":" + res.Minutes;
+        //}
 
-        private void BtnNavigateToSite_OnClick(object sender, RoutedEventArgs e)
-        {
-            wbSS.Navigate(tbAddress.Text);
-        }
+        //private void BtnNavigateToSite_OnClick(object sender, RoutedEventArgs e)
+        //{
+        //    wbSS.Navigate(tbAddress.Text);
+        //}
 
         private void BtnStartRefresh_OnClick(object sender, RoutedEventArgs e)
         {
