@@ -20,8 +20,20 @@ namespace AM.MailRuLinkCreator.MainViewModel
 
         public void NavigateToRegion(string regionName, string viewName)
         {
-            _regionManager.RequestNavigate(Regions.MainViewRegion, new Uri("/" + viewName, UriKind.Relative), (res)=> {
-                var resss = res;
+            var rm = _regionManager;
+            var region = (Region)rm.Regions[Regions.MainViewRegion];
+            var views = region.Views.ToList();
+            //var ttt = rm.Regions.Remove(Regions.MainViewRegion);
+
+            foreach (var view in views)
+            {
+                region.Deactivate(view);
+                region.Remove(view);
+            }
+
+            rm.RequestNavigate(Regions.MainViewRegion, new Uri("/" + viewName, UriKind.Relative), res =>
+            {
+                
             });
         }
     }
