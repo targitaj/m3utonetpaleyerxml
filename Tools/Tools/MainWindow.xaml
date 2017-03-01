@@ -60,12 +60,13 @@
                     <Button Content="Rename" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Width="108" Click="btnRename_Click"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Time calculator">
+            <TabItem Header="torrent tv Service">
                 <StackPanel>
                     <Button HorizontalAlignment="Left" VerticalAlignment="Top" Click="ButtonBase_OnClick">Start</Button>
                     <Button HorizontalAlignment="Left" VerticalAlignment="Top" Click="Stop_OnClick">Stop</Button>
                 </StackPanel>
             </TabItem>
+            <TabItem>
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
                         <TextBlock Text="H"/>
@@ -96,7 +97,7 @@
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
                             <TextBlock Text="Address: "/>
                             <TextBox Width="200" Name="tbAddress" Text="https://www.ss.lv"/>
-                            <Button Content="Navigate To Site" Name="btnNavigateToSite" Click="BtnNavigateToSite_OnClick"/>
+                            <Button Content="Navigate To Site" Name="btnNavigateToSite" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
                             <TextBlock Text="Refresh interval in minutes: "/>
