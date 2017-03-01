@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using AM.MailRuLinkCreator.MainViewModel;
 using Microsoft.Practices.Prism.Regions;
 using Microsoft.Practices.ServiceLocation;
@@ -23,12 +24,17 @@ namespace AM.MailRuLinkCreator.MainViewModel
             var rm = _regionManager;
             var region = (Region)rm.Regions[Regions.MainViewRegion];
             var views = region.Views.ToList();
-            //var ttt = rm.Regions.Remove(Regions.MainViewRegion);
 
             foreach (var view in views)
             {
                 region.Deactivate(view);
-                region.Remove(view);
+
+                var lifeTime = view.GetType().GetProperty("DataContext")?.GetValue(view) as IRegionMemberLifetime;
+
+                if (lifeTime?.KeepAlive == true)
+                {
+                    region.Remove(view);
+                }
             }
 
             rm.RequestNavigate(Regions.MainViewRegion, new Uri("/" + viewName, UriKind.Relative), res =>
