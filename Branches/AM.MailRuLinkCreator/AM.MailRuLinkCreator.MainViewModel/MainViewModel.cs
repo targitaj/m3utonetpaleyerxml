@@ -14,8 +14,10 @@ using Gma.QrCodeNet.Encoding.Windows.Render;
 using IniParser;
 using IniParser.Parser;
 using MailRuCloudApi;
+using Microsoft.Practices.ObjectBuilder2;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Mvvm;
+using Microsoft.Practices.Prism.Regions;
 using Spire.Doc;
 using Spire.Doc.Documents;
 using Spire.Doc.Fields;
@@ -23,7 +25,7 @@ using Spire.Doc.Interface;
 
 namespace AM.MailRuLinkCreator.MainViewModel
 {
-    public class MainViewModel : BindableBase
+    public class MainViewModel : BindableBase, IRegionMemberLifetime, INavigationAware
     {
         #region Members
 
@@ -33,6 +35,7 @@ namespace AM.MailRuLinkCreator.MainViewModel
         private string _rootDirectory;
         private int _qrCodeModuleSize;
         private int _filePrice;
+        private NavigationService _navigationService;
 
         #endregion
 
@@ -40,7 +43,7 @@ namespace AM.MailRuLinkCreator.MainViewModel
 
         public DelegateCommand StartCommand => new DelegateCommand(Start);
 
-#endregion
+        #endregion
 
         #region Properties
 
@@ -62,6 +65,8 @@ namespace AM.MailRuLinkCreator.MainViewModel
             set { SetProperty(ref _directoryPath, value); }
         }
 
+        public List<string> Images { get; set; } = new List<string>();
+
         #endregion
 
         public MainViewModel(NavigationService navigationService)
@@ -79,12 +84,9 @@ namespace AM.MailRuLinkCreator.MainViewModel
             var dialog = new FolderBrowserDialog();
             var currentPath = DirectoryPath;
             dialog.SelectedPath = currentPath;
-            var result = dialog.ShowDialog();
-            if (result == DialogResult.OK)
-            {
-                DirectoryPath = dialog.SelectedPath;
-                Start();
-            }
+            _navigationService = navigationService;
+
+            Enumerable.Repeat("100_2102.jpg", 100000).ForEach(Images.Add);
         }
 
         #region Methods
@@ -171,8 +173,27 @@ namespace AM.MailRuLinkCreator.MainViewModel
 
         public void Start()
         {
-            Thread th = new Thread(StartAsync);
-            th.Start();
+            _navigationService.NavigateToRegion(Regions.MainViewRegion, Views.MainView);
+            //Thread th = new Thread(StartAsync);
+            //th.Start();
+        }
+
+        public bool KeepAlive => true;
+
+        public void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return false;
+            //throw new NotImplementedException();
+        }
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+            
         }
 
         #endregion

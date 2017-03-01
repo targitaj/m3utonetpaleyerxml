@@ -91,6 +91,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\StringImageSourceConverter.cs" />
     <Compile Include="FolderDialogBehavior.cs" />
     <Compile Include="MainModule.cs" />
     <Compile Include="MainView.xaml.cs">
