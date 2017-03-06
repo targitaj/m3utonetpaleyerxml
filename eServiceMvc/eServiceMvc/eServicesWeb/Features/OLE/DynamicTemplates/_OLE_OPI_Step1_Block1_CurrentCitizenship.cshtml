@@ -1,8 +1,0 @@
-﻿@model Uma.Eservices.Models.OLE.OLECurrentCitizenship
-          
-@Html.HiddenFor(o => o.Id)
- 
-<div class="form-group">
-    @Html.UmaLabelFor(m => m.CurrentCitizenship)
-    @Html.UmaDropDownFor(m => m.CurrentCitizenship, @Html.GetStateList()) 
-</div>

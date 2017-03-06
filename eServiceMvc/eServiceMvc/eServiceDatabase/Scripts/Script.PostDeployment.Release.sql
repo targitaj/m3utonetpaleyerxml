@@ -1,2 +1,0 @@
-﻿:r .\Roles.sql
-GO

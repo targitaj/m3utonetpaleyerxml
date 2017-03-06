@@ -1,6 +1,0 @@
-﻿CREATE TABLE [dbo].[FAQ]
-(
-	[Id] INT NOT NULL IDENTITY, 
-    [Description] NVARCHAR(150) NOT NULL,
-    CONSTRAINT [PK_FAQ] PRIMARY KEY ([Id])
-)
