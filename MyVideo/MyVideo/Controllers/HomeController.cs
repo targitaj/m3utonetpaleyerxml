@@ -149,7 +149,7 @@ namespace MyVideo.Controllers
 
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult GetStream(string source, string offset, string fileFormat, string bitrate, bool isEmbed, int soundNumber, bool isVlc, bool isStream)
+        public ActionResult GetStream(string source, string offset, string fileFormat, string bitrate, bool isEmbed, int soundNumber, bool isVlc, bool isStream, string width)
         {
             try
             {
@@ -298,8 +298,8 @@ namespace MyVideo.Controllers
                         outputFile = fi.Name.Replace(fi.Extension, "." + fileFormat);
                         //outputFile = fi.Name.Remove(fi.Name.Length - fi.Extension.Length, fi.Name.Length) + "." + fileFormat;
                         line = String.Format(
-                            @"-i ""{0}"" -ss {2} -b {3}k -acodec mp3 -vf ""scale=400:trunc(ow/a/2)*2"" -map 0:0 -map 0:{4} -vcodec h264 ""{1}""",
-                            source, Source + outputFile, offset, bitrate, soundNumber);
+                            @"-i ""{0}"" -ss {2} -b {3}k -acodec mp3 -vf ""scale={5}:trunc(ow/a/2)*2"" -map 0:0 -map 0:{4} -vcodec h264 ""{1}""",
+                            source, Source + outputFile, offset, bitrate, soundNumber, width);
                         otput.Add(myproc, Source + outputFile);
                     }
                 }

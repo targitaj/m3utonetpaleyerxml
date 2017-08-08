@@ -37,7 +37,7 @@
 
 @if (!string.IsNullOrWhiteSpace(Model.JWPlayerSource))
 {
-    <video preload="none" controls="" src="@Url.Content("~/Videos/" + Model.JWPlayerSource)">
+    <video preload="none" controls="" src="@Url.Content("~/Videos/" + Model.JWPlayerSource)" width="400">
         <p class="warning">Your browser does not support HTML5 video.</p>
     </video>
 
@@ -65,7 +65,7 @@
         Minuti:
         @Html.TextBox("offset", "0", new {style = "width:50px;"})
         Bitrejt:
-        @Html.TextBox("bitrate", "400", new {style = "width:50px;"})
+        @Html.TextBox("bitrate", "200", new {style = "width:50px;"})
         Tip:
         @Html.TextBox("fileFormat", "mp4", new {style = "width:50px;"})
         Nomer zvukovoj dorozki:
@@ -74,7 +74,8 @@
         @Html.CheckBox("isEmbed")
         VLC: 
         @Html.CheckBox("isVlc")
-        
+        Width:
+        @Html.TextBox("width", "400", new { style = "width:50px;" })
         Streams:
         @Html.CheckBox("isStream")
 
