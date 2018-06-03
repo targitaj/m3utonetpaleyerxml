@@ -83,50 +83,58 @@
     <br />
     foreach (var file in Model.Folder)
     {
-        <div>
-            @if (!file.Key.Contains("~") && File.Exists(file.Key))
-            {
-                var fi = new FileInfo(file.Key);
-                var flv = fi.Name.Replace(fi.Extension, ".flv");
-                if (File.Exists(Source + flv))
-                {
-                    <a href="@Url.Content("Videos/" + flv)">FLV</a>
-                    @(string.Format("{0:0.00}", ((double) (new FileInfo(Source + flv).Length)/(1024*1024))))
-                    @Html.Raw("MB")
-                }
+    <div>
+        @if (!file.Key.Contains("~") && File.Exists(file.Key))
+    {
+        var fi = new FileInfo(file.Key);
+        var flv = fi.Name.Replace(fi.Extension, ".flv");
+        if (File.Exists(Source + flv))
+        {
+            <a href="@Url.Content("Videos/" + flv)">FLV</a>
+            @(string.Format("{0:0.00}", ((double)(new FileInfo(Source + flv).Length) / (1024 * 1024))))
+            @Html.Raw("MB")
+    }
 
-                var mp4 = fi.Name.Replace(fi.Extension, ".mp4");
-                var txt = fi.Name.Replace(fi.Extension, ".txt");
-                if (File.Exists(Source + mp4))
-                {
-                    <a href="@Url.Action("GetStream", "Home")" onclick=" return submitForm(this); " data="@file.Key">R*</a>
-                    @file.Value
+    var mp4 = fi.Name.Replace(fi.Extension, ".mp4");
+    var txt = fi.Name.Replace(fi.Extension, ".txt");
+    if (File.Exists(Source + mp4))
+    {
+        <a href="@Url.Action("GetStream", "Home")" onclick=" return submitForm(this); " data="@file.Key">R*</a>
+        @file.Value
 
-                    var percentage = HomeController.GetProcessPercentage(Source + mp4 + ".txt");
-                    if (percentage != "100")
-                    {
-                        @Html.Raw(" " + percentage)
-                        @Html.Raw("% ")
-                    }
-                    else
-                    {
-                        @Html.ActionLink("mp4", "Index", new RouteValueDictionary {{"source", mp4}})
-                    }
-                    @(string.Format("{0:0.00}", ((double) (new FileInfo(Source + mp4).Length)/(1024*1024))))
-                    @Html.Raw("MB")
-                }
-                else
-                {
-                    <a href="@Url.Action("GetStream", "Home")" onclick=" return submitForm(this); " data="@file.Key">@file.Value</a>
-                }
+    var percentage = HomeController.GetProcessPercentage(Source + mp4 + ".txt");
+    if (percentage != "100")
+    {
+        @Html.Raw(" " + percentage)
+        @Html.Raw("% ")
 
-                @Html.Hidden("isMobile", @Request.Browser.IsMobileDevice)
-            }
-            else
-            {
-                <a href="@Url.Action("GetStream", "Home")" onclick=" return submitForm(this); " data="@file.Key">@file.Value</a>
-            }
-        </div>
+}
+else
+{
+    @Html.ActionLink("mp4", "Index", new RouteValueDictionary { { "source", mp4 } })
+}
+    @(string.Format("{0:0.00}", ((double)(new FileInfo(Source + mp4).Length) / (1024 * 1024))))
+        @Html.Raw("MB")
+
+if (percentage != "100")
+{
+    @Html.Raw(" " + HomeController.GetTime(Source + mp4 + ".txt"))
+}
+
+    
+}
+else
+{
+    <a href="@Url.Action("GetStream", "Home")" onclick=" return submitForm(this); " data="@file.Key">@file.Value</a>
+}
+
+    @Html.Hidden("isMobile", @Request.Browser.IsMobileDevice)
+}
+else
+{
+    <a href="@Url.Action("GetStream", "Home")" onclick=" return submitForm(this); " data="@file.Key">@file.Value</a>
+}
+    </div>
 
     }
     @Html.Hidden("source", " ")

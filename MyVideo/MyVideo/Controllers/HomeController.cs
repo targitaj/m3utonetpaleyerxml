@@ -42,7 +42,7 @@ namespace MyVideo.Controllers
         {
             try
             {
-                UrlExtensions.Prepend(Server.MapPath(@"~\TV\log.txt"), Environment.NewLine + DateTime.Now.ToLongDateString() + DateTime.Now.ToLongTimeString() + ": " + source + ": " + Request.UserHostAddress);
+                //UrlExtensions.Prepend(Server.MapPath(@"~\TV\log.txt"), Environment.NewLine + DateTime.Now.ToLongDateString() + DateTime.Now.ToLongTimeString() + ": " + source + ": " + Request.UserHostAddress);
             }
             catch{}
             
@@ -153,7 +153,7 @@ namespace MyVideo.Controllers
         {
             try
             {
-                UrlExtensions.Prepend(Server.MapPath(@"~\TV\log.txt"), Environment.NewLine + DateTime.Now.ToLongDateString() + DateTime.Now.ToLongTimeString() + ": " + source + ": " + Request.UserHostAddress);
+                //UrlExtensions.Prepend(Server.MapPath(@"~\TV\log.txt"), Environment.NewLine + DateTime.Now.ToLongDateString() + DateTime.Now.ToLongTimeString() + ": " + source + ": " + Request.UserHostAddress);
             }
             catch{}
             
@@ -497,6 +497,70 @@ namespace MyVideo.Controllers
             }
         }
 
+        public static string GetTime(string file)
+        {
+            var res = "";
+
+            try
+            {
+                FileInfo fi = new FileInfo(file);
+
+                string data = System.IO.File.ReadAllText(file);
+                if (data.Contains("final ratefactor") || data.Contains("Chapter") || (DateTime.Now - fi.LastWriteTime).TotalMinutes > 2)
+                {
+                    res = "";
+                }
+                else
+                {
+                    var allTime = GetTime(data, data.IndexOf(":", data.IndexOf("Duration:") + 10));
+
+                    var tenTimes = new TimeSpan[50];
+                    var tenLastRows = data.Split('\n').Reverse().Take(51).Reverse().ToArray();
+
+                    for (int i = 0; i < 50; i++)
+                    {
+                        if (tenLastRows[i].Contains(":"))
+                        {
+                            tenTimes[i] = GetTime(tenLastRows[i], tenLastRows[i].LastIndexOf(":") - 3);
+                        }
+                    }
+
+                    var totalTime = new TimeSpan();
+                    var seconds = 25.0;
+                    var firstTimeSpan = TimeSpan.MinValue;
+
+                    foreach (var timeSpan in tenTimes)
+                    {
+                        if (timeSpan != TimeSpan.MinValue)
+                        {
+                            firstTimeSpan = timeSpan;
+                            break;
+                        }
+
+                        seconds-=0.5;
+                    }
+
+                    var lastTimeSpan = tenTimes[9];
+
+                    if (tenTimes[49] != TimeSpan.MinValue && firstTimeSpan != tenTimes[49])
+                    {
+                        var secPerSecond = new TimeSpan((tenTimes[49] - firstTimeSpan).Ticks / (long)seconds);
+                        var remainingTime = allTime - tenTimes[49];
+                        var remainingTime1 = new TimeSpan(0, 0, (int)(remainingTime.TotalSeconds / secPerSecond.TotalSeconds));
+                        return remainingTime1.Hours.ToString("00") + ":" + remainingTime1.Minutes.ToString("00") + ":" +
+                               remainingTime1.Seconds.ToString("00");
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+
+            }
+
+            return res;
+        }
+
         public static string GetProcessPercentage(string file)
         {
             var res = "no percentage data";
@@ -562,11 +626,20 @@ namespace MyVideo.Controllers
 
         private static TimeSpan GetTime(string data, int index)
         {
-            var hours = data.Substring(index - 2, 2);
-            var minutes = data.Substring(index + 1, 2);
-            var seconds = data.Substring(index + 4, 2);
+            try
+            {
+                var hours = data.Substring(index - 2, 2);
+                var minutes = data.Substring(index + 1, 2);
+                var seconds = data.Substring(index + 4, 2);
 
-            return new TimeSpan(Int32.Parse(hours), Int32.Parse(minutes), Int32.Parse(seconds));
+                return new TimeSpan(Int32.Parse(hours), Int32.Parse(minutes), Int32.Parse(seconds));
+            }
+            catch (Exception e)
+            {
+                
+            }
+
+            return TimeSpan.MinValue;
         }
 
         public bool ContainsMain(DirectoryInfo curDir)
