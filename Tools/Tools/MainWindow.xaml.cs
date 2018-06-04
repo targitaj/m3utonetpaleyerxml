@@ -523,8 +523,6 @@ namespace Deleter
                         //var requestBody = reader.ReadToEnd();
                         response.StatusCode = (int) HttpStatusCode.OK;
 
-
-
                         var chanellsString = TTVList;
                                 
 
@@ -535,18 +533,20 @@ namespace Deleter
                             {
                                 using (StreamWriter stream = new StreamWriter(response.OutputStream))
                                 {
-                                    var res = "";
+                                    var res = chanellsString.Replace("acestream://", $@"http://{request.Url.Host}:{ConfigurationManager.AppSettings["AcePort"]}/ace/getstream?id=");
 
-                                    var chanelList = GetSubStrings(chanellsString, "#EXTINF:-1,", "");
-                                    res += "#EXTM3U" + Environment.NewLine;
 
-                                    foreach (var s in chanelList)
-                                    {
-                                        res +=
-                                            $@"#EXTINF:-1,{s}
-http://{request.Url.Authority}/{ToHexString(s)}
-";
-                                    }
+
+                                    //var chanelList = GetSubStrings(chanellsString, "#EXTINF:-1,", "");
+                                    //res += //"#EXTM3U" + Environment.NewLine;
+
+                                    //                                    foreach (var s in chanelList)
+                                    //                                    {
+                                    //                                        res +=
+                                    //                                            $@"#EXTINF:-1,{s.Key}
+                                    //http://192.168.88.254:{ConfigurationManager.AppSettings["AcePort"]}/ace/getstream?id={s.Value}
+                                    //";
+                                    //                                    }
 
                                     stream.Write(res);
 
@@ -554,55 +554,55 @@ http://{request.Url.Authority}/{ToHexString(s)}
                                     stream.Close();
                                 }
                             }
-                            else
-                            {
-                                var path = FromHexString(request.Url.AbsolutePath.Substring(1));
+                            //else
+                            //{
+                            //    var path = FromHexString(request.Url.AbsolutePath.Substring(1));
 
-                                if (!string.IsNullOrEmpty(path))
-                                {
-                                    responseThread?.Abort();
+                            //    if (!string.IsNullOrEmpty(path))
+                            //    {
+                            //        responseThread?.Abort();
 
-                                    if (previousPath != path || Process.GetProcessesByName("ace_player").Length == 0)
-                                    {
-                                        previousPath = path;
+                            //        if (previousPath != path || Process.GetProcessesByName("ace_player").Length == 0)
+                            //        {
+                            //            previousPath = path;
 
-                                        foreach (Process proc in Process.GetProcessesByName("ace_player"))
-                                        {
-                                            proc.Kill();
-                                        }
+                            //            foreach (Process proc in Process.GetProcessesByName("ace_player"))
+                            //            {
+                            //                proc.Kill();
+                            //            }
 
-                                        string regex =
-                                            $"{Regex.Escape("#EXTINF:-1," + path)}\n{Regex.Escape("acestream://")}(.*?)\n";
+                            //            string regex =
+                            //                $"{Regex.Escape("#EXTINF:-1," + path)}\n{Regex.Escape("acestream://")}(.*?)\n";
 
-                                        var matches = Regex.Matches(chanellsString, regex, RegexOptions.Singleline);
-                                        var arguments =
-                                            $" --qt-start-minimized {matches[0].Groups[1].Value} :sout=#http{{mux=ffmpeg{{mux=flv}},dst=:{ConfigurationManager.AppSettings["AcePort"]}/}} :sout-keep";
+                            //            var matches = Regex.Matches(chanellsString, regex, RegexOptions.Singleline);
+                            //            var arguments =
+                            //                $" --qt-start-minimized {matches[0].Groups[1].Value} :sout=#http{{mux=ffmpeg{{mux=flv}},dst=:{ConfigurationManager.AppSettings["AcePort"]}/}} :sout-keep";
 
-                                        try
-                                        {
+                            //            try
+                            //            {
                                         
-                                            Process.Start(ConfigurationManager.AppSettings["AcePlayerPath"],
-                                                arguments);
-                                        }
-                                        catch (Exception exception)
-                                        {
-                                        }
-                                    }
+                            //                Process.Start(ConfigurationManager.AppSettings["AcePlayerPath"],
+                            //                    arguments);
+                            //            }
+                            //            catch (Exception exception)
+                            //            {
+                            //            }
+                            //        }
 
 
 
 
-                                _noError = true;
-                                _needRconect = false;
+                            //    _noError = true;
+                            //    _needRconect = false;
 
 
 
-                               responseThread = new Thread(ResponseProress);
+                            //   responseThread = new Thread(ResponseProress);
                                 
                                 
-                                responseThread.Start(response);
-                                }
-                            }
+                            //    responseThread.Start(response);
+                            //    }
+                            //}
                         }
                     }
                 
@@ -746,13 +746,30 @@ http://{request.Url.Authority}/{ToHexString(s)}
             return res;
         }
 
-        public static IEnumerable<string> GetSubStrings(string text, string start, string end)
+        public static Dictionary<string, string> GetSubStrings(string text, string start, string end)
         {
             string regex = $"{Regex.Escape(start)}(.*){Regex.Escape(end)}";
 
-            return Regex.Matches(text, regex, RegexOptions.Multiline)
+            var lsit = Regex.Matches(text, regex, RegexOptions.Multiline)
                 .Cast<Match>()
-                .Select(match => match.Groups[1].Value);
+                .Select(match => match.Groups[1].Value).ToList();
+
+            var sourceData = new List<string>();
+
+            foreach(var ss in lsit)
+            {
+                var indexlsit = text.IndexOf(ss);
+                sourceData.Add(text.Substring(indexlsit + ss.Length + 1 + "acestream://".Length, 40));
+            }
+
+            var res = new Dictionary<string, string>();
+
+            for(int i = 0;i<lsit.Count();i++)
+            {
+                res.Add(lsit[i], sourceData[i]);
+            }
+
+            return res;
         }
 
         private void Stop_OnClick(object sender, RoutedEventArgs e)
