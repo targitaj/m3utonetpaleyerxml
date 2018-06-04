@@ -62,8 +62,10 @@
             </TabItem>
             <TabItem Header="torrent tv Service">
                 <StackPanel>
-                    <Button HorizontalAlignment="Left" VerticalAlignment="Top" Click="ButtonBase_OnClick">Start</Button>
-                    <Button HorizontalAlignment="Left" VerticalAlignment="Top" Click="Stop_OnClick">Stop</Button>
+                    <!--<Button HorizontalAlignment="Left" VerticalAlignment="Top" Click="ButtonBase_OnClick">Start</Button>
+                    <Button HorizontalAlignment="Left" VerticalAlignment="Top" Click="Stop_OnClick">Stop</Button>-->
+                    <Button HorizontalAlignment="Left" VerticalAlignment="Top" Click="StartService_OnClick">Instal service and start it</Button>
+                    <Button HorizontalAlignment="Left" VerticalAlignment="Top" Click="StopService_OnClick">Uninstall service</Button>
                 </StackPanel>
             </TabItem>
             <TabItem>
