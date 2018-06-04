@@ -814,5 +814,29 @@ namespace Deleter
         {
             
         }
+
+        private void StartService_OnClick(object sender, RoutedEventArgs e)
+        {
+            Process proc = new Process();
+            proc.StartInfo.FileName = "TorrentTVService.exe";
+            proc.StartInfo.Arguments = "install";
+            proc.StartInfo.UseShellExecute = true;
+            proc.StartInfo.Verb = "runas";
+            proc.Start();
+
+            proc.StartInfo.FileName = "TorrentTVService.exe";
+            proc.StartInfo.Arguments = "start";
+            proc.Start();
+        }
+
+        private void StopService_OnClick(object sender, RoutedEventArgs e)
+        {
+            Process proc = new Process();
+            proc.StartInfo.FileName = "TorrentTVService.exe";
+            proc.StartInfo.Arguments = "uninstall";
+            proc.StartInfo.UseShellExecute = true;
+            proc.StartInfo.Verb = "runas";
+            proc.Start();
+        }
     }
 }
