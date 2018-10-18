@@ -45,7 +45,7 @@ namespace AceLinkExecutor
                         Thread.Sleep(3000);
                     }
 
-                    Process.Start(ConfigurationManager.AppSettings["VLCPath"], $"http://127.0.0.1:{ConfigurationManager.AppSettings["AcePort"]}/ace/getstream?id={matches[0].Groups[1].Value}");
+                    Process.Start(ConfigurationManager.AppSettings["VLCPath"], $"http://127.0.0.1:{ConfigurationManager.AppSettings["AcePort"]}/ace/getstream?id={matches[0].Groups[1].Value}&preferred_audio_language=rus");
                 }
                 else
                 {
