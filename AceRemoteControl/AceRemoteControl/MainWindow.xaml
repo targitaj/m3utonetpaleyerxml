@@ -5,8 +5,35 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AceRemoteControl"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="Настройка каналов" Height="350" Width="525"
+        Icon="remote_control.ico"
+        >
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+
+        <ListBox ItemsSource="{Binding AllChannels}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox IsChecked="{Binding Path=IsSelected, Mode=TwoWay}"/>
+                        <TextBlock Text="{Binding Path=Text}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <StackPanel HorizontalAlignment="Center" Grid.Row="1" Grid.ColumnSpan="3" Orientation="Horizontal">
+            <Button Height="30" Name="SaveBtn" Click="SaveBtn_OnClick">Сохранить</Button>
+            <Button Margin="10 0 0 0" Height="30" Name="CancelBtn">Отменить</Button>
+        </StackPanel>
         
     </Grid>
 </Window>
