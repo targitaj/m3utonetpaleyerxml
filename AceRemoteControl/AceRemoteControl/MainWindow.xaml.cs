@@ -20,9 +20,17 @@ namespace AceRemoteControl
     /// </summary>
     public partial class MainWindow : Window
     {
+        
+
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = new MainWindowModel();
+        }
+
+        private void SaveBtn_OnClick(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }
