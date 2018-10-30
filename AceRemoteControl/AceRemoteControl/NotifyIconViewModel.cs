@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO.Pipes;
 using System.Security.Permissions;
@@ -7,8 +8,10 @@ using System.Security.Principal;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 using AceRemoteControl;
 using Microsoft.Win32;
+using NHotkey.Wpf;
 using Prism.Commands;
 using Prism.Mvvm;
 
@@ -33,6 +36,23 @@ namespace AceRemoteControl
         [ExcludeFromCodeCoverage]
         public NotifyIconViewModel()
         {
+            HotkeyManager.Current.AddOrReplace("Decimal", Key.Decimal, ModifierKeys.None,
+                (e, args) =>
+                {
+                        new Process()
+                        {
+                            StartInfo =
+                            {
+                                CreateNoWindow = true,
+                                WindowStyle = ProcessWindowStyle.Hidden,
+                                FileName = Environment.Is64BitOperatingSystem && !Environment.Is64BitProcess
+                                    ? Environment.ExpandEnvironmentVariables(@"%windir%\sysnative\DisplaySwitch.exe")
+                                    : "DisplaySwitch.exe",
+                                Arguments = " /extend"
+                            }
+                        }.Start();
+                });
+
             //_trayPipeClient = new NamedPipeClient<TrayMessage>("TrayMessage");
             //_trayPipeClient.Start();
             //_updatePipeClient = new NamedPipeClient<UpdaterMessage>("UpdaterStatus");

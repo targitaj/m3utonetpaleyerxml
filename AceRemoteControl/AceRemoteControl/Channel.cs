@@ -23,5 +23,10 @@ namespace AceRemoteControl
             get { return _text; }
             set { SetProperty(ref _text, value); }
         }
+
+        public Channel Clone()
+        {
+            return (Channel) MemberwiseClone();
+        }
     }
 }

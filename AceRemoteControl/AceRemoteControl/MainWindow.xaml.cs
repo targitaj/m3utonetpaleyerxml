@@ -28,9 +28,17 @@ namespace AceRemoteControl
             DataContext = new MainWindowModel();
         }
 
-        private void SaveBtn_OnClick(object sender, RoutedEventArgs e)
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            
+            Close();
+        }
+
+        private void UIElement_OnPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Decimal)
+            {
+                var zz = e.Key;
+            }
         }
     }
 }
