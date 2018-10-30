@@ -9,6 +9,7 @@
                     xmlns:aceRemoteControl="clr-namespace:AceRemoteControl">
     <ContextMenu x:Shared="false" x:Key="SysTrayMenu">
         <MenuItem Header="Настройка каналов" Command="{Binding ChannelSetupCommand}" />
+        <MenuItem Header="Выход" Command="{Binding ExitCommand}" />
     </ContextMenu>
 
     <controls:NotifyIconWpf 
