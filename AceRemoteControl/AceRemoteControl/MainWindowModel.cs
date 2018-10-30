@@ -20,13 +20,14 @@ namespace AceRemoteControl
     {
         private List<Channel> _allChannels;
         private List<Channel> _filteredChannels;
-        private string FILE_CHANNELS = "channels.json";
+        private const string FILE_CHANNELS = "channels.json";
         private ObservableCollection<Channel> _channels = new ObservableCollection<Channel>();
         private string _searchText = string.Empty;
         private ObservableCollection<Channel> _favorites;
 
         public DelegateCommand AddCommand => new DelegateCommand(Add);
         public DelegateCommand RemoveCommand => new DelegateCommand(Remove);
+
 
         public DelegateCommand SaveCommand => new DelegateCommand(Save);
 
@@ -68,8 +69,8 @@ namespace AceRemoteControl
 
         public MainWindowModel()
         {
-            DownloadFile();
-            _allChannels = ReadAllChannels(ConfigurationManager.AppSettings["FileName"]);
+            //DownloadFile();
+            _allChannels = ReadAllChannels(Information.GetListOfChannels());
             Channels = new ObservableCollection<Channel>(ReadChannels());
             ApplyFilter();
         }
@@ -81,23 +82,21 @@ namespace AceRemoteControl
                 : _allChannels.Where(w => w.Text.ToLower().Contains(SearchText.ToLower())).ToList();
         }
 
-        public static void DownloadFile()
-        {
-            var channelList = new FileInfo(ConfigurationManager.AppSettings["AceContentIdList"]);
-            
-
-            if (!channelList.Exists || channelList.LastWriteTime < DateTime.Now.AddMinutes(-2))
-            {
-                using (WebClient myWebClient = new WebClient())
-                {
-                    string remoteUri = ConfigurationManager.AppSettings["AceContentIdList"];
-                    string list = myWebClient.DownloadString(remoteUri);
-                    byte[] bytes = Encoding.Default.GetBytes(list);
-                    list = Encoding.UTF8.GetString(bytes);
-                    File.WriteAllText(channelList.FullName, list, Encoding.UTF8);
-                }
-            }
-        }
+        //public static void DownloadFile()
+        //{
+        //    var channelList = new FileInfo(ConfigurationManager.AppSettings["FileName"]);
+        //    if (!channelList.Exists || channelList.LastWriteTime < DateTime.Now.AddMinutes(-2))
+        //    {
+        //        using (WebClient myWebClient = new WebClient())
+        //        {
+        //            string remoteUri = ConfigurationManager.AppSettings["AceContentIdList"];
+        //            string list = myWebClient.DownloadString(remoteUri);
+        //            byte[] bytes = Encoding.Default.GetBytes(list);
+        //            list = Encoding.UTF8.GetString(bytes);
+        //            File.WriteAllText(channelList.FullName, list, Encoding.UTF8);
+        //        }
+        //    }
+        //}
 
         private void Add()
         {
@@ -126,10 +125,10 @@ namespace AceRemoteControl
             Application.Current.MainWindow.Close();
         }
 
-        private List<Channel> ReadAllChannels(string source)
+        public static List<Channel> ReadAllChannels(string sourceStr)
         {
             var res = new List<Channel>();
-            string sourceStr = File.ReadAllText(source, new UTF8Encoding());
+            //string sourceStr = File.ReadAllText(source, new UTF8Encoding());
             var selChannels = ReadChannels();
             for (int i = 0; i < sourceStr.Length; i++)
             {
@@ -157,7 +156,7 @@ namespace AceRemoteControl
             return res;
         }
 
-        private List<Channel> ReadChannels()
+        public static List<Channel> ReadChannels()
         {
             var channels = new List<Channel>();
             try

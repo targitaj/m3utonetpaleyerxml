@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.IO.Pipes;
 using System.Security.Permissions;
 using System.Security.Principal;
@@ -24,11 +25,19 @@ namespace AceRemoteControl
     /// </summary>
     public class NotifyIconViewModel : BindableBase
     {
+        public const string HistoryFile = "history.txt";
+
         /// <summary>
         /// Shows TC Daemon Updater log
         /// </summary>
         [ExcludeFromCodeCoverage]
         public ICommand ChannelSetupCommand => new DelegateCommand(ShowMainWindow);
+
+        public ICommand ExitCommand => new DelegateCommand(() =>
+        {
+            HotkeyManager.Current.Remove("Decimal");
+            Environment.Exit(0);
+        });
 
         /// <summary>
         /// Constructor for <see cref="NotifyIconViewModel"/>
@@ -36,9 +45,23 @@ namespace AceRemoteControl
         [ExcludeFromCodeCoverage]
         public NotifyIconViewModel()
         {
+            if ((bool)(DesignerProperties.IsInDesignModeProperty.GetMetadata(typeof(DependencyObject)).DefaultValue))
+            {
+                return;
+            }
+
             HotkeyManager.Current.AddOrReplace("Decimal", Key.Decimal, ModifierKeys.None,
                 (e, args) =>
                 {
+                    var vlcEngineProcess = Process.GetProcessesByName("vlc");
+
+                    foreach (var process in vlcEngineProcess)
+                    {
+                        process.Kill();
+                    }
+
+                    if (vlcEngineProcess.Length == 0)
+                    {
                         new Process()
                         {
                             StartInfo =
@@ -51,59 +74,93 @@ namespace AceRemoteControl
                                 Arguments = " /extend"
                             }
                         }.Start();
+
+                        if (!File.Exists(HistoryFile))
+                        {
+                            File.WriteAllText(HistoryFile, "0");
+                        }
+
+                        ShowInformation(File.ReadAllText(HistoryFile), false);
+                    }
                 });
 
-            //_trayPipeClient = new NamedPipeClient<TrayMessage>("TrayMessage");
-            //_trayPipeClient.Start();
-            //_updatePipeClient = new NamedPipeClient<UpdaterMessage>("UpdaterStatus");
-            //_updatePipeClient.ServerMessage += (connection, message) =>
-            //{
-            //    if (message.MessageType == UpdaterMessageType.Status)
-            //    {
-            //        UpdaterStatus = message.Information;
-            //    }
-            //    else if (message.MessageType == UpdaterMessageType.Log)
-            //    {
-            //        SetLogInformation(message.Information, "TC Daemon Updater Log " + message.Version,
-            //            ShowTCDaemonUpdaterLogCommand);
-            //    }
-            //};
+            HotkeyManager.Current.AddOrReplace("Subtract", Key.Subtract, ModifierKeys.None,
+                (e, args) =>
+                {
+                    if (!File.Exists(HistoryFile))
+                    {
+                        File.WriteAllText(HistoryFile, "0");
+                    }
 
-            //_updatePipeClient.Start();
+                    var mychannels = MainWindowModel.ReadChannels();
+                    var myNumber = int.Parse(File.ReadAllText(HistoryFile));
+                    myNumber++;
 
-            //PipeSecurity pipeSa = new PipeSecurity();
-            //pipeSa.SetAccessRule(new PipeAccessRule("Everyone", PipeAccessRights.FullControl, System.Security.AccessControl.AccessControlType.Allow));
-            //pipeSa.SetAccessRule(new PipeAccessRule(new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null), PipeAccessRights.FullControl, System.Security.AccessControl.AccessControlType.Allow));
-            //pipeSa.SetAccessRule(new PipeAccessRule(new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null), PipeAccessRights.FullControl, System.Security.AccessControl.AccessControlType.Allow));
-            //pipeSa.SetAccessRule(new PipeAccessRule(new SecurityIdentifier(WellKnownSidType.ServiceSid, null), PipeAccessRights.FullControl, System.Security.AccessControl.AccessControlType.Allow));
-            //pipeSa.SetAccessRule(new PipeAccessRule(WindowsIdentity.GetCurrent().Owner, PipeAccessRights.FullControl, System.Security.AccessControl.AccessControlType.Allow));
+                    if (mychannels.Count > 0)
+                    {
+                        myNumber = mychannels.Count > myNumber ? myNumber : 0;
+                    }
 
-            //_tcDaemonServer = new NamedPipeServer<Tuple<string>>("TCDaemonMessage", pipeSa);
-            //_tcDaemonServer.ClientConnected += connection =>
-            //{
-            //    TCDaemonMessage = "Started";
-            //};
-            //_tcDaemonServer.ClientMessage += (connection, message) =>
-            //{
-            //    TCDaemonMessage = message.Item1;
-            //};
-            //_tcDaemonServer.ClientDisconnected += connection =>
-            //{
-            //    TCDaemonMessage = string.Empty;
-            //};
+                    ShowInformation(myNumber.ToString(), false);
+                });
 
-            //_tcDaemonServer.Start();
+            HotkeyManager.Current.AddOrReplace("Add", Key.Add, ModifierKeys.None,
+                (e, args) =>
+                {
+                    if (!File.Exists(HistoryFile))
+                    {
+                        File.WriteAllText(HistoryFile, "0");
+                    }
 
+                    var mychannels = MainWindowModel.ReadChannels();
+                    var myNumber = int.Parse(File.ReadAllText(HistoryFile));
+                    myNumber--;
 
-            //_tcDaemonLogServer = new NamedPipeServer<Tuple<string, string>>("TCDaemonLogMessage", pipeSa);
-            //_tcDaemonLogServer.ClientMessage += (connection, message) =>
-            //{
-            //    SetLogInformation(message.Item1, "TC Daemon Log " + message.Item2, ShowTCDaemonLogCommand);
-            //};
+                    if (mychannels.Count > 0)
+                    {
+                        myNumber = myNumber < 0 ? mychannels.Count : myNumber;
+                    }
 
-            //_tcDaemonLogServer.Start();
+                    ShowInformation(myNumber.ToString(), false);
+                });
 
-            //CommonHelper.RefreshTrayArea();
+            RegisterNums();
+        }
+
+        private void RegisterNums()
+        {
+            for (int i = (int) Key.NumPad0; i <= (int) Key.NumPad9; i++)
+            {
+                HotkeyManager.Current.AddOrReplace(((Key) i).ToString(), (Key) i, ModifierKeys.None,
+                    (e, args) => { Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        ShowInformation(args.Name.Substring(6));
+                    }); });
+            }
+        }
+
+        public void ShowInformation(string text, bool add = true)
+        {
+            var mainWindow = Application.Current.MainWindow as Information;
+
+            if (mainWindow == null)
+            {
+                Application.Current.MainWindow = new Information();
+                Application.Current.MainWindow.Show();
+            }
+
+            var infText = ((Information) Application.Current.MainWindow).Text;
+
+            if (add)
+            {
+                ((Information)Application.Current.MainWindow).Text = infText + text;
+            }
+            else
+            {
+                ((Information)Application.Current.MainWindow).Text = text;
+            }
+            
+            Application.Current.MainWindow.Activate();
         }
 
         /// <summary>
