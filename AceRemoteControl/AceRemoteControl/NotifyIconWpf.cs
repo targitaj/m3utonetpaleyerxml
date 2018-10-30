@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using NHotkey.Wpf;
 using Application = System.Windows.Application;
 using MenuItem = System.Windows.Controls.MenuItem;
 
@@ -78,11 +82,6 @@ namespace TCDaemonTray.Controls
         /// </summary>
         public NotifyIconWpf()
         {
-            //if (CommonHelper.IsDesignMode)
-            //{
-            //    return;
-            //}
-
             var contextMenuPropertyDescriptor =
                 DependencyPropertyDescriptor.FromProperty(ContextMenuProperty, typeof(NotifyIconWpf));
 
