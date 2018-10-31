@@ -156,9 +156,22 @@ namespace AceRemoteControl
         public Information()
         {
             InitializeComponent();
-            Activated += (sender, args) =>
+            Activated += async (sender, args) =>
             {
-                var notPrimary = Screen.AllScreens.First(f => !Equals(f, Screen.PrimaryScreen));
+                //var returnScreens = new Func<Screen[]>(() => { return Screen.AllScreens; });
+
+                //Task<Screen[]> task = new Task<Screen[]>();
+
+                ;
+
+                var screens = await Task.Run(() => Screen.AllScreens);
+                while (screens.Length <= 1)
+                {
+                    Thread.Sleep(100);
+                    screens = await Task.Run(() => Screen.AllScreens);
+                }
+
+                var notPrimary = screens.First(f => !Equals(f, Screen.PrimaryScreen));
 
                 Left = notPrimary.Bounds.X + 40;
                 Top = 40;
