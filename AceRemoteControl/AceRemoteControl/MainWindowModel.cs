@@ -24,12 +24,24 @@ namespace AceRemoteControl
         private ObservableCollection<Channel> _channels = new ObservableCollection<Channel>();
         private string _searchText = string.Empty;
         private ObservableCollection<Channel> _favorites;
+        private Channel _selectedChannel;
 
         public DelegateCommand AddCommand => new DelegateCommand(Add);
         public DelegateCommand RemoveCommand => new DelegateCommand(Remove);
 
 
         public DelegateCommand SaveCommand => new DelegateCommand(Save);
+
+        public DelegateCommand DownCommand => new DelegateCommand(Down);
+
+
+        public DelegateCommand UpCommand => new DelegateCommand(Up);
+
+        public Channel SelectedChannel
+        {
+            get { return _selectedChannel; }
+            set { SetProperty(ref _selectedChannel, value); }
+        }
 
         public List<Channel> FilteredChannels
         {
@@ -52,7 +64,21 @@ namespace AceRemoteControl
             set
             {
                 SetProperty(ref _channels, value);
-                
+
+                int counter1 = 0;
+                foreach (var channel in _channels)
+                {
+                    channel.PositionNumber = counter1++;
+                }
+
+                _channels.CollectionChanged += (sender, args) =>
+                {
+                    int counter = 0;
+                    foreach (var channel in _channels)
+                    {
+                        channel.PositionNumber = counter++;
+                    }
+                };
             }
         }
 
@@ -80,6 +106,40 @@ namespace AceRemoteControl
             FilteredChannels = string.IsNullOrWhiteSpace(SearchText)
                 ? _allChannels
                 : _allChannels.Where(w => w.Text.ToLower().Contains(SearchText.ToLower())).ToList();
+        }
+
+        public void Down()
+        {
+            if (SelectedChannel != null)
+            {
+                var index = _channels.IndexOf(SelectedChannel);
+
+                if (index + 1 < _channels.Count)
+                {
+                    var channel = SelectedChannel;
+                    index++;
+                    _channels.Remove(SelectedChannel);
+                    _channels.Insert(index, channel);
+                    SelectedChannel = channel;
+                }
+            }
+        }
+
+        public void Up()
+        {
+            if (SelectedChannel != null)
+            {
+                var index = _channels.IndexOf(SelectedChannel);
+
+                if (index != 0)
+                {
+                    var channel = SelectedChannel;
+                    index--;
+                    _channels.Remove(SelectedChannel);
+                    _channels.Insert(index, channel);
+                    SelectedChannel = channel;
+                }
+            }
         }
 
         //public static void DownloadFile()
@@ -156,18 +216,27 @@ namespace AceRemoteControl
             return res;
         }
 
+        private static List<Channel> _channelsCache = new List<Channel>();
+        private static DateTime _channelsCacheChangeTime = DateTime.Now;
+
         public static List<Channel> ReadChannels()
         {
-            var channels = new List<Channel>();
             try
             {
-                channels = (List<Channel>)JsonConvert.DeserializeObject(File.ReadAllText(FILE_CHANNELS), typeof(List<Channel>));
+                FileInfo fi = new FileInfo(FILE_CHANNELS);
+
+                if (_channelsCacheChangeTime != fi.LastWriteTime)
+                {
+                    _channelsCache = (List<Channel>)JsonConvert.DeserializeObject(File.ReadAllText(FILE_CHANNELS), typeof(List<Channel>));
+                    _channelsCacheChangeTime = fi.LastWriteTime;
+                }
+
             }
             catch(Exception e)
             {
             }
 
-            return channels;
+            return _channelsCache;
         }
     }
 }

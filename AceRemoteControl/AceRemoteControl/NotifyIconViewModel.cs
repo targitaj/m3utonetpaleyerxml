@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -38,6 +39,8 @@ namespace AceRemoteControl
             HotkeyManager.Current.Remove("Decimal");
             Environment.Exit(0);
         });
+
+        //public static List<string> Records = new List<string>();
 
         /// <summary>
         /// Constructor for <see cref="NotifyIconViewModel"/>
@@ -81,12 +84,16 @@ namespace AceRemoteControl
                         }
 
                         ShowInformation(File.ReadAllText(HistoryFile), false);
+
+                        //File.WriteAllText("Debug.txt", string.Join(Environment.NewLine, Records));
                     }
                 });
 
             HotkeyManager.Current.AddOrReplace("Subtract", Key.Subtract, ModifierKeys.None,
                 (e, args) =>
                 {
+                    //Records.Add(DateTime.Now.ToString("O") + " START");
+
                     if (!File.Exists(HistoryFile))
                     {
                         File.WriteAllText(HistoryFile, "0");
@@ -101,7 +108,11 @@ namespace AceRemoteControl
                         myNumber = mychannels.Count > myNumber ? myNumber : 0;
                     }
 
+                    //Records.Add(DateTime.Now.ToString("O") + " Before ShowInformation");
+
                     ShowInformation(myNumber.ToString(), false);
+
+                    //Records.Add(DateTime.Now.ToString("O") + " END");
                 });
 
             HotkeyManager.Current.AddOrReplace("Add", Key.Add, ModifierKeys.None,
@@ -146,8 +157,15 @@ namespace AceRemoteControl
             if (mainWindow == null)
             {
                 Application.Current.MainWindow = new Information();
+
+                //Records.Add(DateTime.Now.ToString("O") + " Before show");
+
                 Application.Current.MainWindow.Show();
+
+                //Records.Add(DateTime.Now.ToString("O") + " After show");
             }
+
+
 
             var infText = ((Information) Application.Current.MainWindow).Text;
 
@@ -159,8 +177,13 @@ namespace AceRemoteControl
             {
                 ((Information)Application.Current.MainWindow).Text = text;
             }
-            
+
+            //Records.Add(DateTime.Now.ToString("O") + " Before Activate");
+
             Application.Current.MainWindow.Activate();
+
+
+            //Records.Add(DateTime.Now.ToString("O") + " After Activate");
         }
 
         /// <summary>
