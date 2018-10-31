@@ -13,10 +13,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Application = System.Windows.Application;
 
 namespace AceRemoteControl
 {
@@ -61,13 +63,16 @@ namespace AceRemoteControl
 
                 _lastThread = new Thread(() =>
                 {
-                    Thread.Sleep(_closeTime - DateTime.Now);
+                    Thread.Sleep(2000);
 
                     if (_closeTime <= DateTime.Now)
                     {
                         Application.Current.Dispatcher.Invoke(() =>
                         {
-                            string list = GetListOfChannels();
+                            try
+                            {
+                                Helper.RefreshTrayArea();
+                                string list = GetListOfChannels();
                             var channels = MainWindowModel.ReadChannels();
                             var number = int.Parse(tbText.Text);
                             var channel = string.Empty;
@@ -103,11 +108,16 @@ namespace AceRemoteControl
 
                                 Process.Start(ConfigurationManager.AppSettings["AceEnginePath"]);
                                 Thread.Sleep(1000);
-
-                                Process.Start(ConfigurationManager.AppSettings["VLCPath"],
-                                    $"--fullscreen --qt-fullscreen-screennumber=2 http://127.0.0.1:{ConfigurationManager.AppSettings["AcePort"]}/ace/getstream?id={matches[0].Groups[1].Value}&preferred_audio_language=rus ");
+                                
+                                    Process.Start(ConfigurationManager.AppSettings["VLCPath"],
+                                        $"--fullscreen --qt-fullscreen-screennumber={ConfigurationManager.AppSettings["ScreenNumber"]} http://127.0.0.1:{ConfigurationManager.AppSettings["AcePort"]}/ace/getstream?id={matches[0].Groups[1].Value}&preferred_audio_language=rus ");
 
                                 
+                            }
+                            }
+                            catch (Exception e)
+                            {
+
                             }
 
                             Close();
@@ -148,7 +158,9 @@ namespace AceRemoteControl
             InitializeComponent();
             Activated += (sender, args) =>
             {
-                Left = 40;
+                var notPrimary = Screen.AllScreens.First(f => !Equals(f, Screen.PrimaryScreen));
+
+                Left = notPrimary.Bounds.X + 40;
                 Top = 40;
             };
         }

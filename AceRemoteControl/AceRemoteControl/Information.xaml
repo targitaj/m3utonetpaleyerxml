@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:AceRemoteControl"
         mc:Ignorable="d"
         Title="Information" Height="120" Width="1500"
-        WindowStyle="None">
+        WindowStyle="None"
+        Topmost="True">
     <Grid Background="CadetBlue">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" >
             <TextBlock Name="tbText" FontSize="70" FontWeight="Bold" Foreground="Black"/>

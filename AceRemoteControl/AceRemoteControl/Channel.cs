@@ -11,6 +11,7 @@ namespace AceRemoteControl
     {
         private bool _isSelected;
         private string _text;
+        private int _positionNumber;
 
         public bool IsSelected
         {
@@ -22,6 +23,12 @@ namespace AceRemoteControl
         {
             get { return _text; }
             set { SetProperty(ref _text, value); }
+        }
+
+        public int PositionNumber
+        {
+            get { return _positionNumber; }
+            set { SetProperty(ref _positionNumber, value); }
         }
 
         public Channel Clone()
