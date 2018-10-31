@@ -129,7 +129,7 @@ namespace AceRemoteControl
 
                     if (mychannels.Count > 0)
                     {
-                        myNumber = myNumber < 0 ? mychannels.Count : myNumber;
+                        myNumber = myNumber < 0 ? mychannels.Count - 1 : myNumber;
                     }
 
                     ShowInformation(myNumber.ToString(), false);
