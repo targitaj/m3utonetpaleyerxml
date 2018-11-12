@@ -40,5 +40,26 @@ namespace AceRemoteControl
                 var zz = e.Key;
             }
         }
+
+        private void Control_OnPreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            Information.StartVideo("0", null, ((Channel)((ListBox)sender).SelectedItems[0]).Text);
+        }
+
+        private void ToggleButton_OnChecked(object sender, RoutedEventArgs e)
+        {
+            foreach (var lb1Item in lb1.Items)
+            {
+                ((Channel) lb1Item).IsSelected = false;
+            }
+        }
+
+        private void ToggleButton_OnChecked1(object sender, RoutedEventArgs e)
+        {
+            foreach (var lb1Item in lb2.Items)
+            {
+                ((Channel)lb1Item).IsSelected = false;
+            }
+        }
     }
 }

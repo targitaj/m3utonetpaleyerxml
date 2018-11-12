@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -27,8 +28,16 @@ namespace AceRemoteControl
     /// </summary>
     public partial class Information : Window
     {
-        private DateTime _closeTime;
-        private Thread _lastThread;
+        private static DateTime _closeTime;
+        private static Thread _lastThread;
+
+        private const int SW_MAXIMIZE = 3;
+        private const int SW_MINIMIZE = 6;
+        [DllImport("user32.dll", EntryPoint = "FindWindow")]
+        public static extern IntPtr FindWindowByCaption(IntPtr ZeroOnly, string lpWindowName);
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
         public string Text
         {
@@ -51,39 +60,42 @@ namespace AceRemoteControl
                 File.WriteAllText(NotifyIconViewModel.HistoryFile, myNumber.ToString());
 
                 tbName.Text = myChannel;
+                StartVideo(tbText.Text, this, string.Empty);
+            }
+        }
 
-                try
-                {
-                    _lastThread.Abort();
-                }
-                catch (Exception e)
-                {
-                    
-                }
+        public static void StartVideo(string nuber, Window window, string text)
+        {
+            try
+            {
+                _lastThread.Abort();
+            }
+            catch (Exception e)
+            {
 
-                _lastThread = new Thread(() =>
-                {
-                    Thread.Sleep(2000);
+            }
 
-                    if (_closeTime <= DateTime.Now)
+            _lastThread = new Thread(() =>
+            {
+                Thread.Sleep(2000);
+
+                if (_closeTime <= DateTime.Now)
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
-                        Application.Current.Dispatcher.Invoke(() =>
+                        try
                         {
-                            try
-                            {
-                                Helper.RefreshTrayArea();
-                                string list = GetListOfChannels();
+                            Helper.RefreshTrayArea();
+                            string list = GetListOfChannels();
                             var channels = MainWindowModel.ReadChannels();
-                            var number = int.Parse(tbText.Text);
-                            var channel = string.Empty;
+                            var number = int.Parse(nuber);
+                            var channel = text;
 
-                            if (channels.Count > 0)
+                            if (channels.Count > 0 && channel == string.Empty)
                             {
                                 number = channels.Count > number ? number : channels.Count - 1;
                                 channel = channels[number].Text;
                             }
-
-                            
 
                             if (!string.IsNullOrWhiteSpace(channel))
                             {
@@ -105,28 +117,74 @@ namespace AceRemoteControl
                                 {
                                     process.Kill();
                                 }
+                                var processes = Process.GetProcessesByName("chrome").ToList();
+                                FileInfo enginePath = new FileInfo(ConfigurationManager.AppSettings["AceEnginePath"]);
 
-                                Process.Start(ConfigurationManager.AppSettings["AceEnginePath"]);
-                                Thread.Sleep(1000);
-                                
-                                    Process.Start(ConfigurationManager.AppSettings["VLCPath"],
-                                        $"--fullscreen --qt-fullscreen-screennumber={ConfigurationManager.AppSettings["ScreenNumber"]} http://127.0.0.1:{ConfigurationManager.AppSettings["AcePort"]}/ace/getstream?id={matches[0].Groups[1].Value}&preferred_audio_language=rus ");
+                                var proc = Process.Start(enginePath.FullName);
+                                Thread.Sleep(2000);
 
-                                
+
+
+                                Process.Start(ConfigurationManager.AppSettings["VLCPath"],
+                                    $"--fullscreen --qt-fullscreen-screennumber={Screen.AllScreens.Length - 1} http://127.0.0.1:{ConfigurationManager.AppSettings["AcePort"]}/ace/getstream?id={matches[0].Groups[1].Value}&preferred_audio_language=rus ");
+
+
+                                var th = new Thread(() =>
+                                {
+                                    DateTime dtDateTime = DateTime.Now;
+
+
+                                    var founded = false;
+                                    while (dtDateTime > DateTime.Now.AddSeconds(-30) && !founded)
+                                    {
+                                        var newProcesses = Process.GetProcessesByName("chrome").ToList();
+
+                                        var newProc = newProcesses.Where(n =>
+                                            !processes.Select(s => s.Id).Contains(n.Id)).ToList();
+
+                                        if (newProc.Count != 0)
+                                        {
+                                            founded = true;
+                                            newProc.ForEach(f =>
+                                            {
+                                                ShowWindow(f.MainWindowHandle, SW_MINIMIZE);
+                                                try
+                                                {
+                                                    f.Kill();
+                                                }
+                                                catch (Exception e)
+                                                {
+
+                                                }
+
+                                            });
+
+                                            processes.ForEach(f =>
+                                            {
+                                                ShowWindow(f.MainWindowHandle, SW_MINIMIZE);
+                                            });
+                                        }
+                                        else
+                                        {
+                                            Thread.Sleep(100);
+                                        }
+                                    }
+                                });
+
+                                th.Start();
                             }
-                            }
-                            catch (Exception e)
-                            {
+                        }
+                        catch (Exception e)
+                        {
+                            File.AppendAllText("error.txt", e.Message);
+                        }
 
-                            }
+                        window?.Close();
+                    });
+                }
+            });
 
-                            Close();
-                        });
-                    }
-                });
-
-                _lastThread.Start();
-            }
+            _lastThread.Start();
         }
 
         public static string GetListOfChannels()
@@ -165,13 +223,18 @@ namespace AceRemoteControl
                 ;
 
                 var screens = await Task.Run(() => Screen.AllScreens);
-                while (screens.Length <= 1)
-                {
-                    Thread.Sleep(100);
-                    screens = await Task.Run(() => Screen.AllScreens);
-                }
+                //while (screens.Length <= 1)
+                //{
+                //    Thread.Sleep(100);
+                //    screens = await Task.Run(() => Screen.AllScreens);
+                //}
 
-                var notPrimary = screens.First(f => !Equals(f, Screen.PrimaryScreen));
+                var notPrimary = screens.FirstOrDefault(f => !Equals(f, Screen.PrimaryScreen));
+
+                if (notPrimary == null)
+                {
+                    notPrimary = screens.First();
+                }
 
                 Left = notPrimary.Bounds.X + 40;
                 Top = 40;
