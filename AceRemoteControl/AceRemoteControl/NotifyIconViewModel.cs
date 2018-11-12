@@ -8,7 +8,9 @@ using System.IO.Pipes;
 using System.Security.Permissions;
 using System.Security.Principal;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Threading;
 using AceRemoteControl;
@@ -16,6 +18,7 @@ using Microsoft.Win32;
 using NHotkey.Wpf;
 using Prism.Commands;
 using Prism.Mvvm;
+using Application = System.Windows.Application;
 
 namespace AceRemoteControl
 {
@@ -77,6 +80,16 @@ namespace AceRemoteControl
                                 Arguments = " /extend"
                             }
                         }.Start();
+
+                        var zzz = new Task<Screen[]>(()=> { return Screen.AllScreens; });
+                        zzz.RunSynchronously();
+                        var screens = zzz.Result;
+                        while (screens.Length <= 1)
+                        {
+                            Thread.Sleep(100);
+                            zzz.RunSynchronously();
+                            screens = zzz.Result;
+                        }
 
                         if (!File.Exists(HistoryFile))
                         {

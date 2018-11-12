@@ -16,6 +16,7 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
+            <RowDefinition Height="18"/>
             <RowDefinition />
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
@@ -25,7 +26,10 @@
             <TextBox Width="150" Margin="10 0 0 0" Text="{Binding Path=SearchText, UpdateSourceTrigger=PropertyChanged}" PreviewKeyDown="UIElement_OnPreviewKeyDown" />
         </StackPanel>
 
-        <ListBox Grid.Row="1" ItemsSource="{Binding FilteredChannels}">
+        <Button Grid.Row="1" Click="ToggleButton_OnChecked">Убрать выделение</Button>
+        <Button Grid.Row="1" Grid.Column="2" Click="ToggleButton_OnChecked1">Убрать выделение</Button>
+
+        <ListBox Grid.Row="2" ItemsSource="{Binding FilteredChannels}" PreviewMouseDoubleClick="Control_OnPreviewMouseDoubleClick" Name="lb1">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -36,7 +40,7 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <StackPanel Margin="10 0 10 0" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center">
+        <StackPanel Margin="10 0 10 0" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center">
             <Button Command="{Binding AddCommand}">Добавить -></Button>
             <Button Content="&lt;- Убрать" Margin="0 10 0 0" Command="{Binding Path=RemoveCommand}"></Button>
         </StackPanel>
@@ -46,7 +50,7 @@
             <Button Content="Вверх" Margin="10 0 0 0" Command="{Binding Path=UpCommand}"></Button>
         </StackPanel>
 
-        <ListBox Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Channels}" SelectedValue="{Binding Path=SelectedChannel}">
+        <ListBox Name="lb2" Grid.Row="2" Grid.Column="2" ItemsSource="{Binding Channels}" SelectedValue="{Binding Path=SelectedChannel}" PreviewMouseDoubleClick="Control_OnPreviewMouseDoubleClick">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -58,7 +62,7 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <StackPanel HorizontalAlignment="Center" Grid.Row="2" Grid.ColumnSpan="3" Orientation="Horizontal">
+        <StackPanel HorizontalAlignment="Center" Grid.Row="3" Grid.ColumnSpan="3" Orientation="Horizontal">
             <Button Height="30" Name="SaveBtn" Command="{Binding Path=SaveCommand}">Сохранить</Button>
             <Button Margin="10 0 0 0" Height="30" Click="ButtonBase_OnClick">Отменить</Button>
         </StackPanel>
