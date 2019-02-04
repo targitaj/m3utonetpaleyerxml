@@ -77,6 +77,15 @@ namespace TCDaemonTray.Controls
             set { SetValue(IconProperty, value); }
         }
 
+        public static readonly DependencyProperty DoubleClickProperty = DependencyProperty.Register(
+            nameof(DoubleClick), typeof(ICommand), typeof(NotifyIconWpf));
+
+        public ICommand DoubleClick
+        {
+            get { return (ICommand)GetValue(DoubleClickProperty); }
+            set { SetValue(DoubleClickProperty, value); }
+        }
+
         /// <summary>
         /// Constructor for <see cref="NotifyIconWpf"/>
         /// </summary>
@@ -102,6 +111,11 @@ namespace TCDaemonTray.Controls
 
             _notifyIcon.Visible = true;
 
+            if (PreviewMouseLeftButtonUpEvent != null)
+            {
+
+            }
+
             var dataContextPropertyDescriptor =
                 DependencyPropertyDescriptor.FromProperty(DataContextProperty, typeof(NotifyIconWpf));
 
@@ -112,6 +126,13 @@ namespace TCDaemonTray.Controls
                     ContextMenu.DataContext = DataContext;
                 }
             });
+
+            _notifyIcon.DoubleClick += _notifyIcon_DoubleClick;
+        }
+
+        private void _notifyIcon_DoubleClick(object sender, EventArgs e)
+        {
+            DoubleClick?.Execute(null);
         }
 
         private System.Windows.Forms.MenuItem ContextMenuItemToFormsItem(object @object)

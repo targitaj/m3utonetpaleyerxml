@@ -6,7 +6,8 @@
                     xmlns:common="clr-namespace:TCDaemonUpdater.Common;assembly=TCDaemonUpdater.Common"
                     xmlns:system="clr-namespace:System;assembly=mscorlib"
                     xmlns:controls="clr-namespace:TCDaemonTray.Controls"
-                    xmlns:aceRemoteControl="clr-namespace:AceRemoteControl">
+                    xmlns:aceRemoteControl="clr-namespace:AceRemoteControl"
+                    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity">
     <ContextMenu x:Shared="false" x:Key="SysTrayMenu">
         <MenuItem Header="Настройка каналов" Command="{Binding ChannelSetupCommand}" />
         <MenuItem Header="Выход" Command="{Binding ExitCommand}" />
@@ -16,6 +17,7 @@
         x:Key="NotifyIconWpf"
         ToolTipText="Удаленное управление Ace"
         ContextMenu="{StaticResource SysTrayMenu}"
+        DoubleClick="{Binding Path=DoubleClick}"
     >
         <controls:NotifyIconWpf.DataContext>
             <aceRemoteControl:NotifyIconViewModel />

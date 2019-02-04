@@ -45,6 +45,8 @@ namespace AceRemoteControl
 
         //public static List<string> Records = new List<string>();
 
+        public ICommand DoubleClick => new DelegateCommand(() => { ShowMainWindow(); });
+
         /// <summary>
         /// Constructor for <see cref="NotifyIconViewModel"/>
         /// </summary>
@@ -59,47 +61,53 @@ namespace AceRemoteControl
             HotkeyManager.Current.AddOrReplace("Decimal", Key.Decimal, ModifierKeys.None,
                 (e, args) =>
                 {
-                    var vlcEngineProcess = Process.GetProcessesByName("vlc");
-
-                    foreach (var process in vlcEngineProcess)
+                    Process.Start(new ProcessStartInfo("shutdown", "/s /t 0")
                     {
-                        process.Kill();
-                    }
+                        CreateNoWindow = true,
+                        UseShellExecute = false
+                    });
 
-                    if (vlcEngineProcess.Length == 0)
-                    {
-                        new Process()
-                        {
-                            StartInfo =
-                            {
-                                CreateNoWindow = true,
-                                WindowStyle = ProcessWindowStyle.Hidden,
-                                FileName = Environment.Is64BitOperatingSystem && !Environment.Is64BitProcess
-                                    ? Environment.ExpandEnvironmentVariables(@"%windir%\sysnative\DisplaySwitch.exe")
-                                    : "DisplaySwitch.exe",
-                                Arguments = " /extend"
-                            }
-                        }.Start();
+                    //var vlcEngineProcess = Process.GetProcessesByName("vlc");
 
-                        var zzz = new Task<Screen[]>(()=> { return Screen.AllScreens; });
-                        zzz.RunSynchronously();
-                        var screens = zzz.Result;
-                        while (screens.Length <= 1)
-                        {
-                            Thread.Sleep(100);
-                            zzz.RunSynchronously();
-                            screens = zzz.Result;
-                        }
+                    //foreach (var process in vlcEngineProcess)
+                    //{
+                    //    process.Kill();
+                    //}
 
-                        if (!File.Exists(HistoryFile))
-                        {
-                            File.WriteAllText(HistoryFile, "0");
-                        }
+                    //if (vlcEngineProcess.Length == 0)
+                    //{
+                    //    new Process()
+                    //    {
+                    //        StartInfo =
+                    //        {
+                    //            CreateNoWindow = true,
+                    //            WindowStyle = ProcessWindowStyle.Hidden,
+                    //            FileName = Environment.Is64BitOperatingSystem && !Environment.Is64BitProcess
+                    //                ? Environment.ExpandEnvironmentVariables(@"%windir%\sysnative\DisplaySwitch.exe")
+                    //                : "DisplaySwitch.exe",
+                    //            Arguments = " /extend"
+                    //        }
+                    //    }.Start();
 
-                        ShowInformation(File.ReadAllText(HistoryFile), false);
+                    //    var zzz = new Task<Screen[]>(()=> { return Screen.AllScreens; });
+                    //    zzz.RunSynchronously();
+                    //    var screens = zzz.Result;
+                    //    while (screens.Length <= 1)
+                    //    {
+                    //        Thread.Sleep(100);
+                    //        zzz.RunSynchronously();
+                    //        screens = zzz.Result;
+                    //    }
 
-                        //File.WriteAllText("Debug.txt", string.Join(Environment.NewLine, Records));
-                    }
+                    //    if (!File.Exists(HistoryFile))
+                    //    {
+                    //        File.WriteAllText(HistoryFile, "0");
+                    //    }
+
+                    //    ShowInformation(File.ReadAllText(HistoryFile), false);
+
+                    //File.WriteAllText("Debug.txt", string.Join(Environment.NewLine, Records));
+                //}
                 });
 
             HotkeyManager.Current.AddOrReplace("Subtract", Key.Subtract, ModifierKeys.None,
