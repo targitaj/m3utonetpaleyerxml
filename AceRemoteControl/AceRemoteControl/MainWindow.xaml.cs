@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,10 +36,7 @@ namespace AceRemoteControl
 
         private void UIElement_OnPreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Decimal)
-            {
-                var zz = e.Key;
-            }
+            File.AppendAllText("keylog.txt", e.Key.ToString());
         }
 
         private void Control_OnPreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
