@@ -61,53 +61,11 @@ namespace AceRemoteControl
             HotkeyManager.Current.AddOrReplace("Decimal", Key.Decimal, ModifierKeys.None,
                 (e, args) =>
                 {
-                    Process.Start(new ProcessStartInfo("shutdown", "/s /t 0")
+                    Process.Start(new ProcessStartInfo("shutdown", "/s /t 1 /f")
                     {
                         CreateNoWindow = true,
                         UseShellExecute = false
                     });
-
-                    //var vlcEngineProcess = Process.GetProcessesByName("vlc");
-
-                    //foreach (var process in vlcEngineProcess)
-                    //{
-                    //    process.Kill();
-                    //}
-
-                    //if (vlcEngineProcess.Length == 0)
-                    //{
-                    //    new Process()
-                    //    {
-                    //        StartInfo =
-                    //        {
-                    //            CreateNoWindow = true,
-                    //            WindowStyle = ProcessWindowStyle.Hidden,
-                    //            FileName = Environment.Is64BitOperatingSystem && !Environment.Is64BitProcess
-                    //                ? Environment.ExpandEnvironmentVariables(@"%windir%\sysnative\DisplaySwitch.exe")
-                    //                : "DisplaySwitch.exe",
-                    //            Arguments = " /extend"
-                    //        }
-                    //    }.Start();
-
-                    //    var zzz = new Task<Screen[]>(()=> { return Screen.AllScreens; });
-                    //    zzz.RunSynchronously();
-                    //    var screens = zzz.Result;
-                    //    while (screens.Length <= 1)
-                    //    {
-                    //        Thread.Sleep(100);
-                    //        zzz.RunSynchronously();
-                    //        screens = zzz.Result;
-                    //    }
-
-                    //    if (!File.Exists(HistoryFile))
-                    //    {
-                    //        File.WriteAllText(HistoryFile, "0");
-                    //    }
-
-                    //    ShowInformation(File.ReadAllText(HistoryFile), false);
-
-                    //File.WriteAllText("Debug.txt", string.Join(Environment.NewLine, Records));
-                //}
                 });
 
             HotkeyManager.Current.AddOrReplace("Subtract", Key.Subtract, ModifierKeys.None,

@@ -121,7 +121,7 @@ namespace AceRemoteControl
                                 FileInfo enginePath = new FileInfo(ConfigurationManager.AppSettings["AceEnginePath"]);
 
                                 var proc = Process.Start(enginePath.FullName);
-                                Thread.Sleep(4000);
+                                Thread.Sleep(3000);
 
 
 
