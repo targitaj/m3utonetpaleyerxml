@@ -21,6 +21,7 @@ namespace AceRemoteControl
         private List<Channel> _allChannels;
         private List<Channel> _filteredChannels;
         private const string FILE_CHANNELS = "channels.json";
+
         private ObservableCollection<Channel> _channels = new ObservableCollection<Channel>();
         private string _searchText = string.Empty;
         private ObservableCollection<Channel> _favorites;
@@ -32,6 +33,8 @@ namespace AceRemoteControl
 
         public DelegateCommand SaveCommand => new DelegateCommand(Save);
 
+        public DelegateCommand ApplyCommand => new DelegateCommand(Apply);
+
         public DelegateCommand DownCommand => new DelegateCommand(Down);
 
 
@@ -39,28 +42,25 @@ namespace AceRemoteControl
 
         public Channel SelectedChannel
         {
-            get { return _selectedChannel; }
-            set { SetProperty(ref _selectedChannel, value); }
+            get => _selectedChannel;
+            set => SetProperty(ref _selectedChannel, value);
         }
 
         public List<Channel> FilteredChannels
         {
-            get { return _filteredChannels; }
-            set
-            {
-                SetProperty(ref _filteredChannels, value);
-            }
+            get => _filteredChannels;
+            set => SetProperty(ref _filteredChannels, value);
         }
 
         public ObservableCollection<Channel> Favorites
         {
-            get { return _favorites; }
-            set { _favorites = value; }
+            get => _favorites;
+            set => _favorites = value;
         }
 
         public ObservableCollection<Channel> Channels
         {
-            get { return _channels; }
+            get => _channels;
             set
             {
                 SetProperty(ref _channels, value);
@@ -87,7 +87,6 @@ namespace AceRemoteControl
             get { return _searchText; }
             set
             {
-
                 SetProperty(ref _searchText, value);
                 ApplyFilter();
             }
@@ -183,6 +182,11 @@ namespace AceRemoteControl
         {
             File.WriteAllText(FILE_CHANNELS, JsonConvert.SerializeObject(Channels));
             Application.Current.MainWindow.Close();
+        }
+
+        private void Apply()
+        {
+            File.WriteAllText(FILE_CHANNELS, JsonConvert.SerializeObject(Channels));
         }
 
         public static List<Channel> ReadAllChannels(string sourceStr)
