@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -109,8 +110,10 @@ namespace AceRemoteControl
                         {
                             number = channels.Count > number ? number : channels.Count - 1;
                             channel = channels[number].Text;
+                            
                         }
 
+                        var channelAudio = channels.FirstOrDefault(f => f.Text == channel)?.AudioChannelName;
                         if (!string.IsNullOrWhiteSpace(channel))
                         {
                             string regex =
@@ -140,12 +143,8 @@ namespace AceRemoteControl
                                 var proc = Process.Start(enginePath.FullName);
                             }
 
-                            //Thread.Sleep(3000);
-
-
-
                             Process.Start(ConfigurationManager.AppSettings["VLCPath"],
-                                $"--fullscreen --qt-fullscreen-screennumber={Screen.AllScreens.Length - 1} http://127.0.0.1:{ConfigurationManager.AppSettings["AcePort"]}/ace/getstream?id={matches[0].Groups[1].Value}&preferred_audio_language=rus ");
+                                $"--fullscreen --audio-language=rus --qt-fullscreen-screennumber={Screen.AllScreens.Length - 1} http://127.0.0.1:{ConfigurationManager.AppSettings["AcePort"]}/ace/getstream?id={matches[0].Groups[1].Value}"); //&preferred_audio_language={(string.IsNullOrWhiteSpace(channelAudio) ? "rus" : HttpUtility.UrlPathEncode(channelAudio))} ");
 
 
                             var th = new Thread(() =>
