@@ -20,6 +20,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using log4net;
 using Application = System.Windows.Application;
 
 namespace AceRemoteControl
@@ -29,9 +30,11 @@ namespace AceRemoteControl
     /// </summary>
     public partial class Information : Window
     {
+        private static ILog _logger = LogManagerHelper.GetLogger<Information>();
         private static DateTime _closeTime;
         private static Thread _lastThread;
         private static Thread _windowCloseThread;
+        private static Thread _monitorStatusThread;
 
         private const int SW_MAXIMIZE = 3;
         private const int SW_MINIMIZE = 6;
@@ -68,22 +71,16 @@ namespace AceRemoteControl
 
         public static void StartVideo(string nuber, Window window, string text)
         {
-            try
-            {
-                _lastThread.Abort();
-            }
-            catch (Exception e)
-            {
-
-            }
-            try
-            {
-                _windowCloseThread.Abort();
-            }
-            catch (Exception e)
-            {
-
-            }
+            TryAction(() => { stream?.Close(); });
+            TryAction(() => { stream?.Dispose(); });
+            TryAction(() => { contextResponse.OutputStream.Close(); });
+            TryAction(() => { contextResponse.OutputStream.Dispose(); });
+            TryAction(() => { contextResponse.Close(); });
+            TryAction(() => { httpListener.Close(); });
+            TryAction(() => { _lastThread.Abort(); });
+            TryAction(() => { _windowCloseThread.Abort(); });
+            TryAction(() => { _monitorStatusThread.Abort(); });
+            TryAction(() => { httpListener.Close(); });
 
             _windowCloseThread = new Thread(() =>
             {
@@ -96,11 +93,11 @@ namespace AceRemoteControl
 
             _lastThread = new Thread(() =>
             {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
+                
                     try
                     {
-                        Helper.RefreshTrayArea();
+                        started = null;
+                        Application.Current.Dispatcher.Invoke(() => { Helper.RefreshTrayArea(); });
                         string list = GetListOfChannels();
                         var channels = MainWindowModel.ReadChannels();
                         var number = int.Parse(nuber);
@@ -135,71 +132,303 @@ namespace AceRemoteControl
                                 process.Kill();
                             }
 
-                            var processes = Process.GetProcessesByName("chrome").ToList();
+                            
                             FileInfo enginePath = new FileInfo(ConfigurationManager.AppSettings["AceEnginePath"]);
 
                             if (!aceEngineProcess.Any())
                             {
-                                var proc = Process.Start(enginePath.FullName);
+                                Process.Start(enginePath.FullName);
                             }
 
-                            Process.Start(ConfigurationManager.AppSettings["VLCPath"],
-                                $"--fullscreen --audio-language=rus --qt-fullscreen-screennumber={Screen.AllScreens.Length - 1} http://127.0.0.1:{ConfigurationManager.AppSettings["AcePort"]}/ace/getstream?id={matches[0].Groups[1].Value}"); //&preferred_audio_language={(string.IsNullOrWhiteSpace(channelAudio) ? "rus" : HttpUtility.UrlPathEncode(channelAudio))} ");
+                            var streamUrl =
+                                $"http://127.0.0.1:{ConfigurationManager.AppSettings["AcePort"]}/ace/getstream?id={matches[0].Groups[1].Value}";
 
-
-                            var th = new Thread(() =>
+                            _monitorStatusThread = new Thread(() =>
                             {
-                                DateTime dtDateTime = DateTime.Now;
-
-
-                                var founded = false;
-                                while (dtDateTime > DateTime.Now.AddSeconds(-30) && !founded)
-                                {
-                                    var newProcesses = Process.GetProcessesByName("chrome").ToList();
-
-                                    var newProc = newProcesses.Where(n =>
-                                        !processes.Select(s => s.Id).Contains(n.Id)).ToList();
-
-                                    if (newProc.Count != 0)
-                                    {
-                                        founded = true;
-                                        newProc.ForEach(f =>
-                                        {
-                                            ShowWindow(f.MainWindowHandle, SW_MINIMIZE);
-                                            try
-                                            {
-                                                f.Kill();
-                                            }
-                                            catch (Exception e)
-                                            {
-
-                                            }
-
-                                        });
-
-                                        processes.ForEach(f => { ShowWindow(f.MainWindowHandle, SW_MINIMIZE); });
-                                    }
-                                    else
-                                    {
-                                        Thread.Sleep(100);
-                                    }
-                                }
+                                MonitorStatus(streamUrl, nuber, window, text);
                             });
+                            _monitorStatusThread.Start();
 
-                            th.Start();
+                            string localHostUrl = "http://localhost";
+                            string port = "9988";
+
+                            string prefix = $"{localHostUrl}:{port}/";
+
+                            while (!started.HasValue)
+                            {
+                                Thread.Sleep(50);
+                            }
+
+                            if (started == true)
+                            {
+                                Process.Start(ConfigurationManager.AppSettings["VLCPath"],
+                                    $"--fullscreen --audio-language=rus --qt-fullscreen-screennumber={Screen.AllScreens.Length - 1} {prefix}");
+                            }
+                            
+                            //Process.Start(ConfigurationManager.AppSettings["VLCPath"],
+                            //    $"--fullscreen --audio-language=rus --qt-fullscreen-screennumber={Screen.AllScreens.Length - 1} {@"C:\svn\trunk\AceRemoteControl\AceRemoteControl\bin\Debug\VideoFileMonitorStatus.avi"}");
+
+                            //Process.Start(ConfigurationManager.AppSettings["VLCPath"],
+                            //    $"--fullscreen --audio-language=rus --qt-fullscreen-screennumber={Screen.AllScreens.Length - 1} {streamUrl}");
+
+
+
+                            
                         }
                     }
                     catch (Exception e)
                     {
-                        File.AppendAllText("error.txt", e.Message);
+                        _logger.Debug("_lastThread", e);
                     }
 
 
                 });
-            });
+            //});
 
             _windowCloseThread.Start();
             _lastThread.Start();
+        }
+
+        private static int tryCount = 0;
+        private static bool? started = null;
+        private static Stream stream = null;
+        private static HttpListenerResponse contextResponse;
+        private static HttpListener httpListener;
+
+        private static void MonitorStatus(string url, string nuber, Window window, string text)
+        {
+            
+            
+            try
+            {
+                var tryTimeTill = DateTime.Now.AddMinutes(1);
+                httpListener = new HttpListener();
+                WebResponse response = null;
+                WebRequest req;
+                var processes = Process.GetProcessesByName("chrome").ToList();
+
+                var chromeKill = new Action(() =>
+                
+                    
+                    {
+                        try
+                        {
+                            DateTime dtDateTime = DateTime.Now;
+
+
+                            var founded = false;
+                            while (dtDateTime > DateTime.Now.AddSeconds(-30) && !founded)
+                            {
+                                var newProcesses = Process.GetProcessesByName("chrome").ToList();
+
+                                var newProc = newProcesses.Where(n =>
+                                    !processes.Select(s => s.Id).Contains(n.Id)).ToList();
+
+                                if (newProc.Count != 0)
+                                {
+                                    founded = true;
+                                    newProc.ForEach(f =>
+                                    {
+                                        ShowWindow(f.MainWindowHandle, SW_MINIMIZE);
+                                        try
+                                        {
+                                            f.Kill();
+                                        }
+                                        catch (Exception e)
+                                        {
+
+                                        }
+
+                                    });
+
+                                    processes.ForEach(f => { ShowWindow(f.MainWindowHandle, SW_MINIMIZE); });
+                                }
+                                else
+                                {
+                                    Thread.Sleep(100);
+                                }
+                            }
+                        }
+                        catch 
+                        {
+                        }
+
+                });
+
+
+
+                Thread th = null;
+
+                while (DateTime.Now <= tryTimeTill)
+                {
+                    try
+                    {
+                        th = new Thread(chromeKill.Invoke);
+                        th.Start();
+                        req = WebRequest.Create(url);
+                        req.Timeout = 5000;
+                        response = req.GetResponse();
+                        
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        TryAction(() => { th?.Abort(); });
+                        Thread.Sleep(20);
+                    }
+                }
+
+                if (response == null)
+                {
+                    started = false;
+                    return;
+                }
+
+                stream = response.GetResponseStream();
+
+                string localHostUrl = "http://localhost";
+                string port = "9988";
+
+                string prefix = $"{localHostUrl}:{port}/";
+                httpListener.Prefixes.Add(prefix);
+                httpListener.Start();
+                started = true;
+
+                var context = httpListener.GetContext();
+
+                contextResponse = context.Response;
+                SaveStreamToFile("VideoFileMonitorStatus.avi", stream, contextResponse.OutputStream);
+                //stream?.CopyTo(contextResponse.OutputStream);
+
+                //tryCount = 0;
+
+                var aceEngineFileInfo = new FileInfo(ConfigurationManager.AppSettings["AceEnginePath"]);
+                var aceEngineProcess = Process.GetProcessesByName(
+                    aceEngineFileInfo.Name.Replace(aceEngineFileInfo.Extension, ""));
+
+                foreach (var process in aceEngineProcess)
+                {
+                    try
+                    {
+                        process.Kill();
+                    }
+                    catch { }
+                }
+
+                StartVideo(nuber, window, text);
+
+                _logger.Debug("Kill after SaveStreamToFile");
+                //File.AppendAllText("kill.txt",
+                //    DateTime.Now.ToString("O") + " " + "Was killed");
+
+                
+                TryAction(()=>{ stream?.Close(); });
+                TryAction(() => { stream?.Dispose(); });
+                TryAction(() => { contextResponse.OutputStream.Close(); });
+                TryAction(() => { contextResponse.OutputStream.Dispose(); });
+                TryAction(() => { contextResponse.Close(); });
+                TryAction(() => { httpListener.Close(); });
+            }
+            catch (HttpListenerException le)
+            {
+                _logger.Debug("All is ok HttpListenerException");
+            }
+            catch (Exception e)
+            {
+                var aceEngineFileInfo = new FileInfo(ConfigurationManager.AppSettings["AceEnginePath"]);
+                var aceEngineProcess = Process.GetProcessesByName(
+                    aceEngineFileInfo.Name.Replace(aceEngineFileInfo.Extension, ""));
+
+                foreach (var process in aceEngineProcess)
+                {
+                    try
+                    {
+                        process.Kill();
+                    }
+                    catch { }
+                }
+
+                _logger.Debug("Killed", e);
+                //File.AppendAllText("kill.txt",
+                //    DateTime.Now.ToString("O") + " " + "Was killed" + Environment.NewLine +
+                //    App.GetExceptionFullInformation(e) + Environment.NewLine);
+                StartVideo(nuber, window, text);
+            }
+            finally
+            {
+                if (stream != null)
+                {
+                    stream.Close();
+                    stream.Dispose();
+                }
+            }
+        }
+
+        private static void TryAction(Action tryAction)
+        {
+            try
+            {
+                tryAction.Invoke();
+            }
+            catch { }
+        }
+
+        public static void SaveStreamToFile(string fileFullPath, Stream stream, Stream webStream)
+        {
+            File.Delete(fileFullPath);
+            FileStream fileStream = null;
+
+            try
+            {
+                fileStream = File.Create(fileFullPath);
+
+                int length = 10000000;
+                var bytes = new byte[length];
+                int offset;
+                DateTime endTime = DateTime.Now.AddSeconds(5);
+                DateTime closeTime = DateTime.Now.AddSeconds(1);
+                do
+                {
+                    stream.ReadTimeout = 10000;
+                    offset = stream.Read(bytes, 0, length);
+
+                    //if (Config.WriteVideoFileMonitorStatus)
+                    //{
+                    fileStream.Write(bytes, 0, offset);
+                    webStream.Write(bytes, 0, offset);
+                    //}
+
+                    if (closeTime <= DateTime.Now)
+                    {
+                        fileStream.Flush();
+                        closeTime = DateTime.Now.AddSeconds(1);
+                        fileStream.Close();
+                        fileStream.Dispose();
+
+                        fileStream = File.Open(fileFullPath, FileMode.Append);
+                    }
+
+                    if (offset > 0)
+                    {
+                        endTime = DateTime.Now.AddSeconds(5);
+                    }
+
+                    
+                } while (endTime >= DateTime.Now);
+            }
+            catch (Exception exception)
+            {
+                _logger.Debug("SaveStreamToFile", exception);
+                throw;
+            }
+            finally
+            {
+                if (fileStream != null)
+                {
+                    fileStream.Close();
+                    fileStream.Dispose();
+                }
+            }
         }
 
         public static string GetListOfChannels()
