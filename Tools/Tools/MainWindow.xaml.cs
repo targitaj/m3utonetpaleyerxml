@@ -385,7 +385,7 @@ namespace Deleter
 
             var endYear = 2100;
             var currYear = 0;
-            var currDate = new DateTime(2016, 1, 1);
+            var currDate = new DateTime(2019, 1, 1);
             //CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(1)
             var curMonth = string.Empty;
             var hasMonth = false;
@@ -398,17 +398,16 @@ namespace Deleter
                     res += "<tr><td><br>" + currYear + "</td></tr>";
                 }
 
-                //if (IsHoliday(curDateTime) && curDateTime.DayOfWeek != DayOfWeek.Sunday &&
-                //    curDateTime.DayOfWeek != DayOfWeek.Saturday)
-                //{
-                //    if (hasMonth)
-                //    {
-                //        res += "</td></tr>";
-                //    }
+                if (IsHoliday(currDate) && curMonth != _enCulture.DateTimeFormat.GetMonthName(currDate.Month))
+                {
+                    if (hasMonth)
+                    {
+                        res += "</td></tr>";
+                    }
 
-                //    hasMonth = false;
-                //    curMonth = _enCulture.DateTimeFormat.GetMonthName(currDate.Month);
-                //}
+                    hasMonth = false;
+                    curMonth = _enCulture.DateTimeFormat.GetMonthName(currDate.Month);
+                }
 
                 if (ci.IsHoliday(currDate))
                 {
