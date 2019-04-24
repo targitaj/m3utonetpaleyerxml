@@ -13,6 +13,7 @@ namespace AceRemoteControl
         private string _text;
         private int _positionNumber;
         private string _audioChannelName;
+        private string _type;
 
         public bool IsSelected
         {
@@ -36,6 +37,12 @@ namespace AceRemoteControl
         {
             get => _audioChannelName;
             set => SetProperty(ref _audioChannelName, value);
+        }
+
+        public string Type
+        {
+            get => _type;
+            set => SetProperty(ref _type, value);
         }
 
         public Channel Clone()
