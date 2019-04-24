@@ -58,6 +58,23 @@ namespace AceRemoteControl
                 return;
             }
 
+            HotkeyManager.Current.AddOrReplace("Divide", Key.Divide, ModifierKeys.None,
+                (e, args) =>
+                {
+                    new Process()
+                    {
+                        StartInfo =
+                            {
+                                CreateNoWindow = true,
+                                WindowStyle = ProcessWindowStyle.Hidden,
+                                FileName = Environment.Is64BitOperatingSystem && !Environment.Is64BitProcess
+                                    ? Environment.ExpandEnvironmentVariables(@"%windir%\sysnative\DisplaySwitch.exe")
+                                    : "DisplaySwitch.exe",
+                                Arguments = " /extend"
+                            }
+                    }.Start();
+                });
+
             HotkeyManager.Current.AddOrReplace("Decimal", Key.Decimal, ModifierKeys.None,
                 (e, args) =>
                 {
