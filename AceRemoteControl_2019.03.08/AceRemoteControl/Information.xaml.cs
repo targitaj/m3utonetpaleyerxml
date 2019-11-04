@@ -256,15 +256,16 @@ namespace AceRemoteControl
                 });
 
 
-
-                Thread th = null;
-
                 while (DateTime.Now <= tryTimeTill)
                 {
+                    Thread th = null;
                     try
                     {
-                        th = new Thread(chromeKill.Invoke);
-                        th.Start();
+                        TryAction(() => {
+                            th = new Thread(chromeKill.Invoke);
+                            th.Start();
+                        });
+                        
                         req = WebRequest.Create(url);
                         req.Timeout = 5000;
                         response = req.GetResponse();
@@ -315,6 +316,8 @@ namespace AceRemoteControl
                     catch { }
                 }
 
+                Thread.Sleep(1500);
+
                 StartVideo(nuber, window, text);
 
                 _logger.Debug("Kill after SaveStreamToFile");
@@ -347,6 +350,8 @@ namespace AceRemoteControl
                     }
                     catch { }
                 }
+
+                Thread.Sleep(1500);
 
                 _logger.Debug("Killed", e);
                 //File.AppendAllText("kill.txt",

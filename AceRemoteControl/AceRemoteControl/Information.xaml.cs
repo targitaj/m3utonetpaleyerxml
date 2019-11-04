@@ -20,6 +20,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using log4net;
 using Application = System.Windows.Application;
 
 namespace AceRemoteControl
@@ -32,6 +33,7 @@ namespace AceRemoteControl
         private static DateTime _closeTime;
         private static Thread _lastThread;
         private static Thread _windowCloseThread;
+        private static ILog _logger = LogManagerHelper.GetLogger<Information>();
 
         private const int SW_MAXIMIZE = 3;
         private const int SW_MINIMIZE = 6;
@@ -123,10 +125,13 @@ namespace AceRemoteControl
                             var aceEngineProcess = Process.GetProcessesByName(
                                 aceEngineFileInfo.Name.Replace(aceEngineFileInfo.Extension, ""));
 
-                            //foreach (var process in aceEngineProcess)
-                            //{
-                            //    process.Kill();
-                            //}
+                            if (bool.Parse(ConfigurationManager.AppSettings["KillAce"]))
+                            {           
+                                foreach (var process in aceEngineProcess)
+                                {
+                                    process.Kill();
+                                }
+                            }
 
                             var vlcEngineProcess = Process.GetProcessesByName("vlc");
 
@@ -140,8 +145,10 @@ namespace AceRemoteControl
 
                             if (!aceEngineProcess.Any())
                             {
-                                var proc = Process.Start(enginePath.FullName);
+                                Process.Start(enginePath.FullName);
                             }
+
+                            Thread.Sleep(int.Parse(ConfigurationManager.AppSettings["WaitMilliseconds"]));
 
                             Process.Start(ConfigurationManager.AppSettings["VLCPath"],
                                 $"--fullscreen --audio-language=rus --qt-fullscreen-screennumber={Screen.AllScreens.Length - 1} http://127.0.0.1:{ConfigurationManager.AppSettings["AcePort"]}/ace/getstream?id={matches[0].Groups[1].Value}"); //&preferred_audio_language={(string.IsNullOrWhiteSpace(channelAudio) ? "rus" : HttpUtility.UrlPathEncode(channelAudio))} ");
@@ -191,7 +198,7 @@ namespace AceRemoteControl
                     }
                     catch (Exception e)
                     {
-                        File.AppendAllText("error.txt", e.Message);
+                        _logger.Debug("error", e);
                     }
 
 

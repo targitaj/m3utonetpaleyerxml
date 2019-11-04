@@ -377,6 +377,20 @@ namespace Deleter
             }
         }
 
+        private void btnAppendText_Click(object sender, RoutedEventArgs e)
+        {
+            var di = new DirectoryInfo(tbPathRenamer.Text);
+            var counter = 0;
+
+            foreach (var file in di.GetFiles())
+            {
+                File.Move(file.FullName,
+                    file.FullName + tbAppendedText.Text);
+
+                counter++;
+            }
+        }
+
         private CultureInfo _enCulture = new CultureInfo("en-US");
 
         private void TestBase_OnClick(object sender, RoutedEventArgs e)

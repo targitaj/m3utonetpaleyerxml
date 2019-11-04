@@ -58,6 +58,8 @@
                     <Button Content="Select Directory" HorizontalAlignment="Left" Margin="148,32,0,0" VerticalAlignment="Top" Width="108" Name="btnSelDirectoryRenamer" Click="BtnSelDirectoryRenamer_OnClick"/>
                     <TextBox HorizontalAlignment="Left" Height="23" Margin="10,32,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="133" Name="tbPathRenamer"/>
                     <Button Content="Rename" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Width="108" Click="btnRename_Click"/>
+                    <Button Content="AppendText" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top" Width="108" Click="btnAppendText_Click"/>
+                    <TextBox HorizontalAlignment="Left" Height="23" Margin="150,90,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="133" Name="tbAppendedText"/>
                 </Grid>
             </TabItem>
             <TabItem Header="torrent tv Service">
