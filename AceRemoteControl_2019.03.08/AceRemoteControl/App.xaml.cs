@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
@@ -40,6 +41,11 @@ namespace AceRemoteControl
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
+            if (e.ExceptionObject is ThreadAbortException)
+            {
+                return;
+            }
+
             _logger.Debug("CurrentDomain_UnhandledException", e.ExceptionObject as Exception);
         }
 
