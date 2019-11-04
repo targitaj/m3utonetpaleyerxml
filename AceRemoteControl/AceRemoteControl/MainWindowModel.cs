@@ -104,7 +104,10 @@ namespace AceRemoteControl
         {
             FilteredChannels = string.IsNullOrWhiteSpace(SearchText)
                 ? _allChannels
-                : _allChannels.Where(w => w.Text.ToLower().Contains(SearchText.ToLower())).ToList();
+                : _allChannels.Where(w =>
+                        w.Text.ToLower().Contains(SearchText.ToLower()) ||
+                        w.Type.ToLower().Contains(SearchText.ToLower()))
+                    .ToList();
         }
 
         public void Down()
@@ -192,32 +195,51 @@ namespace AceRemoteControl
         public static List<Channel> ReadAllChannels(string sourceStr)
         {
             var res = new List<Channel>();
+            var matchExt = ConfigurationManager.AppSettings["UseEdem"] == "true" ? "#EXTINF:0," : "#EXTINF:-1,";
+
             //string sourceStr = File.ReadAllText(source, new UTF8Encoding());
             var selChannels = ReadChannels();
             for (int i = 0; i < sourceStr.Length; i++)
             {
-                int idx = sourceStr.IndexOf("#EXTINF:-1,", i);
-                i = idx + "#EXTINF:-1,".Length;
+                int idx = sourceStr.IndexOf(matchExt, i);
+                i = idx + matchExt.Length;
                 if (idx < 0)
                     break;
-                idx += "#EXTINF:-1,".Length;
-                while (sourceStr[idx] != '\n')
+                idx += matchExt.Length;
+                while (sourceStr[idx] != '\r')
                 {
                     idx++;
                 }
 
                 var channelName = sourceStr.Substring(i, idx - i);
+                var channelType = string.Empty;
+
+                if (ConfigurationManager.AppSettings["UseEdem"] == "true")
+                {
+                    idx = sourceStr.IndexOf("#EXTGRP:", i);
+                    i = idx + "#EXTGRP:".Length;
+                    if (idx < 0)
+                        break;
+                    idx += "#EXTGRP:".Length;
+                    while (sourceStr[idx] != '\r')
+                    {
+                        idx++;
+                    }
+
+                    channelType = sourceStr.Substring(i, idx - i);
+                }
 
                 res.Add(new Channel()
                 {
                     IsSelected = selChannels.Any(a => a.Text == channelName),
-                    Text = channelName
+                    Text = channelName,
+                    Type = channelType
                 });
 
                 i = idx;
             }
 
-            return res;
+            return res.OrderBy(o => o.Text).ToList();
         }
 
         private static List<Channel> _channelsCache = new List<Channel>();
