@@ -10,3 +10,9 @@
 /IPUpdater/.vs
 /IPUpdater/IPUpdater/bin
 /IPUpdater/IPUpdater/obj
+/Tools/.vs
+/Tools/Tools/bin
+/Tools/Tools/obj
+/Tools/TorrentTVService/obj
+/Tools/TorrentTVService/bin
+/Tools/packages
