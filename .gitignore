@@ -16,3 +16,7 @@
 /Tools/TorrentTVService/obj
 /Tools/TorrentTVService/bin
 /Tools/packages
+/AutoShutDown/packages
+/AutoShutDown/AutoShutDown/bin
+/AutoShutDown/AutoShutDown/obj
+/AutoShutDown/.vs
