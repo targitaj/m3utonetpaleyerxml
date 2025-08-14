@@ -9,8 +9,10 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Android;
+using Android.Provider;
 using Java.Util;
 using Exception = System.Exception;
 
@@ -33,9 +35,26 @@ public class MyService : Service
         //Log.Info(TAG, "Service created");
     }
 
+    public static string Sanitize(string fileName)
+    {
+        // 1) Path.GetInvalidFileNameChars() – для имени
+        // 2) Path.GetInvalidPathChars()     – для полного пути
+        var invalid = Path.GetInvalidFileNameChars()
+            .Concat(Path.GetInvalidPathChars())
+            .Distinct()
+            .ToArray();
+
+        // Быстрое решение через Regex
+        string pattern = $"[{Regex.Escape(new string(invalid))}]";
+        return Regex.Replace(fileName, pattern, " ");
+    }
+
     public  void UploadTextToFtp(string textData)
     {
-        request = (FtpWebRequest)WebRequest.Create("ftp://192.168.88.34:21/artom1.txt");
+        string deviceName = Settings.Global.GetString(
+            Application.Context.ContentResolver,
+            Settings.Global.DeviceName);
+        request = (FtpWebRequest)WebRequest.Create($"ftp://192.168.88.102:2222/screen/{Sanitize(deviceName)}.txt");
         request.Method = WebRequestMethods.Ftp.UploadFile; // Метод загрузки файла
         request.Credentials = new NetworkCredential("screen", "screen");
         request.UsePassive = true;
@@ -60,6 +79,7 @@ public class MyService : Service
     private List<string> _data = new List<string>();
     private Thread th;
     private bool? _isScreenOn;
+    private bool _isUploaded = true;
 
     public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
     {
@@ -78,7 +98,7 @@ public class MyService : Service
             {
                 try
                 {
-                    if (_data.Count > 10)
+                    if (_data.Count > 30)
                     {
                         _data.RemoveAt(0);
                     }
@@ -88,22 +108,22 @@ public class MyService : Service
                     {
                         _isScreenOn = isScreenOn;
                         _data.Add(DateTime.Now.ToString("s") + $": {(isScreenOn ? "Screen On" : "Screen Off")}");
+                        _isUploaded = false;
                         UploadTextToFtp(string.Join("\r\n", _data));
+                        _isUploaded = true;
+                    }
+
+                    if (!_isUploaded)
+                    {
+                        UploadTextToFtp(string.Join("\r\n", _data));
+                        _isUploaded = true;
                     }
                 }
                 catch (Exception e)
                 {
-                    try
-                    {
-                        //_data.Add(DateTime.Now.ToString("s") + $": {e.Message}");
-                        UploadTextToFtp(string.Join("\r\n", _data));
-                    }
-                    catch
-                    {
-                        
-                    }
+                    
                 }
-
+                
                 Thread.Sleep(1000);
             }
         });
