@@ -2,7 +2,9 @@
 using Android.Content;
 using Android.OS;
 using Android.Runtime;
+using Android.Util;
 using AndroidX.AppCompat.App;
+using System;
 
 namespace ScreenSatusAndroid
 {
@@ -12,6 +14,17 @@ namespace ScreenSatusAndroid
         public static Intent startIntent;
         protected override void OnCreate(Bundle savedInstanceState)
         {
+            AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+            {
+                Android.Util.Log.Error("CRASH", e.ExceptionObject.ToString());
+            };
+
+            AndroidEnvironment.UnhandledExceptionRaiser += (s, e) =>
+            {
+                Log.Error("CRASH", e.Exception.ToString());
+                e.Handled = true;
+            };
+
             base.OnCreate(savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             // Set our view from the "main" layout resource
