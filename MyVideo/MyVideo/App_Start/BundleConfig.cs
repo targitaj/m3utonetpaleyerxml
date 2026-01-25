@@ -38,6 +38,21 @@ namespace MyVideo
                         "~/Content/themes/base/jquery.ui.datepicker.css",
                         "~/Content/themes/base/jquery.ui.progressbar.css",
                         "~/Content/themes/base/jquery.ui.theme.css"));
+
+            bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
+                "~/Scripts/bootstrap.js",
+                "~/Scripts/respond.js"));
+
+            bundles.Add(new StyleBundle("~/Content/css").Include(
+                "~/Content/bootstrap.css",
+                "~/Content/site.css"));
+
+            // dropzonejs
+            bundles.Add(new ScriptBundle("~/bundles/dropzone").Include(
+                "~/Scripts/dropzone/dropzone.js"));
+            bundles.Add(new StyleBundle("~/Content/dropzonecss").Include(
+                "~/Scripts/dropzone/basic.css",
+                "~/Scripts/dropzone/dropzone.css"));
         }
     }
 }

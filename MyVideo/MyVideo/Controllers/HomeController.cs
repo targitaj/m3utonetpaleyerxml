@@ -15,12 +15,13 @@ using System.Web.Routing;
 using log4net;
 using MyVideo.Models;
 using WebGrease.Css.Extensions;
+using log4net.Config;
 
 namespace MyVideo.Controllers
 {
     public class HomeController : Controller
     {
-        private static readonly log4net.ILog log1 = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly log4net.ILog log1 = LogManager.GetLogger("Index");
 
         public string Source
         {
@@ -34,12 +35,18 @@ namespace MyVideo.Controllers
 
         public HomeController()
         {
+            var log4netConfigPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "log4net.config");
+            XmlConfigurator.Configure(new FileInfo(log4netConfigPath));
             //folders = System.IO.File.ReadAllLines(Source + "Folders.txt");
         }
 
         [ValidateInput(false)]
         public ActionResult Index(string source)
         {
+            if (!string.IsNullOrWhiteSpace(source))
+            {
+                log1.Debug($"Source: {Request.UserHostAddress} " + source);
+            }
             try
             {
                 //UrlExtensions.Prepend(Server.MapPath(@"~\TV\log.txt"), Environment.NewLine + DateTime.Now.ToLongDateString() + DateTime.Now.ToLongTimeString() + ": " + source + ": " + Request.UserHostAddress);
@@ -149,7 +156,7 @@ namespace MyVideo.Controllers
 
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult GetStream(string source, string offset, string fileFormat, string bitrate, bool isEmbed, int soundNumber, bool isVlc, bool isStream, string width)
+        public ActionResult GetStream(string source, string offset, string fileFormat, string bitrate, bool isEmbed, int soundNumber, bool isVlc, bool isStream, string width, string srt)
         {
             try
             {
@@ -279,7 +286,7 @@ namespace MyVideo.Controllers
                     {
                         outputFile = fi.Name.Replace(fi.Extension, "") + ".flv";
                         line = String.Format(
-                            @"-i ""{0}"" -ss {2} -async 1 -c:a libfdk_aac -vbr 3 -b {3}k -vf ""scale=400:trunc(ow/a/2)*2"" -map 0:0  -map 0:{4} -v 0 -f flv -vcodec libx264 ""{1}""",
+                            @"-i ""{0}"" -ss {2} -async 1 -c:a libfdk_aac -b:a 128k -b {3}k -vf ""scale=400:trunc(ow/a/2)*2"" -map 0:0  -map 0:{4} -v 0 -f flv -vcodec libx264 ""{1}""",
                             source, Source + outputFile, offset, bitrate, soundNumber);
                     }
                 }
@@ -295,11 +302,13 @@ namespace MyVideo.Controllers
                     }
                     else
                     {
+                        var subtitles = string.IsNullOrWhiteSpace(srt) ? string.Empty : $",subtitles='{fi.Name}':si={int.Parse(srt)-1}";
                         outputFile = fi.Name.Replace(fi.Extension, "." + fileFormat);
                         //outputFile = fi.Name.Remove(fi.Name.Length - fi.Extension.Length, fi.Name.Length) + "." + fileFormat;
-                        line = String.Format(
-                            @"-i ""{0}"" -ss {2} -b {3}k -acodec mp3 -vf ""scale={5}:trunc(ow/a/2)*2"" -map 0:0 -map 0:{4} -vcodec h264 ""{1}""",
-                            source, Source + outputFile, offset, bitrate, soundNumber, width);
+                        line = 
+                            $@"-hwaccel_output_format cuda -i ""{source}"" -ss {offset} -b:v {bitrate}k -c:a libfdk_aac -b:a 128k -ac 1 -vf ""scale={width}:trunc(ow/a/2)*2{subtitles}"" -map 0:0 -map 0:{soundNumber} -c:v h264_nvenc ""{Source + outputFile}""";
+                        //line =
+                        //    $@"-i ""{source}"" -ss {offset} -b:v {bitrate}k -c:a libfdk_aac -b:a 128k -vf ""scale={width}:trunc(ow/a/2)*2{subtitles}"" -map 0:0 -map 0:{soundNumber} -c:v libx264 ""{Source + outputFile}""";
                         otput.Add(myproc, Source + outputFile);
                     }
                 }
@@ -327,6 +336,7 @@ namespace MyVideo.Controllers
                 log1.Debug("tut");
 
                 var myProcessStartInfo = new ProcessStartInfo();
+                myProcessStartInfo.WorkingDirectory = fi.Directory.FullName;
                 myProcessStartInfo.FileName = Server.MapPath("~") + "ffmpeg.exe";
                 myProcessStartInfo.Arguments = line;
                 myProcessStartInfo.UseShellExecute = false;

@@ -61,24 +61,25 @@
     <a href="@Url.Action("GetStream")" onclick=" return submitForm(this); " data="@Model.ParentFolder">Nazad</a>
     <br />
     <div>
-        Не совсем работает: 
+        Не совсем работает:
         Minuti:
-        @Html.TextBox("offset", "0", new {style = "width:50px;"})
+        @Html.TextBox("offset", "0", new { style = "width:50px;" })
         Bitrejt:
-        @Html.TextBox("bitrate", "400", new {style = "width:50px;"})
+        @Html.TextBox("bitrate", "400", new { style = "width:50px;" })
         Tip:
-        @Html.TextBox("fileFormat", "mp4", new {style = "width:50px;"})
+        @Html.TextBox("fileFormat", "mp4", new { style = "width:50px;" })
         Nomer zvukovoj dorozki:
-        @Html.TextBox("soundNumber", "1", new {style = "width:50px;"})
+        @Html.TextBox("soundNumber", "1", new { style = "width:50px;" })
         Встроеный плеер:
         @Html.CheckBox("isEmbed")
-        VLC: 
+        VLC:
         @Html.CheckBox("isVlc")
         Width:
         @Html.TextBox("width", "400", new { style = "width:50px;" })
         Streams:
         @Html.CheckBox("isStream")
-
+        Titri:
+        @Html.TextBox("srt", "", new { style = "width:50px;" })
     </div>
     <br />
     foreach (var file in Model.Folder)
@@ -140,13 +141,19 @@ else
     @Html.Hidden("source", " ")
 }
 
-@using (Html.BeginForm("UploadFile", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@*@using (Html.BeginForm("UploadFile", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     <input type="file" name="files" value="" multiple="multiple" />
     <input type="submit" value="Upload" title="Uplad" />
     <div style="color:Red;font-size:14px">@ViewBag.Message</div>
     @Html.HiddenFor(m=>m.source)
-}
+}*@
+
+<form action="" method="POST">
+    @{
+        Html.RenderAction("GetComponent", "DropzoneAttachment", new { referenceId = "homepage" });
+    }
+</form>
 
 @using (Html.BeginForm("Mp3File", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
