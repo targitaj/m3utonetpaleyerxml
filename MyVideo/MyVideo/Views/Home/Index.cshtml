@@ -37,11 +37,97 @@
 
 @if (!string.IsNullOrWhiteSpace(Model.JWPlayerSource))
 {
-    <video preload="none" controls="" src="@Url.Content("~/Videos/" + Model.JWPlayerSource)" width="400">
+    <video id="videoPlayer" preload="none" controls="" src="@Url.Content("~/Videos/" + Model.JWPlayerSource)" width="400">
         <p class="warning">Your browser does not support HTML5 video.</p>
     </video>
 
     <a href="@Url.Content("~/Videos/" + Model.JWPlayerSource)">Скачать</a>
+
+    <script type="text/javascript">
+        (function () {
+            var video = document.getElementById('videoPlayer');
+            if (!video) {
+                return;
+            }
+
+            var cookieName = 'video_position_' + hashString(video.currentSrc || video.src);
+            var lastSavedPosition = 0;
+
+            function hashString(value) {
+                var hash = 0;
+                var i;
+
+                for (i = 0; i < value.length; i++) {
+                    hash = ((hash << 5) - hash) + value.charCodeAt(i);
+                    hash = hash & hash;
+                }
+
+                return Math.abs(hash).toString();
+            }
+
+            function getCookie(name) {
+                var parts = document.cookie ? document.cookie.split('; ') : [];
+                var i;
+
+                for (i = 0; i < parts.length; i++) {
+                    var cookie = parts[i].split('=');
+
+                    if (cookie[0] === name) {
+                        return decodeURIComponent(cookie.slice(1).join('='));
+                    }
+                }
+
+                return null;
+            }
+
+            function setCookie(name, value) {
+                document.cookie = name + '=' + encodeURIComponent(value) + '; max-age=' + (60 * 60 * 24 * 365) + '; path=/';
+            }
+
+            function savePosition(force) {
+                if (!video.duration || isNaN(video.duration)) {
+                    return;
+                }
+
+                var position = Math.floor(video.currentTime);
+
+                if (video.ended || position >= Math.floor(video.duration) - 3) {
+                    setCookie(cookieName, 0);
+                    lastSavedPosition = 0;
+                    return;
+                }
+
+                if (force || Math.abs(position - lastSavedPosition) >= 5) {
+                    setCookie(cookieName, position);
+                    lastSavedPosition = position;
+                }
+            }
+
+            video.addEventListener('loadedmetadata', function () {
+                var savedPosition = parseFloat(getCookie(cookieName));
+
+                if (!isNaN(savedPosition) && savedPosition > 0 && savedPosition < video.duration - 3) {
+                    video.currentTime = savedPosition;
+                }
+            });
+
+            video.addEventListener('timeupdate', function () {
+                savePosition(false);
+            });
+
+            video.addEventListener('pause', function () {
+                savePosition(true);
+            });
+
+            video.addEventListener('ended', function () {
+                savePosition(true);
+            });
+
+            window.addEventListener('beforeunload', function () {
+                savePosition(true);
+            });
+        })();
+    </script>
     return;
 }
 
