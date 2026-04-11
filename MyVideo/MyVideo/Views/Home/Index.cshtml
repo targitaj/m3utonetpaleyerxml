@@ -65,7 +65,7 @@
         Minuti:
         @Html.TextBox("offset", "0", new { style = "width:50px;" })
         Bitrejt:
-        @Html.TextBox("bitrate", "400", new { style = "width:50px;" })
+        @Html.TextBox("bitrate", "1000", new { style = "width:50px;" })
         Tip:
         @Html.TextBox("fileFormat", "mp4", new { style = "width:50px;" })
         Nomer zvukovoj dorozki:
@@ -75,7 +75,7 @@
         VLC:
         @Html.CheckBox("isVlc")
         Width:
-        @Html.TextBox("width", "400", new { style = "width:50px;" })
+        @Html.TextBox("width", "1000", new { style = "width:50px;" })
         Streams:
         @Html.CheckBox("isStream")
         Titri:
@@ -148,6 +148,14 @@ else
     <div style="color:Red;font-size:14px">@ViewBag.Message</div>
     @Html.HiddenFor(m=>m.source)
 }*@
+
+<h3>Edit work.html</h3>
+
+<form method="post" action="/Home/SaveWorkHtml">
+    <textarea name="html" style="width:100%;height:200px;"></textarea>
+    <br />
+    <button type="submit">Save to work.html</button>
+</form>
 
 <form action="" method="POST">
     @{

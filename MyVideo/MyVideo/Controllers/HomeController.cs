@@ -156,6 +156,20 @@ namespace MyVideo.Controllers
 
         [HttpPost]
         [ValidateInput(false)]
+        public ActionResult SaveWorkHtml(string html)
+        {
+            // Path to the same folder where Folders.txt is located
+            var basePath = Server.MapPath(@"~\");
+            var filePath = Path.Combine(basePath, "work.html");
+
+            System.IO.File.WriteAllText(filePath, html, Encoding.UTF8);
+
+            return RedirectToAction("Index");
+        }
+
+
+        [HttpPost]
+        [ValidateInput(false)]
         public ActionResult GetStream(string source, string offset, string fileFormat, string bitrate, bool isEmbed, int soundNumber, bool isVlc, bool isStream, string width, string srt)
         {
             try

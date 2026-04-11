@@ -43,3 +43,10 @@
 /YoutubeDownloader/YoutubeDownloader/bin
 /YoutubeDownloader/YoutubeDownloader/obj
 /YoutubeDownloader/YoutubeDownloader/*.user
+/MyVideo/.vs
+/MyVideo/MyVideo/.well-known
+/MyVideo/MyVideo/Debug
+/MyVideo/MyVideo/bin
+/MyVideo/packages
+/MyVideo/MyVideo/obj
+/MyVideo/MyVideo/ffmpeg.exe
