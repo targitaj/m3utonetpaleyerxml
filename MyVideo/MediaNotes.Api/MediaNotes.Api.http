@@ -1,0 +1,6 @@
+@MediaNotes.Api_HostAddress = http://localhost:5223
+
+GET {{MediaNotes.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

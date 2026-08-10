@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Media Notes</title>
+  <style>
+    body{margin:0;background:#f6f7fb;font:16px system-ui;color:#272727;display:grid;min-height:100vh;place-items:center}
+    main{max-width:440px;margin:24px;padding:32px;background:#fff;border-radius:24px;box-shadow:0 10px 40px #0002;text-align:center}
+    .logo{width:72px;height:72px;margin:auto;background:#baf22b;border-radius:16px 16px 24px 16px;box-shadow:inset -10px -10px #82bd16}
+    h1{margin:20px 0 8px}p{color:#666;line-height:1.5}a{display:block;margin-top:24px;padding:14px 18px;border-radius:18px;background:#5067df;color:white;text-decoration:none;font-weight:650}
+  </style>
+</head>
+<body><main><div class="logo"></div><h1>Media Notes</h1><p id="message">A read-only note was shared with you.</p><a id="open" href="#">Open in Media Notes</a></main>
+<script>
+const token=new URLSearchParams(location.search).get('token')||'';
+const lang=(navigator.language||'en').slice(0,2);
+const text=lang==='ru'?['Вам отправили заметку только для чтения.','Открыть в Media Notes']:
+ lang==='de'?['Eine schreibgeschützte Notiz wurde mit Ihnen geteilt.','In Media Notes öffnen']:
+ ['A read-only note was shared with you.','Open in Media Notes'];
+message.textContent=text[0];open.textContent=text[1];
+const target='medianotes://share/'+encodeURIComponent(token);
+open.href=target;
+if(token && /Android/i.test(navigator.userAgent)) setTimeout(()=>location.href=target,120);
+</script></body></html>

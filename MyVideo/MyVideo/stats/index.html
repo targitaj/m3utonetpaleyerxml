@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-store">
+  <script>
+    if (location.protocol !== "https:" && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") {
+      location.replace("https://" + location.host + location.pathname + location.search + location.hash);
+    }
+  </script>
+  <title>Media Notes — статистика</title>
+  <style>
+    :root{color-scheme:light;--ink:#24262d;--muted:#737782;--line:#e3e5ea;--blue:#5269df;--paper:#f6f7fb}
+    *{box-sizing:border-box} body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+    .shell{max-width:1180px;margin:auto;padding:28px 18px 54px}.top{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+    .logo{width:46px;height:46px;border-radius:12px;background:#c8f32b;box-shadow:inset -8px -8px 0 #99c313;display:grid;place-items:center;font-weight:800}
+    h1{font-size:25px;margin:0}.sub{color:var(--muted);font-size:13px}.panel,.card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 5px 20px #2026400b}
+    .login{max-width:430px;padding:24px;margin:70px auto}.login h2{margin:0 0 18px}label{display:block;font-size:13px;margin:12px 0 6px}
+    input{width:100%;height:45px;border:1px solid #cdd1da;border-radius:9px;padding:0 12px;font:inherit}button{border:0;border-radius:9px;padding:11px 18px;font:600 14px inherit;cursor:pointer}
+    .primary{width:100%;margin-top:18px;background:var(--blue);color:#fff}.error{color:#b42318;min-height:22px;margin-top:12px}.hidden{display:none!important}
+    .actions{margin-left:auto;display:flex;gap:8px}.actions button{background:#fff;border:1px solid var(--line)}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+    .card{padding:17px}.value{font-size:25px;font-weight:750;margin-top:4px}.label{color:var(--muted);font-size:12px}.table-wrap{overflow:auto;background:#fff;border:1px solid var(--line);border-radius:16px}
+    table{border-collapse:collapse;width:100%;min-width:1030px}th,td{text-align:left;padding:12px 13px;border-bottom:1px solid #eceef2;white-space:nowrap}th{font-size:12px;color:var(--muted);background:#fafbfc;position:sticky;top:0}tbody tr:last-child td{border:0}.email{font-weight:650}.empty{color:var(--muted);text-align:center;padding:36px}
+    @media(max-width:760px){.cards{grid-template-columns:repeat(2,1fr)}.top{align-items:flex-start}.actions{flex-direction:column}.shell{padding:18px 10px}.card{padding:13px}}
+  </style>
+</head>
+<body>
+<main class="shell">
+  <header class="top"><div class="logo">MN</div><div><h1>Media Notes</h1><div class="sub">Статистика серверного хранилища</div></div><div id="actions" class="actions hidden"><button id="refresh">Обновить</button><button id="logout">Выйти</button></div></header>
+  <section id="login" class="panel login">
+    <h2>Вход администратора</h2>
+    <form id="loginForm"><label for="email">Электронная почта</label><input id="email" type="email" value="mosala@gmail.com" autocomplete="username" required>
+      <label for="password">Пароль</label><input id="password" type="password" autocomplete="current-password" required>
+      <button class="primary" type="submit">Войти</button><div id="loginError" class="error" role="alert"></div></form>
+  </section>
+  <section id="dashboard" class="hidden">
+    <div class="cards"><div class="card"><div class="label">Пользователей</div><div id="users" class="value">—</div></div><div class="card"><div class="label">Актуальных заметок</div><div id="notes" class="value">—</div></div><div class="card"><div class="label">Данных заметок</div><div id="size" class="value">—</div></div><div class="card"><div class="label">Последнее сохранение</div><div id="last" class="value" style="font-size:17px">—</div></div></div>
+    <div class="table-wrap"><table><thead><tr><th>Пользователь</th><th>Регистрация</th><th>Последнее сохранение</th><th>Заметки</th><th>Фото</th><th>Снимки</th><th>Версии</th><th>Текущий текст</th><th>Изображения</th><th>История</th><th>Всего</th></tr></thead><tbody id="rows"></tbody></table></div>
+    <div id="loadError" class="error"></div>
+  </section>
+</main>
+<script>
+  const $=id=>document.getElementById(id), tokenKey='medianotes.stats.token';
+  const bytes=n=>{n=Number(n||0);if(n<1024)return n+' Б';const u=['КБ','МБ','ГБ','ТБ'];let i=-1;do{n/=1024;i++}while(n>=1024&&i<u.length-1);return n.toLocaleString('ru-RU',{maximumFractionDigits:n<10?2:1})+' '+u[i]};
+  const date=v=>v?new Date(v).toLocaleString('ru-RU'):'—';
+  function showLogin(message=''){ $('login').classList.remove('hidden');$('dashboard').classList.add('hidden');$('actions').classList.add('hidden');$('loginError').textContent=message }
+  function showDashboard(){ $('login').classList.add('hidden');$('dashboard').classList.remove('hidden');$('actions').classList.remove('hidden') }
+  async function load(){const token=sessionStorage.getItem(tokenKey);if(!token)return showLogin();$('loadError').textContent='';try{const r=await fetch('/api/stats',{headers:{Authorization:'Bearer '+token},cache:'no-store'});if(r.status===401){sessionStorage.removeItem(tokenKey);return showLogin('Сеанс истёк. Войдите снова.')}if(r.status===403){sessionStorage.removeItem(tokenKey);return showLogin('У этого аккаунта нет доступа к общей статистике.')}if(!r.ok)throw new Error('Ошибка сервера: '+r.status);const s=await r.json();showDashboard();$('users').textContent=s.UserCount;$('notes').textContent=s.NoteCount;$('size').textContent=bytes(s.DataBytes);$('last').textContent=date(s.LastSavedUtc);const body=$('rows');body.replaceChildren();for(const u of s.Users){const tr=document.createElement('tr');const values=[u.Email,date(u.RegisteredUtc),date(u.LastSavedUtc),u.NoteCount,u.ImageCount,u.SnapshotCount,u.RevisionCount,bytes(u.CurrentTextBytes),bytes(u.ImageBytes),bytes(u.HistoryBytes),bytes(u.TotalBytes)];values.forEach((value,i)=>{const td=document.createElement('td');td.textContent=value;if(i===0)td.className='email';tr.appendChild(td)});body.appendChild(tr)}if(!s.Users.length){const td=document.createElement('td');td.colSpan=11;td.className='empty';td.textContent='Пользователей пока нет';const tr=document.createElement('tr');tr.appendChild(td);body.appendChild(tr)}}catch(e){$('loadError').textContent=e.message}}
+  $('loginForm').addEventListener('submit',async e=>{e.preventDefault();$('loginError').textContent='';try{const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({Email:$('email').value,Password:$('password').value})});if(!r.ok)throw new Error(r.status===401?'Неверная почта или пароль.':'Не удалось войти: '+r.status);const a=await r.json();sessionStorage.setItem(tokenKey,a.Token);$('password').value='';await load()}catch(err){$('loginError').textContent=err.message}});
+  $('refresh').addEventListener('click',load);$('logout').addEventListener('click',()=>{sessionStorage.removeItem(tokenKey);showLogin()});load();
+</script>
+</body>
+</html>

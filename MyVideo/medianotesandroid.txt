@@ -1,0 +1,2 @@
+version=1.89
+file=MediaNotes-Android-1.89.apk
